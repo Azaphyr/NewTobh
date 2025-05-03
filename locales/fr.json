@@ -1,83 +1,109 @@
 {
-    "nav": {
-      "home": "Accueil",
-      "about": "À propos",
-      "events": "Événements",
-      "membership": "Adhésion",
-      "blog": "Blog",
-      "contact": "Contact",
-      "joinUs": "Rejoignez-nous"
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "events": "Événements",
+    "membership": "Adhésion",
+    "blog": "Blog",
+    "contact": "Contact",
+    "joinUs": "Rejoignez-nous"
+  },
+  "footer": {
+    "description": "Une organisation communautaire dédiée aux jeux de rôle sur table, aux figurines et à la narration.",
+    "quickLinks": "Liens rapides",
+    "legal": "Mentions légales",
+    "contact": "Contact",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "accessibility": "Accessibilité",
+    "location": "Bruxelles, Belgique",
+    "rights": "Tous droits réservés."
+  },
+  "cookies": {
+    "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant à visiter ce site, vous acceptez notre utilisation des cookies.",
+    "learnMore": "En savoir plus",
+    "accept": "Accepter",
+    "decline": "Refuser"
+  },
+  "languageSelection": {
+    "title": "Choisissez votre langue",
+    "description": "Sélectionnez votre langue préférée pour continuer",
+    "continue": "Continuer"
+  },
+  "home": {
+    "hero": {
+      "title": "Embarquez pour des Aventures Épiques avec Tales of Bruss'hell",
+      "description": "Rejoignez notre communauté d'amateurs de jeux de rôle, de peintres de figurines et de conteurs.",
+      "eventsButton": "Événements à Venir",
+      "joinButton": "Rejoindre Notre Communauté"
     },
-    "footer": {
-      "description": "Une organisation communautaire dédiée aux jeux de rôle sur table, aux figurines et à la narration.",
-      "quickLinks": "Liens rapides",
-      "legal": "Mentions légales",
-      "contact": "Contact",
-      "privacy": "Politique de confidentialité",
-      "terms": "Conditions d'utilisation",
-      "accessibility": "Accessibilité",
-      "location": "Bruxelles, Belgique",
-      "rights": "Tous droits réservés."
-    },
-    "cookies": {
-      "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant à visiter ce site, vous acceptez notre utilisation des cookies.",
-      "learnMore": "En savoir plus",
-      "accept": "Accepter",
-      "decline": "Refuser"
-    },
-    "languageSelection": {
-      "title": "Choisissez votre langue",
-      "description": "Sélectionnez votre langue préférée pour continuer",
-      "continue": "Continuer"
-    },
-    "home": {
-      "hero": {
-        "title": "Embarquez pour des Aventures Épiques avec Tales of Bruss'hell",
-        "description": "Rejoignez notre communauté d'amateurs de jeux de rôle, de peintres de figurines et de conteurs.",
-        "eventsButton": "Événements à Venir",
-        "joinButton": "Rejoindre Notre Communauté"
-      },
-      "quickLinks": {
-        "events": {
-          "title": "Événements Communautaires",
-          "description": "Participez à nos soirées de jeu régulières, one-shots et campagnes pour joueurs de tous niveaux.",
-          "link": "Voir les Événements"
-        },
-        "workshops": {
-          "title": "Ateliers de Figurines",
-          "description": "Apprenez les techniques de peinture et créez des terrains avec nos artistes et passionnés expérimentés.",
-          "link": "Rejoindre un Atelier"
-        },
-        "storytelling": {
-          "title": "Séances de Narration",
-          "description": "Participez à nos événements axés sur la narration et améliorez vos compétences en storytelling.",
-          "link": "En Savoir Plus"
-        }
-      },
+    "quickLinks": {
       "events": {
-        "title": "Événements à Venir",
-        "description": "Rejoignez-nous pour nos prochaines aventures, ateliers et réunions communautaires.",
-        "link": "Voir tous les Événements"
+        "title": "Événements Communautaires",
+        "description": "Participez à nos soirées de jeu régulières, one-shots et campagnes pour joueurs de tous niveaux.",
+        "link": "Voir les Événements"
       },
-      "testimonials": {
-        "title": "Ce que disent nos Membres"
+      "workshops": {
+        "title": "Ateliers de Figurines",
+        "description": "Apprenez les techniques de peinture et créez des terrains avec nos artistes et passionnés expérimentés.",
+        "link": "Rejoindre un Atelier"
       },
-      "community": {
-        "title": "Découvrez Notre Communauté",
-        "button": "Voir la Galerie"
-      },
-      "blog": {
-        "title": "Derniers articles de notre Blog",
-        "description": "Conseils, histoires et mises à jour de notre communauté.",
-        "button": "Voir tous les articles",
-        "readMore": "Lire plus"
-      },
-      "cta": {
-        "title": "Rejoignez Notre Communauté",
-        "description": "Que vous soyez un joueur chevronné ou que vous débutiez tout juste, il y a une place pour vous dans notre communauté. Rejoignez-nous pour des aventures, de la créativité et des amitiés.",
-        "buttonMember": "Devenez Membre",
-        "buttonContact": "Contactez Nous"
+      "storytelling": {
+        "title": "Séances de Narration",
+        "description": "Participez à nos événements axés sur la narration et améliorez vos compétences en storytelling.",
+        "link": "En Savoir Plus"
       }
+    },
+    "events": {
+      "title": "Événements à Venir",
+      "description": "Rejoignez-nous pour nos prochaines aventures, ateliers et réunions communautaires.",
+      "link": "Voir tous les Événements"
+    },
+    "testimonials": {
+      "title": "Ce que disent nos Membres"
+    },
+    "community": {
+      "title": "Découvrez Notre Communauté",
+      "button": "Voir la Galerie"
+    },
+    "blog": {
+      "title": "Derniers articles de notre Blog",
+      "description": "Conseils, histoires et mises à jour de notre communauté.",
+      "button": "Voir tous les articles",
+      "readMore": "Lire plus"
+    },
+    "cta": {
+      "title": "Rejoignez Notre Communauté",
+      "description": "Que vous soyez un joueur chevronné ou que vous débutiez tout juste, il y a une place pour vous dans notre communauté. Rejoignez-nous pour des aventures, de la créativité et des amitiés.",
+      "buttonMember": "Devenez Membre",
+      "buttonContact": "Contactez Nous"
     }
+  },
+  "about": {
+    "title": "À propos de Tales of Bruss'hell",
+    "description": "Notre mission, notre équipe et notre histoire.",
+    "titleMission": "Notre Mission",
+    "descriptionMission": "Tales of Bruss'hell s'engage à créer une communauté accueillante pour les passionnés de jeux de rôle, peintres de figurines et conteurs de tous niveaux.",
+    "descriptionMission2": "Nous croyons au pouvoir du récit collaboratif pour créer des liens, encourager la créativité, et offrir un espace d'expression ouvert à tous.",
+    "descriptionMission3": "Par des événements réguliers, des ateliers et des actions locales, nous rendons le jeu de rôle accessible à tous, en prônant inclusion, créativité et entraide.",
+    "titleValues": "Nos Valeurs",
+    "titleInclusivity": "Inclusion",
+    "descriptionInclusivity": "Nous créons un environnement où chacun se sent accueilli et respecté, peu importe son parcours ou son niveau d'expérience.",
+    "titleCreativity": "Créativité",
+    "descriptionCreativity": "Nous favorisons l'imaginaire, l'expression artistique et la résolution créative de problèmes à travers nos activités.",
+    "titleCommunity": "Communauté",
+    "descriptionCommunity": "Nous créons des liens forts et durables grâce à des expériences partagées et des récits collaboratifs.",
+    "titleExcellence": "Excellence",
+    "descriptionExcellence": "Nous visons la qualité dans nos événements, ateliers et projets communautaires, en améliorant sans cesse nos offres.",
+    "titleTeam": "Notre Équipe",
+    "descriptionTeam": "Nos bénévoles passionnés qui rendent la magie possible.",
+    "titleHistory": "Notre Histoire",
+    "descriptionHistory": "Tales of Bruss'hell a été fondé en 2023 par des passionnés de jeux de rôle voulant un espace plus inclusif à Bruxelles.",
+    "descriptionHistory2": "Né de rencontres dans un bar local, le projet est devenu une vraie communauté. En 2024, nous sommes devenus une ASBL pour mieux servir nos membres.",
+    "descriptionHistory3": "Aujourd'hui, nous organisons des événements, ateliers et campagnes réguliers, tout en élargissant notre portée pour rassembler toujours plus de passionnés.",
+    "titleJoinUs": "Rejoignez l'Aventure",
+    "descriptionJoinUs": "Rejoignez notre communauté et créons ensemble des histoires inoubliables.",
+    "buttonMember": "Devenir Membre",
+    "buttonContact": "Nous Contacter"
+  }
 }
-  

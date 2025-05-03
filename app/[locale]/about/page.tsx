@@ -24,21 +24,8 @@ export default function AboutPage() {
           priority
         />
         <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("about.hero.title")}</h1>
-          <p className="text-lg md:text-xl max-w-2xl">{t("about.hero.description")}</p>
-        </div>
-      </section>
-
-      {/* Breadcrumbs */}
-      <section className="border-b py-2">
-        <div className="container">
-          <div className="flex text-sm text-muted-foreground">
-            <Link href={`/${locale}`} className="hover:text-brick-red">
-              {t("nav.home")}
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-foreground">{t("nav.about")}</span>
-          </div>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("about.title")}</h1>
+          <p className="text-lg md:text-xl max-w-2xl">{t("about.description")}</p>
         </div>
       </section>
 
@@ -47,18 +34,15 @@ export default function AboutPage() {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-serif text-3xl font-bold mb-6">Our Mission</h2>
+              <h2 className="font-serif text-3xl font-bold mb-6">{t("about.titleMission")}</h2>
               <p className="text-lg mb-6">
-                Tales of Bruss'hell is dedicated to fostering a welcoming community for tabletop role-playing
-                enthusiasts, miniature painters, and storytellers of all experience levels.
+                {t("about.descriptionMission")}
               </p>
               <p className="text-lg mb-6">
-                We believe in the power of collaborative storytelling to build connections, develop creativity, and
-                provide a space where everyone can feel welcome to express themselves.
+                {t("about.descriptionMission2")}
               </p>
               <p className="text-lg">
-                Through regular events, workshops, and community initiatives, we aim to make the world of tabletop
-                gaming accessible to all while promoting the values of inclusivity, creativity, and camaraderie.
+                {t("about.descriptionMission3")}
               </p>
             </div>
             <div className="relative">
@@ -74,7 +58,7 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-20">
-            <h2 className="font-serif text-3xl font-bold mb-10 text-center">Our Values</h2>
+            <h2 className="font-serif text-3xl font-bold mb-10 text-center">{t("about.titleValues")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="border-2 border-deep-teal/20">
                 <CardContent className="pt-6">
@@ -82,10 +66,9 @@ export default function AboutPage() {
                     <div className="bg-deep-teal/10 p-3 rounded-full mb-4">
                       <Heart className="h-8 w-8 text-brick-red" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">Inclusivity</h3>
+                    <h3 className="text-xl font-bold mb-2">{t("about.titleInclusivity")}</h3>
                     <p className="text-muted-foreground">
-                      We create a welcoming environment where everyone feels valued and respected, regardless of
-                      background or experience level.
+                      {t("about.descriptionInclusivity")}
                     </p>
                   </div>
                 </CardContent>
@@ -97,10 +80,9 @@ export default function AboutPage() {
                     <div className="bg-deep-teal/10 p-3 rounded-full mb-4">
                       <Sparkles className="h-8 w-8 text-brick-red" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">Creativity</h3>
+                    <h3 className="text-xl font-bold mb-2">{t("about.titleCreativity")}</h3>
                     <p className="text-muted-foreground">
-                      We encourage imagination, artistic expression, and innovative problem-solving through our games
-                      and activities.
+                      {t("about.descriptionCreativity")}
                     </p>
                   </div>
                 </CardContent>
@@ -112,10 +94,9 @@ export default function AboutPage() {
                     <div className="bg-deep-teal/10 p-3 rounded-full mb-4">
                       <Users className="h-8 w-8 text-brick-red" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">Community</h3>
+                    <h3 className="text-xl font-bold mb-2">{t("about.titleCommunity")}</h3>
                     <p className="text-muted-foreground">
-                      We foster meaningful connections and friendships through shared experiences and collaborative
-                      storytelling.
+                      {t("about.descriptionCommunity")}
                     </p>
                   </div>
                 </CardContent>
@@ -127,10 +108,9 @@ export default function AboutPage() {
                     <div className="bg-deep-teal/10 p-3 rounded-full mb-4">
                       <Trophy className="h-8 w-8 text-brick-red" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">Excellence</h3>
+                    <h3 className="text-xl font-bold mb-2">{t("about.titleExcellence")}</h3>
                     <p className="text-muted-foreground">
-                      We strive for quality in our events, workshops, and community initiatives, continuously improving
-                      our offerings.
+                      {t("about.descriptionExcellence")}
                     </p>
                   </div>
                 </CardContent>
@@ -143,9 +123,9 @@ export default function AboutPage() {
       {/* Our Team */}
       <section className="py-16 bg-stone-100">
         <div className="container">
-          <h2 className="font-serif text-3xl font-bold mb-4 text-center">Meet Our Team</h2>
+          <h2 className="font-serif text-3xl font-bold mb-4 text-center">{t("about.titleTeam")}</h2>
           <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
-            Our dedicated volunteers who make the magic happen.
+            {t("about.descriptionTeam")}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -238,22 +218,15 @@ export default function AboutPage() {
               />
             </div>
             <div className="order-1 lg:order-2">
-              <h2 className="font-serif text-3xl font-bold mb-6">Our History</h2>
+              <h2 className="font-serif text-3xl font-bold mb-6">{t("about.titleHistory")}</h2>
               <p className="mb-4">
-                Tales of Bruss'hell was founded in 2018 by a group of passionate tabletop gaming enthusiasts who wanted
-                to create a more inclusive and welcoming space for players in Brussels.
+                {t("about.descriptionHistory")}
               </p>
               <p className="mb-4">
-                What started as informal gatherings in local cafés quickly grew into a thriving community. By 2020, we
-                had officially registered as a non-profit organization to better serve our growing membership.
-              </p>
-              <p className="mb-4">
-                Despite the challenges of the pandemic, we adapted by hosting virtual game nights and workshops, keeping
-                our community connected during difficult times.
+                {t("about.descriptionHistory2")}
               </p>
               <p>
-                Today, we're proud to host regular in-person events, workshops, and campaigns while continuing to expand
-                our offerings to reach more people who share our passion for tabletop gaming and storytelling.
+                {t("about.descriptionHistory3")}
               </p>
             </div>
           </div>
@@ -264,16 +237,16 @@ export default function AboutPage() {
       <section className="py-16 bg-dark-mahogany text-white">
         <div className="container text-center">
           <Dice className="h-16 w-16 mx-auto mb-6 text-golden-amber" />
-          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">Join Our Adventure</h2>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">{t("about.titleJoinUs")}</h2>
           <p className="max-w-2xl mx-auto mb-8 text-stone-200">
-            Become part of our community and help us create unforgettable stories together.
+            {t("about.descriptionJoinUs")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-golden-amber hover:bg-golden-amber/90 text-white font-medium">
-              <Link href="/membership">Become a Member</Link>
+              <Link href="/membership">{t("about.buttonMember")}</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              <Link href="/contact">Contact Us</Link>
+              <Link href="/contact">{t("about.buttonContact")}</Link>
             </Button>
           </div>
         </div>

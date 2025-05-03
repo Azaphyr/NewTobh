@@ -1,83 +1,109 @@
 {
-    "nav": {
-      "home": "Home",
-      "about": "About",
-      "events": "Events",
-      "membership": "Membership",
-      "blog": "Blog",
-      "contact": "Contact",
-      "joinUs": "Join Us"
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "events": "Events",
+    "membership": "Membership",
+    "blog": "Blog",
+    "contact": "Contact",
+    "joinUs": "Join Us"
+  },
+  "footer": {
+    "description": "A community organization dedicated to tabletop RPGs, miniatures, and storytelling.",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "accessibility": "Accessibility",
+    "location": "Brussels, Belgium",
+    "rights": "All rights reserved."
+  },
+  "cookies": {
+    "message": "We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.",
+    "learnMore": "Learn more",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "languageSelection": {
+    "title": "Choose your language",
+    "description": "Select your preferred language to continue",
+    "continue": "Continue"
+  },
+  "home": {
+    "hero": {
+      "title": "Embark on Epic Adventures in Tales of Bruss'hell",
+      "description": "Join our community of tabletop enthusiasts, miniature painters, and storytellers.",
+      "eventsButton": "Upcoming Events",
+      "joinButton": "Join Our Community"
     },
-    "footer": {
-      "description": "A community organization dedicated to tabletop RPGs, miniatures, and storytelling.",
-      "quickLinks": "Quick Links",
-      "legal": "Legal",
-      "contact": "Contact",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "accessibility": "Accessibility",
-      "location": "Brussels, Belgium",
-      "rights": "All rights reserved."
-    },
-    "cookies": {
-      "message": "We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.",
-      "learnMore": "Learn more",
-      "accept": "Accept",
-      "decline": "Decline"
-    },
-    "languageSelection": {
-      "title": "Choose your language",
-      "description": "Select your preferred language to continue",
-      "continue": "Continue"
-    },
-    "home": {
-      "hero": {
-        "title": "Embark on Epic Adventures in Tales of Bruss'hell",
-        "description": "Join our community of tabletop enthusiasts, miniature painters, and storytellers.",
-        "eventsButton": "Upcoming Events",
-        "joinButton": "Join Our Community"
-      },
-      "quickLinks": {
-        "events": {
-          "title": "Community Events",
-          "description": "Join our regular game nights, one-shots, and campaigns for players of all experience levels.",
-          "link": "View Events"
-        },
-        "workshops": {
-          "title": "Miniature Workshops",
-          "description": "Learn painting techniques and craft terrain with our experienced artists and hobbyists.",
-          "link": "Join a Workshop"
-        },
-        "storytelling": {
-          "title": "Storytelling Sessions",
-          "description": "Participate in our narrative-focused events and improve your storytelling skills.",
-          "link": "Learn More"
-        }
-      },
+    "quickLinks": {
       "events": {
-        "title": "Upcoming Events",
-        "description": "Join us for our next adventures, workshops, and community gatherings.",
-        "link": "View All Events"
+        "title": "Community Events",
+        "description": "Join our regular game nights, one-shots, and campaigns for players of all experience levels.",
+        "link": "View Events"
       },
-      "testimonials": {
-        "title": "What Our Members Say"
+      "workshops": {
+        "title": "Miniature Workshops",
+        "description": "Learn painting techniques and craft terrain with our experienced artists and hobbyists.",
+        "link": "Join a Workshop"
       },
-      "community": {
-        "title": "Community Showcase",
-        "button": "View Gallery"
-      },
-      "blog": {
-        "title": "Latest from our Blog",
-        "description": "Tips, stories, and updates from our community.",
-        "button": "View All Posts",
-        "readMore": "Read More"
-      },
-      "cta": {
-        "title": "Join Our Community",
-        "description": "Whether you're a seasoned player or just starting out, there's a place for you in our community. Join us for adventures, creativity, and friendship.",
-        "buttonMember": "Become a Member",
-        "buttonContact": "Contact Us"
+      "storytelling": {
+        "title": "Storytelling Sessions",
+        "description": "Participate in our narrative-focused events and improve your storytelling skills.",
+        "link": "Learn More"
       }
+    },
+    "events": {
+      "title": "Upcoming Events",
+      "description": "Join us for our next adventures, workshops, and community gatherings.",
+      "link": "View All Events"
+    },
+    "testimonials": {
+      "title": "What Our Members Say"
+    },
+    "community": {
+      "title": "Community Showcase",
+      "button": "View Gallery"
+    },
+    "blog": {
+      "title": "Latest from our Blog",
+      "description": "Tips, stories, and updates from our community.",
+      "button": "View All Posts",
+      "readMore": "Read More"
+    },
+    "cta": {
+      "title": "Join Our Community",
+      "description": "Whether you're a seasoned player or just starting out, there's a place for you in our community. Join us for adventures, creativity, and friendship.",
+      "buttonMember": "Become a Member",
+      "buttonContact": "Contact Us"
     }
+  },
+  "about": {
+    "title": "About Tales of Bruss'hell",
+    "description": "Our mission, our team, and our story.",
+    "titleMission": "Our Mission",
+    "descriptionMission": "Tales of Bruss'hell is dedicated to fostering a welcoming community for tabletop role-playing enthusiasts, miniature painters, and storytellers of all experience levels.",
+    "descriptionMission2": "We believe in the power of collaborative storytelling to build connections, develop creativity, and provide a space where everyone can feel welcome to express themselves.",
+    "descriptionMission3": "Through regular events, workshops, and community initiatives, we aim to make the world of tabletop gaming accessible to all while promoting the values of inclusivity, creativity, and camaraderie.",
+    "titleValues": "Our Values",
+    "titleInclusivity": "Inclusivity",
+    "descriptionInclusivity": "We create a welcoming environment where everyone feels valued and respected, regardless of background or experience level.",
+    "titleCreativity": "Creativity",
+    "descriptionCreativity": "We encourage imagination, artistic expression, and innovative problem-solving through our games and activities.",
+    "titleCommunity": "Community",
+    "descriptionCommunity": "We foster meaningful connections and friendships through shared experiences and collaborative storytelling.",
+    "titleExcellence": "Excellence",
+    "descriptionExcellence": "We strive for quality in our events, workshops, and community initiatives, continuously improving our offerings.",
+    "titleTeam": "MeetOur Team",
+    "descriptionTeam": "Our dedicated volunteers who make the magic happen.",
+    "titleHistory": "Our History",
+    "descriptionHistory": "Tales of Bruss'hell was founded in 2023 by a group of passionate tabletop gaming enthusiasts who wanted to create a more inclusive and welcoming space for players in Brussels.",
+    "descriptionHistory2": "What started as informal gatherings in local bar quickly grew into a thriving community. By 2024, we had officially registered as a non-profit organization to better serve our growing membership.",
+    "descriptionHistory3": "Today, we're proud to host regular in-person events, workshops, and campaigns while continuing to expand our offerings to reach more people who share our passion for tabletop gaming and storytelling.",
+    "titleJoinUs": "Join Our Adventure",
+    "descriptionJoinUs": "Become part of our community and help us create unforgettable stories together.",
+    "buttonMember": "Become a Member",
+    "buttonContact": "Contact Us"
+  }
 }
-  
