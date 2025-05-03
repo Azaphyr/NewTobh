@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime   @default(now()) @db.Timestamptz
+  updatedAt    DateTime   @default(now()) @db.Timestamptz
+  events       Event[]
+  blogPosts    BlogPost[]
+}
+
+model Language {
+  code                 String                @id
+  name                 String
+  isDefault            Boolean               @default(false)
+  eventTranslations    EventTranslation[]
+  blogPostTranslations BlogPostTranslation[]
+  websiteSettings      WebsiteSetting[]
+}
+
+model Event {
+  id            Int                 @id @default(autoincrement())
+  slug          String              @unique
+  imageUrl      String?
+  eventDate     DateTime            @db.Timestamptz
+  eventEndDate  DateTime?           @db.Timestamptz
+  location      String?
+  address       String?
+  capacity      Int?
+  spotsLeft     Int?
+  price         Decimal?            @db.Decimal(10, 2)
+  priceMembers  Decimal?            @db.Decimal(10, 2)
+  eventType     String
+  createdAt     DateTime            @default(now()) @db.Timestamptz
+  updatedAt     DateTime            @default(now()) @db.Timestamptz
+  createdBy     AdminUser?          @relation(fields: [createdById], references: [id])
+  createdById   Int?
+  translations  EventTranslation[]
+  registrations EventRegistration[]
+}
+
+model EventTranslation {
+  id              Int      @id @default(autoincrement())
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId         Int
+  language        Language @relation(fields: [languageCode], references: [code], onDelete: Cascade)
+  languageCode    String
+  title           String
+  description     String
+  longDescription String?
+  requirements    String?
+  additionalInfo  String?
+  instructorName  String?
+  instructorBio   String?
+
+  @@unique([eventId, languageCode])
+}
+
+model BlogPost {
+  id           Int                   @id @default(autoincrement())
+  slug         String                @unique
+  imageUrl     String?
+  publishedAt  DateTime?             @db.Timestamptz
+  isPublished  Boolean               @default(false)
+  isFeatured   Boolean               @default(false)
+  readTime     Int?
+  category     String
+  author       AdminUser?            @relation(fields: [authorId], references: [id])
+  authorId     Int?
+  createdAt    DateTime              @default(now()) @db.Timestamptz
+  updatedAt    DateTime              @default(now()) @db.Timestamptz
+  translations BlogPostTranslation[]
+}
+
+model BlogPostTranslation {
+  id           Int      @id @default(autoincrement())
+  blogPost     BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  blogPostId   Int
+  language     Language @relation(fields: [languageCode], references: [code], onDelete: Cascade)
+  languageCode String
+  title        String
+  description  String
+  content      String
+
+  @@unique([blogPostId, languageCode])
+}
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz
+}
+
+model MembershipApplication {
+  id              Int      @id @default(autoincrement())
+  firstName       String
+  lastName        String
+  email           String
+  phone           String?
+  membershipType  String
+  experienceLevel String?
+  interests       String[]
+  comments        String?
+  status          String   @default("pending")
+  createdAt       DateTime @default(now()) @db.Timestamptz
+  updatedAt       DateTime @default(now()) @db.Timestamptz
+}
+
+model EventRegistration {
+  id        Int      @id @default(autoincrement())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   Int
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  isMember  Boolean  @default(false)
+  status    String   @default("confirmed")
+  createdAt DateTime @default(now()) @db.Timestamptz
+}
+
+model WebsiteSetting {
+  id           Int       @id @default(autoincrement())
+  settingKey   String    @unique
+  settingValue String?
+  language     Language? @relation(fields: [languageCode], references: [code])
+  languageCode String?
+  updatedAt    DateTime  @default(now()) @db.Timestamptz
+}

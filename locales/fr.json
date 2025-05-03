@@ -1,0 +1,83 @@
+{
+    "nav": {
+      "home": "Accueil",
+      "about": "À propos",
+      "events": "Événements",
+      "membership": "Adhésion",
+      "blog": "Blog",
+      "contact": "Contact",
+      "joinUs": "Rejoignez-nous"
+    },
+    "footer": {
+      "description": "Une organisation communautaire dédiée aux jeux de rôle sur table, aux figurines et à la narration.",
+      "quickLinks": "Liens rapides",
+      "legal": "Mentions légales",
+      "contact": "Contact",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "accessibility": "Accessibilité",
+      "location": "Bruxelles, Belgique",
+      "rights": "Tous droits réservés."
+    },
+    "cookies": {
+      "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant à visiter ce site, vous acceptez notre utilisation des cookies.",
+      "learnMore": "En savoir plus",
+      "accept": "Accepter",
+      "decline": "Refuser"
+    },
+    "languageSelection": {
+      "title": "Choisissez votre langue",
+      "description": "Sélectionnez votre langue préférée pour continuer",
+      "continue": "Continuer"
+    },
+    "home": {
+      "hero": {
+        "title": "Embarquez pour des Aventures Épiques avec Tales of Bruss'hell",
+        "description": "Rejoignez notre communauté d'amateurs de jeux de rôle, de peintres de figurines et de conteurs.",
+        "eventsButton": "Événements à Venir",
+        "joinButton": "Rejoindre Notre Communauté"
+      },
+      "quickLinks": {
+        "events": {
+          "title": "Événements Communautaires",
+          "description": "Participez à nos soirées de jeu régulières, one-shots et campagnes pour joueurs de tous niveaux.",
+          "link": "Voir les Événements"
+        },
+        "workshops": {
+          "title": "Ateliers de Figurines",
+          "description": "Apprenez les techniques de peinture et créez des terrains avec nos artistes et passionnés expérimentés.",
+          "link": "Rejoindre un Atelier"
+        },
+        "storytelling": {
+          "title": "Séances de Narration",
+          "description": "Participez à nos événements axés sur la narration et améliorez vos compétences en storytelling.",
+          "link": "En Savoir Plus"
+        }
+      },
+      "events": {
+        "title": "Événements à Venir",
+        "description": "Rejoignez-nous pour nos prochaines aventures, ateliers et réunions communautaires.",
+        "link": "Voir tous les Événements"
+      },
+      "testimonials": {
+        "title": "Ce que disent nos Membres"
+      },
+      "community": {
+        "title": "Découvrez Notre Communauté",
+        "button": "Voir la Galerie"
+      },
+      "blog": {
+        "title": "Derniers articles de notre Blog",
+        "description": "Conseils, histoires et mises à jour de notre communauté.",
+        "button": "Voir tous les articles",
+        "readMore": "Lire plus"
+      },
+      "cta": {
+        "title": "Rejoignez Notre Communauté",
+        "description": "Que vous soyez un joueur chevronné ou que vous débutiez tout juste, il y a une place pour vous dans notre communauté. Rejoignez-nous pour des aventures, de la créativité et des amitiés.",
+        "buttonMember": "Devenez Membre",
+        "buttonContact": "Contactez Nous"
+      }
+    }
+}
+  

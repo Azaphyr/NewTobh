@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 20% 15%; /* Slate Blue text */
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 15%;
+    --primary: 5 65% 37%; /* Brick Red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 165 25% 27%; /* Deep Teal */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 33 68% 41%; /* Golden Amber */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 5 65% 37%; /* Brick Red */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 210 20% 15%; /* Slate Blue */
+    --foreground: 0 0% 100%;
+    --card: 210 20% 15%;
+    --card-foreground: 0 0% 100%;
+    --popover: 210 20% 15%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 5 65% 37%; /* Brick Red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 165 25% 27%; /* Deep Teal */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 25% 25%;
+    --muted-foreground: 217 10% 64%;
+    --accent: 33 68% 41%; /* Golden Amber */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 25% 25%;
+    --input: 210 25% 25%;
+    --ring: 5 65% 37%; /* Brick Red */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom font variables */
+  :root {
+    --font-sans: var(
+      --font-sans,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif
+    );
+    --font-serif: var(--font-serif, Georgia, Cambria, "Times New Roman", Times, serif);
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+}
+
+@layer utilities {
+  .animate-bounce-slow {
+    animation: bounce 3s infinite;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 1.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
