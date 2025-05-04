@@ -5,8 +5,10 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Check, X, Shield, Users, Gift, CalendarDays } from "lucide-react"
+import { useTranslation } from "@/lib/i18n/client"
 
 export default function MembershipPage() {
+  const { t, locale } = useTranslation();
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -21,21 +23,8 @@ export default function MembershipPage() {
           priority
         />
         <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Join Our Community</h1>
-          <p className="text-lg md:text-xl max-w-2xl">Become a member and unlock exclusive benefits.</p>
-        </div>
-      </section>
-
-      {/* Breadcrumbs */}
-      <section className="border-b py-2">
-        <div className="container">
-          <div className="flex text-sm text-muted-foreground">
-            <Link href="/" className="hover:text-brick-red">
-              Home
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-foreground">Membership</span>
-          </div>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("membership.title")}</h1>
+          <p className="text-lg md:text-xl max-w-2xl">{t("membership.description")}</p>
         </div>
       </section>
 
@@ -43,10 +32,9 @@ export default function MembershipPage() {
       <section className="py-16">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold mb-4">Why Become a Member?</h2>
+            <h2 className="font-serif text-3xl font-bold mb-4">{t("membership.titleWhyBecomeMember")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Joining Tales of Bruss'hell gives you access to exclusive benefits while supporting our mission to create
-              an inclusive tabletop gaming community.
+              {t("membership.descriptionWhyBecomeMember")}
             </p>
           </div>
 
@@ -55,12 +43,12 @@ export default function MembershipPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2">
                   <CalendarDays className="h-5 w-5 text-deep-teal" />
-                  Priority Event Access
+                  {t("membership.titlePriorityEventAccess")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Get early registration for popular events and workshops before they open to the general public.
+                  {t("membership.descriptionPriorityEventAccess")}
                 </p>
               </CardContent>
             </Card>
@@ -69,12 +57,12 @@ export default function MembershipPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2">
                   <Gift className="h-5 w-5 text-deep-teal" />
-                  Exclusive Discounts
+                  {t("membership.titleExclusiveDiscounts")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Enjoy reduced fees for workshops and special events, plus discounts with our partner game stores.
+                  {t("membership.descriptionExclusiveDiscounts")}
                 </p>
               </CardContent>
             </Card>
@@ -83,12 +71,12 @@ export default function MembershipPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-deep-teal" />
-                  Community Resources
+                  {t("membership.titleCommunityResources")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Access our lending library of rulebooks, miniatures, and terrain for your home games.
+                  {t("membership.descriptionCommunityResources")}
                 </p>
               </CardContent>
             </Card>
@@ -97,13 +85,12 @@ export default function MembershipPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-deep-teal" />
-                  Support Our Mission
+                  {t("membership.titleSupportOurMission")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Your membership fees directly support our community initiatives and help us create more inclusive
-                  gaming spaces.
+                  {t("membership.descriptionSupportOurMission")}
                 </p>
               </CardContent>
             </Card>
@@ -115,9 +102,9 @@ export default function MembershipPage() {
       <section className="py-16 bg-stone-100">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold mb-4">Membership Options</h2>
+            <h2 className="font-serif text-3xl font-bold mb-4">{t("membership.titleMembershipOptions")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Choose the membership tier that best fits your needs and level of involvement.
+              {t("membership.descriptionMembershipOptions")}
             </p>
           </div>
 
@@ -125,38 +112,38 @@ export default function MembershipPage() {
             {/* Basic Tier */}
             <Card className="border-2 border-deep-teal/20 flex flex-col">
               <CardHeader className="text-center pb-2">
-                <CardTitle className="font-serif text-2xl">Basic Membership</CardTitle>
+                <CardTitle className="font-serif text-2xl">{t("membership.titleBasicMembership")}</CardTitle>
                 <p className="text-3xl font-bold mt-2">
-                  €25<span className="text-sm font-normal text-muted-foreground">/year</span>
+                  €25<span className="text-sm font-normal text-muted-foreground">{t("membership.year")}</span>
                 </p>
               </CardHeader>
               <CardContent className="flex-1">
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Priority registration for events</span>
+                    <span>{t("membership.descriptionPriorityRegistration")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Member-only Discord channel access</span>
+                    <span>{t("membership.descriptionMemberOnlyDiscord")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Voting rights at annual general meeting</span>
+                    <span>{t("membership.descriptionVotingRights")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-muted-foreground">Discounts on workshops and events</span>
+                    <span className="text-muted-foreground">{t("membership.descriptionDiscounts")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-muted-foreground">Access to lending library</span>
+                    <span className="text-muted-foreground">{t("membership.descriptionLendingLibrary")}</span>
                   </li>
                 </ul>
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full bg-brick-red hover:bg-brick-red/90">
-                  <Link href="/membership/join?tier=basic">Join Now</Link>
+                  <Link href="/membership/join?tier=basic">{t("membership.buttonJoinNow")}</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -164,41 +151,41 @@ export default function MembershipPage() {
             {/* Standard Tier */}
             <Card className="border-2 border-brick-red flex flex-col relative">
               <div className="absolute top-0 inset-x-0 bg-brick-red text-white py-1 text-center text-sm font-medium rounded-t-lg">
-                Most Popular
+                {t("membership.titleMostPopular")}
               </div>
               <CardHeader className="text-center pb-2 pt-8">
-                <CardTitle className="font-serif text-2xl">Standard Membership</CardTitle>
+                <CardTitle className="font-serif text-2xl">{t("membership.titleStandardMembership")}</CardTitle>
                 <p className="text-3xl font-bold mt-2">
-                  €50<span className="text-sm font-normal text-muted-foreground">/year</span>
+                  €50<span className="text-sm font-normal text-muted-foreground">{t("membership.year")}</span>
                 </p>
               </CardHeader>
               <CardContent className="flex-1">
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Priority registration for events</span>
+                    <span>{t("membership.descriptionPriorityRegistration")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Member-only Discord channel access</span>
+                    <span>{t("membership.descriptionMemberOnlyDiscord")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Voting rights at annual general meeting</span>
+                    <span>{t("membership.descriptionVotingRights")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>10% discount on workshops and events</span>
+                    <span>10% {t("membership.descriptionDiscounts")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Access to lending library</span>
+                    <span>{t("membership.descriptionLendingLibrary")}</span>
                   </li>
                 </ul>
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full bg-brick-red hover:bg-brick-red/90">
-                  <Link href="/membership/join?tier=standard">Join Now</Link>
+                  <Link href="/membership/join?tier=standard">{t("membership.buttonJoinNow")}</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -206,57 +193,57 @@ export default function MembershipPage() {
             {/* Premium Tier */}
             <Card className="border-2 border-golden-amber flex flex-col">
               <CardHeader className="text-center pb-2">
-                <CardTitle className="font-serif text-2xl">Premium Membership</CardTitle>
+                <CardTitle className="font-serif text-2xl">{t("membership.titlePremiumMembership")}</CardTitle>
                 <p className="text-3xl font-bold mt-2">
-                  €100<span className="text-sm font-normal text-muted-foreground">/year</span>
+                  €100<span className="text-sm font-normal text-muted-foreground">{t("membership.year")}</span>
                 </p>
               </CardHeader>
               <CardContent className="flex-1">
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Priority registration for events</span>
+                    <span>{t("membership.descriptionPriorityRegistration")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Member-only Discord channel access</span>
+                    <span>{t("membership.descriptionMemberOnlyDiscord")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Voting rights at annual general meeting</span>
+                    <span>{t("membership.descriptionVotingRights")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>25% discount on workshops and events</span>
+                    <span>25% {t("membership.descriptionDiscounts")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Access to lending library</span>
+                    <span>{t("membership.descriptionLendingLibrary")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Exclusive premium member events</span>
+                    <span>{t("membership.descriptionExclusiveEvents")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Annual gift package with Tales of Bruss'hell merchandise</span>
+                    <span>{t("membership.descriptionAnnualGiftPackage")}</span>
                   </li>
                 </ul>
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full bg-golden-amber hover:bg-golden-amber/90 text-white">
-                  <Link href="/membership/join?tier=premium">Join Now</Link>
+                  <Link href="/membership/join?tier=premium">{t("membership.buttonJoinNow")}</Link>
                 </Button>
               </CardFooter>
             </Card>
           </div>
 
           <div className="mt-8 text-center text-sm text-muted-foreground">
-            <p>All memberships are valid for one year from the date of registration.</p>
+            <p>{t("membership.membershipValidation")}</p>
             <p className="mt-2">
-              Need financial assistance?{" "}
+              {t("membership.membershipAssistance")}{" "}
               <Link href="/membership/assistance" className="text-brick-red hover:underline">
-                Learn about our accessibility program
+                {t("membership.membershipAssistanceLink")}
               </Link>
               .
             </p>
@@ -268,10 +255,9 @@ export default function MembershipPage() {
       <section className="py-16">
         <div className="container max-w-3xl">
           <div className="text-center mb-8">
-            <h2 className="font-serif text-3xl font-bold mb-4">Become a Member</h2>
+            <h2 className="font-serif text-3xl font-bold mb-4">{t("membership.membershipForm.title")}</h2>
             <p className="text-muted-foreground">
-              Fill out the form below to join our community. You'll receive a confirmation email with payment
-              instructions.
+              {t("membership.membershipForm.description")}
             </p>
           </div>
 
@@ -279,13 +265,13 @@ export default function MembershipPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label htmlFor="firstName" className="text-sm font-medium">
-                  First Name <span className="text-red-500">*</span>
+                  {t("membership.membershipForm.firstName")} <span className="text-red-500">*</span>
                 </label>
                 <input id="firstName" type="text" className="w-full px-3 py-2 border rounded-md" required />
               </div>
               <div className="space-y-2">
                 <label htmlFor="lastName" className="text-sm font-medium">
-                  Last Name <span className="text-red-500">*</span>
+                  {t("membership.membershipForm.lastName")} <span className="text-red-500">*</span>
                 </label>
                 <input id="lastName" type="text" className="w-full px-3 py-2 border rounded-md" required />
               </div>
@@ -293,82 +279,82 @@ export default function MembershipPage() {
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                Email Address <span className="text-red-500">*</span>
+                {t("membership.membershipForm.email")} <span className="text-red-500">*</span>
               </label>
               <input id="email" type="email" className="w-full px-3 py-2 border rounded-md" required />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="phone" className="text-sm font-medium">
-                Phone Number
+                {t("membership.membershipForm.phone")}
               </label>
               <input id="phone" type="tel" className="w-full px-3 py-2 border rounded-md" />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="membershipType" className="text-sm font-medium">
-                Membership Type <span className="text-red-500">*</span>
+                {t("membership.membershipForm.membershipType")} <span className="text-red-500">*</span>
               </label>
               <select id="membershipType" className="w-full px-3 py-2 border rounded-md" required>
-                <option value="">Select a membership tier</option>
-                <option value="basic">Basic Membership (€25/year)</option>
-                <option value="standard">Standard Membership (€50/year)</option>
-                <option value="premium">Premium Membership (€100/year)</option>
+                <option value="">{t("membership.membershipForm.membershipTypeLabel")}</option>
+                <option value="basic">{t("membership.membershipForm.membershipTypeBasic")}</option>
+                <option value="standard">{t("membership.membershipForm.membershipTypeStandard")}</option>
+                <option value="premium">{t("membership.membershipForm.membershipTypePremium")}</option>
               </select>
             </div>
 
             <div className="space-y-2">
               <label htmlFor="experience" className="text-sm font-medium">
-                Your Experience with Tabletop RPGs
+                {t("membership.membershipForm.experience")}
               </label>
               <select id="experience" className="w-full px-3 py-2 border rounded-md">
-                <option value="">Select your experience level</option>
-                <option value="new">New to tabletop RPGs</option>
-                <option value="beginner">Beginner (0-1 year)</option>
-                <option value="intermediate">Intermediate (1-3 years)</option>
-                <option value="experienced">Experienced (3+ years)</option>
+                <option value="">{t("membership.membershipForm.experienceLabel")}</option>
+                <option value="new">{t("membership.membershipForm.experienceNew")}</option>
+                <option value="beginner">{t("membership.membershipForm.experienceBeginner")}</option>
+                <option value="intermediate">{t("membership.membershipForm.experienceIntermediate")}</option>
+                <option value="experienced">{t("membership.membershipForm.experienceExperienced")}</option>
               </select>
             </div>
 
             <div className="space-y-2">
               <label htmlFor="interests" className="text-sm font-medium">
-                Areas of Interest (Select all that apply)
+                {t("membership.membershipForm.interests")}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
                 <div className="flex items-center">
                   <input type="checkbox" id="playing" className="mr-2" />
                   <label htmlFor="playing" className="text-sm">
-                    Playing RPGs
+                    {t("membership.membershipForm.interestsPlaying")}
                   </label>
                 </div>
                 <div className="flex items-center">
                   <input type="checkbox" id="gm" className="mr-2" />
                   <label htmlFor="gm" className="text-sm">
-                    Game Mastering
+                    {t("membership.membershipForm.interestsGm")}
                   </label>
                 </div>
                 <div className="flex items-center">
                   <input type="checkbox" id="painting" className="mr-2" />
                   <label htmlFor="painting" className="text-sm">
-                    Miniature Painting
+                    {t("membership.membershipForm.interestsPainting")}
                   </label>
                 </div>
                 <div className="flex items-center">
                   <input type="checkbox" id="terrain" className="mr-2" />
                   <label htmlFor="terrain" className="text-sm">
-                    Terrain Crafting
+                    {t("membership.membershipForm.interestsTerrain")}
                   </label>
                 </div>
                 <div className="flex items-center">
                   <input type="checkbox" id="writing" className="mr-2" />
                   <label htmlFor="writing" className="text-sm">
-                    Storytelling/Writing
+                    {t("membership.membershipForm.interestsWriting")}
                   </label>
                 </div>
                 <div className="flex items-center">
                   <input type="checkbox" id="social" className="mr-2" />
                   <label htmlFor="social" className="text-sm">
-                    Social Events
+                    {t("membership.membershipForm.interestsSocial")}
                   </label>
                 </div>
               </div>
@@ -376,7 +362,7 @@ export default function MembershipPage() {
 
             <div className="space-y-2">
               <label htmlFor="comments" className="text-sm font-medium">
-                Additional Comments or Questions
+                {t("membership.membershipForm.comments")}
               </label>
               <textarea id="comments" rows={4} className="w-full px-3 py-2 border rounded-md"></textarea>
             </div>
@@ -384,20 +370,20 @@ export default function MembershipPage() {
             <div className="flex items-start">
               <input type="checkbox" id="terms" className="mt-1 mr-2" required />
               <label htmlFor="terms" className="text-sm">
-                I agree to the{" "}
+                {t("membership.membershipForm.terms")}{" "}
                 <Link href="/terms" className="text-brick-red hover:underline">
-                  Terms and Conditions
+                  {t("membership.membershipForm.termsLink")}
                 </Link>{" "}
-                and{" "}
+                {t("membership.membershipForm.termsLink2")}{" "}
                 <Link href="/privacy" className="text-brick-red hover:underline">
-                  Privacy Policy
+                  {t("membership.membershipForm.termsLink3")}
                 </Link>{" "}
                 <span className="text-red-500">*</span>
               </label>
             </div>
 
             <Button type="submit" className="w-full bg-brick-red hover:bg-brick-red/90">
-              Submit Application
+              {t("membership.membershipForm.buttonSubmit")}
             </Button>
           </form>
         </div>
@@ -406,7 +392,7 @@ export default function MembershipPage() {
       {/* Testimonials */}
       <section className="py-16 bg-dark-mahogany text-white">
         <div className="container">
-          <h2 className="font-serif text-3xl font-bold mb-12 text-center">What Our Members Say</h2>
+          <h2 className="font-serif text-3xl font-bold mb-12 text-center">{t("membership.testimonialsTitle")}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-dark-mahogany/50 p-6 rounded-lg">

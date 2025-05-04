@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, DiscIcon as Discord } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-
+import { useTranslation } from "@/lib/i18n/client"
 export default function ContactPage() {
   const searchParams = useSearchParams()
   const subjectParam = searchParams.get("subject")
@@ -25,6 +25,7 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const { t } = useTranslation()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -66,21 +67,8 @@ export default function ContactPage() {
           priority
         />
         <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-          <p className="text-lg md:text-xl max-w-2xl">Get in touch with our team. We'd love to hear from you!</p>
-        </div>
-      </section>
-
-      {/* Breadcrumbs */}
-      <section className="border-b py-2">
-        <div className="container">
-          <div className="flex text-sm text-muted-foreground">
-            <Link href="/" className="hover:text-brick-red">
-              Home
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-foreground">Contact</span>
-          </div>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("contact.title")}</h1>
+          <p className="text-lg md:text-xl max-w-2xl">{t("contact.description")}</p>
         </div>
       </section>
 
@@ -90,30 +78,30 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <h2 className="font-serif text-2xl font-bold mb-6">Send Us a Message</h2>
+              <h2 className="font-serif text-2xl font-bold mb-6">{t("contact.form.title")}</h2>
 
               {isSubmitted ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-                  <h3 className="text-xl font-bold text-green-800 mb-2">Thank You!</h3>
+                  <h3 className="text-xl font-bold text-green-800 mb-2">{t("contact.form.isSubmittedThanks")}</h3>
                   <p className="text-green-700 mb-4">
-                    Your message has been sent successfully. We'll get back to you as soon as possible.
+                    {t("contact.form.isSubmittedMessage")}
                   </p>
                   <Button onClick={() => setIsSubmitted(false)} className="bg-green-600 hover:bg-green-700">
-                    Send Another Message
+                    {t("contact.form.isSubmittedButton")}
                   </Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-medium">
-                      Your Name <span className="text-red-500">*</span>
+                      {t("contact.form.labelName")} <span className="text-red-500">*</span>
                     </label>
                     <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-medium">
-                      Email Address <span className="text-red-500">*</span>
+                      {t("contact.form.labelEmail")} <span className="text-red-500">*</span>
                     </label>
                     <Input
                       id="email"
@@ -127,26 +115,26 @@ export default function ContactPage() {
 
                   <div className="space-y-2">
                     <label htmlFor="subject" className="text-sm font-medium">
-                      Subject <span className="text-red-500">*</span>
+                      {t("contact.form.labelSubject")} <span className="text-red-500">*</span>
                     </label>
                     <Select value={formData.subject} onValueChange={handleSelectChange} required>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a subject" />
+                        <SelectValue placeholder={t("contact.form.selectGeneral")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="general">General Inquiry</SelectItem>
-                        <SelectItem value="membership">Membership Question</SelectItem>
-                        <SelectItem value="events">Events Information</SelectItem>
-                        <SelectItem value="volunteer">Volunteer Opportunities</SelectItem>
-                        <SelectItem value="partnership">Partnership Proposal</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="general">{t("contact.form.selectGeneral")}</SelectItem>
+                        <SelectItem value="membership">{t("contact.form.selectMembership")}</SelectItem>
+                        <SelectItem value="events">{t("contact.form.selectEvents")}</SelectItem>
+                        <SelectItem value="volunteer">{t("contact.form.selectVolunteer")}</SelectItem>
+                        <SelectItem value="partnership">{t("contact.form.selectPartnership")}</SelectItem>
+                        <SelectItem value="other">{t("contact.form.selectOther")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium">
-                      Message <span className="text-red-500">*</span>
+                      {t("contact.form.labelMessage")} <span className="text-red-500">*</span>
                     </label>
                     <Textarea
                       id="message"
@@ -159,7 +147,7 @@ export default function ContactPage() {
                   </div>
 
                   <Button type="submit" className="w-full bg-brick-red hover:bg-brick-red/90" disabled={isSubmitting}>
-                    {isSubmitting ? "Sending..." : "Send Message"}
+                    {isSubmitting ? t("contact.form.buttonIsSubmitting") : t("contact.form.buttonSubmit")}
                   </Button>
                 </form>
               )}
@@ -176,7 +164,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Email</h3>
-                    <p className="text-muted-foreground mb-1">For general inquiries:</p>
+                    <p className="text-muted-foreground mb-1">{t("contact.contactInfo.labelGeneralInquiries")}</p>
                     <a href="mailto:info@talesofbrusshell.org" className="text-brick-red hover:underline">
                       info@talesofbrusshell.org
                     </a>
@@ -189,7 +177,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Phone</h3>
-                    <p className="text-muted-foreground mb-1">Available Monday-Friday, 10am-6pm:</p>
+                    <p className="text-muted-foreground mb-1">{t("contact.contactInfo.labelAvailability")}</p>
                     <a href="tel:+32123456789" className="text-brick-red hover:underline">
                       +32 123 456 789
                     </a>
@@ -202,7 +190,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Location</h3>
-                    <p className="text-muted-foreground mb-1">Our events are typically held at:</p>
+                    <p className="text-muted-foreground mb-1">{t("contact.contactInfo.labelLocation")}</p>
                     <address className="not-italic">
                       Community Center
                       <br />
@@ -232,9 +220,9 @@ export default function ContactPage() {
       {/* Connect with us */}
       <section className="py-16 bg-stone-100">
         <div className="container text-center">
-          <h2 className="font-serif text-3xl font-bold mb-6">Connect With Us</h2>
+          <h2 className="font-serif text-3xl font-bold mb-6">{t("contact.titleConnectWithUs")}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-            Follow us on social media to stay updated on events, community news, and more.
+            {t("contact.descriptionConnectWithUs")}
           </p>
 
           <div className="flex justify-center gap-6">
@@ -277,7 +265,7 @@ export default function ContactPage() {
           </div>
 
           <div className="mt-8">
-            <p className="font-medium mb-2">Join our Discord community:</p>
+            <p className="font-medium mb-2">{t("contact.joinDiscord")}</p>
             <Button asChild className="bg-[#5865F2] hover:bg-[#4752C4]">
               <a
                 href="https://discord.gg/example"
@@ -286,7 +274,7 @@ export default function ContactPage() {
                 className="flex items-center gap-2"
               >
                 <Discord className="h-5 w-5" />
-                Join Discord Server
+                {t("contact.joinDiscord2")}
               </a>
             </Button>
           </div>
@@ -296,17 +284,17 @@ export default function ContactPage() {
       {/* Newsletter */}
       <section className="py-16 bg-dark-mahogany text-white">
         <div className="container text-center">
-          <h2 className="font-serif text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-          <p className="max-w-2xl mx-auto mb-8">Stay updated on upcoming events, workshops, and community news.</p>
+          <h2 className="font-serif text-3xl font-bold mb-4">{t("contact.newsletterTitle.title")}</h2>
+          <p className="max-w-2xl mx-auto mb-8">{t("contact.newsletterTitle.description")}</p>
           <div className="max-w-md mx-auto">
             <form className="flex gap-2">
-              <Input type="email" placeholder="Your email address" className="bg-white" aria-label="Email address" />
+              <Input type="email" placeholder={t("contact.newsletterTitle.labelEmail")} className="bg-white" aria-label="Email address" />
               <Button type="submit" className="bg-golden-amber hover:bg-golden-amber/90 text-white">
-                Subscribe
+                {t("contact.newsletterTitle.button")}
               </Button>
             </form>
             <p className="text-xs mt-2 text-stone-300">
-              We respect your privacy and will never share your information.
+              {t("contact.newsletterTitle.privacyPolicy")}
             </p>
           </div>
         </div>
