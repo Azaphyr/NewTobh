@@ -1160,5 +1160,71 @@
     "buttonLoading": "Connexion en cours...",
     "errorInvalidCredentials": "Email ou mot de passe invalide",
     "errorGeneric": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "terms": {
+    "title": "Conditions Générales",
+    "description": "Les règles et directives pour l'utilisation de nos services.",
+    "lastUpdated": "Dernière mise à jour : 29 avril 2024",
+    "breadcrumbs": "Conditions Générales",
+    "intro1": "Veuillez lire attentivement ces Conditions Générales (\"Conditions\") avant d'utiliser le site web et les services exploités par Tales of Bruss'hell (\"nous\", \"notre\").",
+    "intro2": "Votre accès et utilisation de nos services sont conditionnés par votre acceptation et votre respect de ces Conditions. Ces Conditions s'appliquent à tous les visiteurs, utilisateurs et autres personnes qui accèdent ou utilisent nos services.",
+    "intro3": "En accédant ou en utilisant nos services, vous acceptez d'être lié par ces Conditions. Si vous n'êtes pas d'accord avec une partie des conditions, vous ne pouvez pas accéder à nos services.",
+    "membership": "Adhésion",
+    "membershipIntro": "L'adhésion à Tales of Bruss'hell est soumise aux conditions suivantes :",
+    "membershipList": [
+      "Vous devez fournir des informations exactes, actuelles et complètes lors du processus d'inscription.",
+      "Les frais d'adhésion ne sont pas remboursables, sauf dans des circonstances exceptionnelles à la discrétion de Tales of Bruss'hell.",
+      "L'adhésion est valable un an à compter de la date d'inscription et doit être renouvelée annuellement.",
+      "Les avantages de l'adhésion ne sont pas transférables et sont réservés à l'usage exclusif du membre inscrit.",
+      "Tales of Bruss'hell se réserve le droit de révoquer l'adhésion en cas de violation de notre code de conduite ou de ces Conditions."
+    ],
+    "events": "Événements et Activités",
+    "eventsIntro": "La participation aux événements et activités de Tales of Bruss'hell est soumise aux conditions suivantes :",
+    "eventsList": [
+      "L'inscription aux événements peut nécessiter des frais supplémentaires, qui seront clairement indiqués.",
+      "Les annulations d'événements par les participants peuvent être soumises à notre politique de remboursement, qui varie selon l'événement.",
+      "Tales of Bruss'hell se réserve le droit d'annuler ou de reporter les événements en raison de circonstances imprévues.",
+      "Les participants doivent respecter notre code de conduite pendant tous les événements et activités.",
+      "La photographie et l'enregistrement lors des événements sont autorisés sauf indication contraire, mais ne doivent pas perturber l'événement ou porter atteinte à la vie privée des autres."
+    ],
+    "codeOfConduct": "Code de Conduite",
+    "codeOfConductIntro": "Tous les membres et participants aux activités de Tales of Bruss'hell sont tenus de :",
+    "codeOfConductList": [
+      "Traiter les autres avec respect, gentillesse et considération.",
+      "S'abstenir de tout comportement discriminatoire, harcelant ou offensant.",
+      "Respecter la vie privée et les limites personnelles des autres.",
+      "Suivre les règles et directives spécifiques pour chaque événement ou activité.",
+      "Utiliser les ressources et installations de Tales of Bruss'hell de manière responsable."
+    ],
+    "codeOfConductViolation": "La violation de notre code de conduite peut entraîner l'exclusion des événements, la suspension ou la résiliation de l'adhésion sans remboursement.",
+    "intellectualProperty": "Propriété Intellectuelle",
+    "intellectualProperty1": "Le contenu de notre site web, y compris les textes, graphiques, logos, images et logiciels, est la propriété de Tales of Bruss'hell ou de ses fournisseurs de contenu et est protégé par les lois sur le droit d'auteur et la propriété intellectuelle.",
+    "intellectualProperty2": "Vous ne pouvez pas reproduire, distribuer, modifier, créer des œuvres dérivées, afficher publiquement, exécuter publiquement, republier, télécharger, stocker ou transmettre tout matériel de notre site web sans notre consentement écrit préalable.",
+    "userContent": "Contenu Généré par l'Utilisateur",
+    "userContent1": "En publiant, téléchargeant ou rendant disponible tout contenu sur nos plateformes ou lors de nos événements, vous accordez à Tales of Bruss'hell une licence non exclusive, gratuite, mondiale et perpétuelle pour utiliser, modifier, afficher publiquement, reproduire et distribuer ce contenu dans le cadre de nos services.",
+    "userContent2": "Vous déclarez et garantissez que vous possédez ou contrôlez tous les droits sur le contenu que vous fournissez, et que ce contenu ne viole pas ces Conditions ou toute loi applicable.",
+    "liability": "Limitation de Responsabilité",
+    "liability1": "En aucun cas Tales of Bruss'hell, ses administrateurs, employés, partenaires, agents, fournisseurs ou affiliés ne seront responsables des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs, y compris, sans limitation, la perte de profits, de données, d'utilisation, de clientèle ou d'autres pertes intangibles, résultant de :",
+    "liabilityList": [
+      "Votre accès ou utilisation ou incapacité d'accéder ou d'utiliser nos services ;",
+      "Tout comportement ou contenu d'un tiers sur nos services ;",
+      "Tout contenu obtenu de nos services ; et",
+      "L'accès, l'utilisation ou la modification non autorisés de vos transmissions ou contenus."
+    ],
+    "governingLaw": "Loi Applicable",
+    "governingLaw1": "Ces Conditions seront régies et interprétées conformément aux lois de la Belgique, sans tenir compte de ses dispositions en matière de conflit de lois.",
+    "governingLaw2": "Notre incapacité à faire respecter un droit ou une disposition de ces Conditions ne sera pas considérée comme une renonciation à ces droits. Si une disposition de ces Conditions est jugée invalide ou inapplicable par un tribunal, les dispositions restantes de ces Conditions resteront en vigueur.",
+    "changes": "Modifications des Conditions",
+    "changes1": "Nous nous réservons le droit, à notre seule discrétion, de modifier ou de remplacer ces Conditions à tout moment. Nous informerons de tout changement en publiant les nouvelles Conditions sur cette page et en mettant à jour la date de 'Dernière mise à jour'.",
+    "changes2": "Votre utilisation continue de nos services après de tels changements constitue votre acceptation des nouvelles Conditions.",
+    "contact": "Nous Contacter",
+    "contactInfo": {
+      "org": "Tales of Bruss'hell",
+      "address": "123 Rue Principale",
+      "city": "Bruxelles, Belgique",
+      "email": "legal@talesofbrusshell.be",
+      "phone": "+32 123 456 789",
+      "contactText": "Si vous avez des questions concernant ces Conditions, veuillez nous contacter à :"
+    }
   }
 }

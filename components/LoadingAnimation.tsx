@@ -198,7 +198,7 @@ export default function LoadingAnimation() {
         }}
       >
         <Image
-          src="/Color horizSmall.png"
+          src="/fullLogoRed.png"
           alt="Tales of Bruss' Hell"
           width={220}
           height={90}

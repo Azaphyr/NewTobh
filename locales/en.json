@@ -1129,5 +1129,71 @@
       "technology": "Implementation of new technologies and standards as they become available",
       "review": "This statement was created on April 29, 2025, and will be reviewed and updated annually or when significant changes are made to the website or our services."
     }
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "description": "The rules and guidelines for using our services.",
+    "lastUpdated": "Last updated: April 29, 2024",
+    "breadcrumbs": "Terms and Conditions",
+    "intro1": "Please read these Terms and Conditions (\"Terms\", \"Terms and Conditions\") carefully before using the website and services operated by Tales of Bruss'hell (\"us\", \"we\", \"our\").",
+    "intro2": "Your access to and use of our services is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use our services.",
+    "intro3": "By accessing or using our services, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access our services.",
+    "membership": "Membership",
+    "membershipIntro": "Membership in Tales of Bruss'hell is subject to the following conditions:",
+    "membershipList": [
+      "You must provide accurate, current, and complete information during the registration process.",
+      "Membership fees are non-refundable except in exceptional circumstances at the discretion of Tales of Bruss'hell.",
+      "Membership is valid for one year from the date of registration and must be renewed annually.",
+      "Membership benefits are non-transferable and for the sole use of the registered member.",
+      "Tales of Bruss'hell reserves the right to revoke membership for violation of our code of conduct or these Terms."
+    ],
+    "events": "Events and Activities",
+    "eventsIntro": "Participation in Tales of Bruss'hell events and activities is subject to the following conditions:",
+    "eventsList": [
+      "Registration for events may require additional fees, which will be clearly indicated.",
+      "Event cancellations by participants may be subject to our refund policy, which varies by event.",
+      "Tales of Bruss'hell reserves the right to cancel or reschedule events due to unforeseen circumstances.",
+      "Participants must adhere to our code of conduct during all events and activities.",
+      "Photography and recording at events are permitted unless otherwise specified, but should not disrupt the event or infringe on others' privacy."
+    ],
+    "codeOfConduct": "Code of Conduct",
+    "codeOfConductIntro": "All members and participants in Tales of Bruss'hell activities are expected to:",
+    "codeOfConductList": [
+      "Treat others with respect, kindness, and consideration.",
+      "Refrain from discriminatory, harassing, or offensive behavior.",
+      "Respect the privacy and personal boundaries of others.",
+      "Follow the specific rules and guidelines for each event or activity.",
+      "Use Tales of Bruss'hell resources and facilities responsibly."
+    ],
+    "codeOfConductViolation": "Violation of our code of conduct may result in removal from events, suspension, or termination of membership without refund.",
+    "intellectualProperty": "Intellectual Property",
+    "intellectualProperty1": "The content on our website, including text, graphics, logos, images, and software, is the property of Tales of Bruss'hell or its content suppliers and is protected by copyright and other intellectual property laws.",
+    "intellectualProperty2": "You may not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material on our website without our prior written consent.",
+    "userContent": "User-Generated Content",
+    "userContent1": "By posting, uploading, or otherwise making available any content on our platforms or during our events, you grant Tales of Bruss'hell a non-exclusive, royalty-free, worldwide, perpetual license to use, modify, publicly display, reproduce, and distribute such content in connection with our services.",
+    "userContent2": "You represent and warrant that you own or control all rights to the content you provide, and that such content does not violate these Terms or any applicable law.",
+    "liability": "Limitation of Liability",
+    "liability1": "In no event shall Tales of Bruss'hell, its directors, employees, partners, agents, suppliers, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:",
+    "liabilityList": [
+      "Your access to or use of or inability to access or use our services;",
+      "Any conduct or content of any third party on our services;",
+      "Any content obtained from our services; and",
+      "Unauthorized access, use, or alteration of your transmissions or content."
+    ],
+    "governingLaw": "Governing Law",
+    "governingLaw1": "These Terms shall be governed and construed in accordance with the laws of Belgium, without regard to its conflict of law provisions.",
+    "governingLaw2": "Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect.",
+    "changes": "Changes to Terms",
+    "changes1": "We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide notice of any changes by posting the new Terms on this page and updating the 'Last updated' date.",
+    "changes2": "Your continued use of our services after any such changes constitutes your acceptance of the new Terms.",
+    "contact": "Contact Us",
+    "contactInfo": {
+      "org": "Tales of Bruss'hell",
+      "address": "123 Main Street",
+      "city": "Brussels, Belgium",
+      "email": "legal@talesofbrusshell.be",
+      "phone": "+32 123 456 789",
+      "contactText": "If you have any questions about these Terms, please contact us at:"
+    }
   }
 }

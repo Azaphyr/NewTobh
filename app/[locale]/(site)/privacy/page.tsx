@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link"
 import Image from "next/image"
 
@@ -6,28 +8,26 @@ export default function PrivacyPolicyPage() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/90 to-purple-800/70 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-dark-mahogany/90 via-slate-900/90 to-dark-mahogany/95 z-10" />
         <Image
-          src="/placeholder.svg?height=300&width=1600"
+          src="/backDnd.jpg?height=300&width=1600"
           alt="Privacy Policy"
           width={1600}
           height={300}
-          className="w-full h-[200px] md:h-[300px] object-cover"
+          className="w-full h-[200px] md:h-[300px] object-cover opacity-40"
           priority
         />
         <div className="container relative z-20 flex flex-col items-center justify-center h-[200px] md:h-[300px] text-center text-white">
-          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">Privacy Policy</h1>
-          <p className="text-lg max-w-2xl">How we collect, use, and protect your information.</p>
+          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4 text-golden-amber drop-shadow-lg">Privacy Policy</h1>
+          <p className="text-lg max-w-2xl text-white/90">How we collect, use, and protect your information.</p>
         </div>
       </section>
 
       {/* Breadcrumbs */}
-      <section className="border-b py-2">
+      <section className="border-b border-brick-red/30 py-2 bg-dark-mahogany/80">
         <div className="container">
           <div className="flex text-sm text-muted-foreground">
-            <Link href="/" className="hover:text-purple-800">
-              Home
-            </Link>
+            <Link href="/" className="hover:text-brick-red text-golden-amber">Home</Link>
             <span className="mx-2">/</span>
             <span className="font-medium text-foreground">Privacy Policy</span>
           </div>
@@ -35,10 +35,10 @@ export default function PrivacyPolicyPage() {
       </section>
 
       {/* Content */}
-      <section className="py-12">
+      <section className="py-12 bg-stone-100 dark:bg-dark-mahogany/80">
         <div className="container max-w-4xl">
-          <div className="prose prose-stone max-w-none">
-            <p className="lead">Last updated: April 29, 2025</p>
+          <div className="prose prose-stone dark:prose-invert max-w-none">
+            <p className="lead text-brick-red font-semibold">Last updated: April 29, 2025</p>
 
             <p>
               D&D ASBL ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how
@@ -46,11 +46,11 @@ export default function PrivacyPolicyPage() {
               events.
             </p>
 
-            <h2>Information We Collect</h2>
+            <h2 className="text-brick-red">Information We Collect</h2>
 
             <p>We may collect information about you in a variety of ways, including:</p>
 
-            <h3>Personal Data</h3>
+            <h3 className="text-golden-amber">Personal Data</h3>
             <p>
               When you register for membership, sign up for events, or contact us, we may collect personally
               identifiable information, such as:
@@ -63,7 +63,7 @@ export default function PrivacyPolicyPage() {
               <li>Payment information (processed securely through third-party payment processors)</li>
             </ul>
 
-            <h3>Website Usage Data</h3>
+            <h3 className="text-golden-amber">Website Usage Data</h3>
             <p>When you visit our website, we may collect non-personal identification information, including:</p>
             <ul>
               <li>Browser type</li>
@@ -73,7 +73,7 @@ export default function PrivacyPolicyPage() {
               <li>Referring website addresses</li>
             </ul>
 
-            <h2>How We Use Your Information</h2>
+            <h2 className="text-brick-red">How We Use Your Information</h2>
 
             <p>We may use the information we collect about you for various purposes, including:</p>
 
@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
               <li>Complying with legal obligations</li>
             </ul>
 
-            <h2>Cookies and Tracking Technologies</h2>
+            <h2 className="text-brick-red">Cookies and Tracking Technologies</h2>
 
             <p>
               We use cookies and similar tracking technologies to track activity on our website and hold certain
@@ -99,7 +99,7 @@ export default function PrivacyPolicyPage() {
               if you do not accept cookies, you may not be able to use some portions of our website.
             </p>
 
-            <h2>Third-Party Services</h2>
+            <h2 className="text-brick-red">Third-Party Services</h2>
 
             <p>
               We may use third-party service providers to help us operate our website, process payments, or administer
@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
               these tasks on our behalf and are obligated not to disclose or use it for any other purpose.
             </p>
 
-            <h2>Data Security</h2>
+            <h2 className="text-brick-red">Data Security</h2>
 
             <p>
               We implement reasonable precautions and follow industry best practices to protect your personal
@@ -120,7 +120,7 @@ export default function PrivacyPolicyPage() {
               guarantee absolute security.
             </p>
 
-            <h2>Your Rights</h2>
+            <h2 className="text-brick-red">Your Rights</h2>
 
             <p>
               Under the General Data Protection Regulation (GDPR), you have certain rights regarding your personal data,
@@ -138,7 +138,7 @@ export default function PrivacyPolicyPage() {
 
             <p>To exercise any of these rights, please contact us using the information provided below.</p>
 
-            <h2>Children's Privacy</h2>
+            <h2 className="text-brick-red">Children's Privacy</h2>
 
             <p>
               Our website and services are not intended for individuals under the age of 16. We do not knowingly collect
@@ -146,7 +146,7 @@ export default function PrivacyPolicyPage() {
               provided us with personal information, please contact us.
             </p>
 
-            <h2>Changes to This Privacy Policy</h2>
+            <h2 className="text-brick-red">Changes to This Privacy Policy</h2>
 
             <p>
               We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
@@ -158,21 +158,18 @@ export default function PrivacyPolicyPage() {
               are effective when they are posted on this page.
             </p>
 
-            <h2>Contact Us</h2>
+            <h2 className="text-brick-red">Contact Us</h2>
 
-            <p>If you have any questions about this Privacy Policy, please contact us at:</p>
-
-            <address>
-              D&D ASBL
-              <br />
-              123 Main Street
-              <br />
-              Brussels, Belgium
-              <br />
-              Email: privacy@dndasbl.org
-              <br />
-              Phone: +32 123 456 789
-            </address>
+            <div className="mt-8 p-6 rounded-xl bg-white/80 dark:bg-dark-mahogany/80 border border-brick-red/30 shadow-md">
+              <p className="font-semibold text-brick-red mb-2">If you have any questions about this Privacy Policy, please contact us at:</p>
+              <address className="not-italic text-base">
+                <span className="block font-bold">D&D ASBL</span>
+                123 Main Street<br />
+                Brussels, Belgium<br />
+                <span className="block mt-2">Email: <a href="mailto:privacy@dndasbl.org" className="text-brick-red hover:underline">privacy@dndasbl.org</a></span>
+                <span className="block">Phone: <a href="tel:+32123456789" className="text-brick-red hover:underline">+32 123 456 789</a></span>
+              </address>
+            </div>
           </div>
         </div>
       </section>
