@@ -1,22 +1,28 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Dice1Icon as Dice, Facebook, Twitter, Instagram, DiscIcon as Discord, Mail, MapPin } from "lucide-react"
-import { useTranslation } from "@/lib/i18n/client"
+import Link from "next/link";
+import {
+  Dice1Icon as Dice,
+  Facebook,
+  Twitter,
+  Instagram,
+  DiscIcon as Discord,
+  Mail,
+  MapPin,
+} from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
+import Image from "next/image";
+import FooterLogoSection from "./FooterLogoSection";
 
 export default function Footer() {
-  const { t, locale } = useTranslation()
+  const { t, locale } = useTranslation();
 
   return (
     <footer className="bg-slate-blue text-stone-200">
       <div className="container py-12 md:py-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Dice className="h-8 w-8 text-golden-amber" />
-              <span className="font-serif text-2xl font-bold tracking-tight text-white">Tales of Bruss'hell</span>
-            </div>
-            <p className="text-sm text-stone-300">{t("footer.description")}</p>
+            <FooterLogoSection />
             <div className="flex gap-4">
               <Link href="#" className="text-stone-300 hover:text-golden-amber">
                 <Facebook className="h-5 w-5" />
@@ -38,30 +44,47 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-medium text-white">{t("footer.quickLinks")}</h3>
+            <h3 className="mb-4 text-lg font-medium text-white">
+              {t("footer.quickLinks")}
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href={`/${locale}/about`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/about`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("nav.about")}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/events`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/events`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("nav.events")}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/membership`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/membership`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("nav.membership")}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/blog`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/blog`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("nav.blog")}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/contact`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/contact`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("nav.contact")}
                 </Link>
               </li>
@@ -69,20 +92,31 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-medium text-white">{t("footer.legal")}</h3>
+            <h3 className="mb-4 text-lg font-medium text-white">
+              {t("footer.legal")}
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href={`/${locale}/privacy`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/privacy`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("footer.privacy")}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/terms`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/terms`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("footer.terms")}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/accessibility`} className="text-stone-300 hover:text-golden-amber">
+                <Link
+                  href={`/${locale}/accessibility`}
+                  className="text-stone-300 hover:text-golden-amber"
+                >
                   {t("footer.accessibility")}
                 </Link>
               </li>
@@ -90,11 +124,15 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-medium text-white">{t("footer.contact")}</h3>
+            <h3 className="mb-4 text-lg font-medium text-white">
+              {t("footer.contact")}
+            </h3>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-golden-amber" />
-                <span className="text-stone-300">info@talesofbrusshell.org</span>
+                <span className="text-stone-300">
+                  info@talesofbrusshell.be
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-golden-amber" />
@@ -106,10 +144,11 @@ export default function Footer() {
 
         <div className="mt-12 border-t border-slate-700 pt-6 text-center text-xs text-stone-400">
           <p>
-            &copy; {new Date().getFullYear()} Tales of Bruss'hell. {t("footer.rights")}
+            &copy; {new Date().getFullYear()} Tales of Bruss'hell.{" "}
+            {t("footer.rights")}
           </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

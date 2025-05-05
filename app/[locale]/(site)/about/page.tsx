@@ -236,18 +236,36 @@ export default function AboutPage() {
       {/* Call to Action */}
       <section className="py-16 bg-dark-mahogany text-white">
         <div className="container text-center">
-          <Dice className="h-16 w-16 mx-auto mb-6 text-golden-amber" />
+        <div className="mb-6 inline-block">
+              <Image
+                src="/logoIconBig.png"
+                alt="Tales of Bruss' Hell"
+                width={122}
+                height={148}
+                priority
+                className="relative z-10"
+              />
+            </div>
           <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">{t("about.titleJoinUs")}</h2>
           <p className="max-w-2xl mx-auto mb-8 text-stone-200">
             {t("about.descriptionJoinUs")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-golden-amber hover:bg-golden-amber/90 text-white font-medium">
-              <Link href="/membership">{t("about.buttonMember")}</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              <Link href="/contact">{t("about.buttonContact")}</Link>
-            </Button>
+          <Button
+                asChild
+                size="lg"
+                className="bg-brick-red text-white hover:bg-white/10 transition-transform hover:scale-105"
+              >
+                <Link href="/membership">{t("home.cta.buttonMember")}</Link>
+              </Button>
+            <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="bg-golden-amber hover:bg-golden-amber/90 text-white font-medium transition-transform hover:scale-105"
+              >
+                <Link href="/contact">{t("home.cta.buttonContact")}</Link>
+              </Button>
           </div>
         </div>
       </section>

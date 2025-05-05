@@ -15,20 +15,16 @@ export default async function RootLayout({
   const locale = isValidLocale(resolvedParams.locale) ? resolvedParams.locale : defaultLocale
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          <TranslationProvider initialLocale={locale}>
-            {children}
-          </TranslationProvider>
-          <Toaster />
-        </ThemeProvider>
-      </body>
-    </html>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
+      <TranslationProvider initialLocale={locale}>
+        {children}
+      </TranslationProvider>
+      <Toaster />
+    </ThemeProvider>
   )
 }

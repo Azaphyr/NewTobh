@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, DiscIcon as Discord } from "lucide-react"
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useTranslation } from "@/lib/i18n/client"
+import { SiDiscord } from "react-icons/si";
+
 export default function ContactPage() {
   const searchParams = useSearchParams()
   const subjectParam = searchParams.get("subject")
@@ -165,8 +167,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Email</h3>
                     <p className="text-muted-foreground mb-1">{t("contact.contactInfo.labelGeneralInquiries")}</p>
-                    <a href="mailto:info@talesofbrusshell.org" className="text-brick-red hover:underline">
-                      info@talesofbrusshell.org
+                    <a href="mailto:info@talesofbrusshell.be" className="text-brick-red hover:underline">
+                      info@talesofbrusshell.be
                     </a>
                   </div>
                 </div>
@@ -203,7 +205,7 @@ export default function ContactPage() {
 
                 <div className="flex items-start gap-4">
                   <div className="bg-deep-teal/10 p-3 rounded-full">
-                    <Discord className="h-6 w-6 text-deep-teal" />
+                  <SiDiscord className="h-6 w-6 text-deep-teal" />
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Discord</h3>

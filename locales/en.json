@@ -32,10 +32,12 @@
   },
   "home": {
     "hero": {
-      "title": "Embark on Epic Adventures in Tales of Bruss'hell",
-      "description": "Join our community of tabletop enthusiasts, miniature painters, and storytellers.",
+      "title": "Unleash Your Epic Adventures",
+      "description": "Join fellow adventurers in epic campaigns and unforgettable gaming experiences",
       "eventsButton": "Upcoming Events",
-      "joinButton": "Join Our Community"
+      "joinButton": "Join Us",
+      "quote": "The dice may be random, but the stories we create together will last forever. Every roll is a new possibility, every character a new perspective.",
+      "quoteAuthor": "Guild Master"
     },
     "quickLinks": {
       "events": {
@@ -175,6 +177,15 @@
     "statusOngoing": "Ongoing",
     "statusCompleted": "Completed",
     "statusArchived": "Archived",
+    "titleHostEvent": "Host Your Own Event",
+    "descriptionHostEvent": "Have an idea for an event? We're always looking for passionate community members to host games, workshops, or other activities.",
+    "descriptionHostEvent2": "Whether you're an experienced Game Master or just starting out, we provide support and resources to help make your event a success.",
+    "buttonHostEvent": "Propose an Event",
+    "newsletterTitle": "Stay Updated",
+    "newsletterDescription": "Subscribe to our newsletter to receive updates about upcoming events, workshops, and community news.",
+    "emailPlaceholder": "Enter your email",
+    "buttonNewsletter": "Subscribe",
+    "privacyPolicy": "By subscribing, you agree to our Privacy Policy and Terms of Service.",
     "new": {
       "title": "Create New Event",
       "basicInfo": "Basic Information",
@@ -291,6 +302,7 @@
     "titleSupportOurMission": "Support Our Mission",
     "descriptionSupportOurMission": "Your membership fees directly support our community initiatives and help us create more inclusive gaming spaces.",
     "titleMembershipOptions": "Membership Options",
+    "titleMostPopular": "Most Popular",
     "titleBasicMembership": "Basic Membership",
     "titleStandardMembership": "Standard Membership",
     "titlePremiumMembership": "Premium Membership",
@@ -349,7 +361,8 @@
       "titleCancelMembership": "Can I cancel my membership?",
       "descriptionCancelMembership": "Yes, you can cancel your membership at any time. However, please note that membership fees are non-refundable. To cancel, simply contact our membership team.",
       "titleUpgradeMembership": "Can I upgrade my membership tier?"
-    }
+    },
+    "descriptionMembershipOptions": "Choose the membership tier that best fits your needs. Each option comes with its own set of benefits."
   },
   "contact": {
     "title": "Contact Us",
@@ -376,7 +389,8 @@
       "title": "Contact Information",
       "labelGeneralInquiries": "For general inquiries:",
       "labelAvailability": "Available Monday-Friday, 10am-6pm:",
-      "labelLocation": "Our events are typically held at:"
+      "labelLocation": "Our events are typically held at:",
+      "labelDiscord": "Join us on Discord"
     },
     "titleConnectWithUs": "Connect With Us",
     "descriptionConnectWithUs": "Follow us on social media to stay updated on events, community news, and more.",
@@ -1093,7 +1107,7 @@
     "feedback": {
       "title": "Feedback and Assistance",
       "intro": "We welcome your feedback on the accessibility of our website and events. If you encounter accessibility barriers or have suggestions for improvement, please contact us at:",
-      "email": "Email: accessibility@dndasbl.org",
+      "email": "Email: info@talesofbrusshell.be",
       "phone": "Phone: +32 123 456 789",
       "response": "We try to respond to feedback within 3 business days."
     },

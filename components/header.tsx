@@ -10,7 +10,7 @@ import { Menu, Dice1Icon as Dice, Facebook, Twitter, Instagram, DiscIcon as Disc
 import { useMobile } from "@/hooks/use-mobile"
 import { LanguageSwitcher } from "./language-switcher"
 import { useTranslation } from "@/lib/i18n/client"
-
+import Image from "next/image"
 export default function Header() {
   const pathname = usePathname()
   const isMobile = useMobile() || false
@@ -54,7 +54,14 @@ export default function Header() {
     >
       <div className="container flex h-16 items-center justify-between py-4">
         <Link href={`/${locale}`} className="flex items-center gap-2">
-          <Dice className="h-8 w-8 text-brick-red" />
+        <Image
+        src="/logoIconSmall.png"
+        alt="Tales of Bruss' Hell"
+        width={61}
+        height={74}
+        priority
+        className="relative z-10"
+      />
           <span className="font-serif text-2xl font-bold tracking-tight">Tales of Bruss'hell</span>
         </Link>
 
@@ -81,11 +88,6 @@ export default function Header() {
                     {route.label}
                   </Link>
                 ))}
-                <div className="flex gap-4 mt-4">
-                  <Button size="sm" className="bg-brick-red hover:bg-brick-red/90">
-                    {t("nav.joinUs")}
-                  </Button>
-                </div>
                 <div className="flex gap-4 mt-4">
                   <LanguageSwitcher />
                 </div>
@@ -124,9 +126,6 @@ export default function Header() {
                 {route.label}
               </Link>
             ))}
-            <Button size="sm" className="bg-brick-red hover:bg-brick-red/90">
-              {t("nav.joinUs")}
-            </Button>
             <LanguageSwitcher />
           </nav>
         )}

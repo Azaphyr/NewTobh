@@ -17,8 +17,7 @@ const fontSerif = FontSerif({
 
 export const metadata = {
   title: "Tales of Bruss'hell - Tabletop RPG Community",
-  description: "A community organization dedicated to tabletop RPGs, miniatures, and storytelling.",
-  generator: 'v0.dev'
+  description: "A community organization dedicated to tabletop RPGs, miniatures, and storytelling."
 }
 
 interface RootLayoutProps {

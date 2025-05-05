@@ -26,6 +26,7 @@ import TestimonialCarousel from "@/components/testimonial-carousel";
 import { useTranslation } from "@/lib/i18n/client";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import HeroSection from "./hero-section-main";
 
 interface EventTranslation {
   title: string;
@@ -133,7 +134,7 @@ export function HomePage() {
 
   const stripHtmlAndTruncate = (html: string, maxLength: number) => {
     // Remove HTML tags
-    const plainText: string = html.replace(/<[^>]+>/g, '');
+    const plainText: string = html.replace(/<[^>]+>/g, "");
     // Trim and add ellipsis if needed
     return plainText.length > maxLength
       ? plainText.substring(0, maxLength).trim() + "..."
@@ -143,14 +144,14 @@ export function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-dark-mahogany to-brick-red z-10" />
+      {/* <section className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-dark-mahogany/90 to-brick-red/70 z-10" />
         <Image
-          src="/placeholder.svg"
+          src="/mascot.png"
           alt="Tabletop RPG players around a table"
-          width={1600}
-          height={600}
-          className="w-full h-[500px] md:h-[600px] object-cover"
+          width={800}
+          height={300}
+          className=" h-[400px] md:h-[600px] object-cover"
           priority
         />
         <div className="container relative z-20 flex flex-col items-center justify-center h-[500px] md:h-[600px] text-center text-white">
@@ -181,7 +182,8 @@ export function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
+      <HeroSection />
 
       {/* Quick Links Section */}
       <section className="py-16 bg-stone-100">
@@ -454,10 +456,16 @@ export function HomePage() {
             {blogPosts.map((post) => {
               const translation = post.translations[0] || {};
               const startTime = format(new Date(post.createdAt), "h:mm a");
-              const previewText = stripHtmlAndTruncate(translation.content, 100);
+              const previewText = stripHtmlAndTruncate(
+                translation.content,
+                100
+              );
 
               return (
-                <Card key={post.id} className="hover:shadow-md transition-all group">
+                <Card
+                  key={post.id}
+                  className="hover:shadow-md transition-all group"
+                >
                   <div className="overflow-hidden rounded-t-lg">
                     <Image
                       src={post.imageUrl || "/placeholder.svg"}
@@ -486,7 +494,7 @@ export function HomePage() {
                       className="text-brick-red hover:text-brick-red/80 p-0 h-auto group"
                     >
                       <Link
-                        href="/blog/tips-for-new-game-masters"
+                        href={`/blog/${post.slug}`}
                         className="flex items-center gap-1"
                       >
                         {t("home.blog.readMore")}{" "}
@@ -506,7 +514,14 @@ export function HomePage() {
         <div className="container text-center">
           <div className="max-w-3xl mx-auto">
             <div className="mb-6 inline-block">
-              <Dice1 className="h-16 w-16 text-brick-red animate-bounce-slow" />
+              <Image
+                src="/logoIconBig.png"
+                alt="Tales of Bruss' Hell"
+                width={122}
+                height={148}
+                priority
+                className="relative z-10"
+              />
             </div>
             <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">
               {t("home.cta.title")}

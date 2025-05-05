@@ -32,10 +32,12 @@
   },
   "home": {
     "hero": {
-      "title": "Embarquez pour des Aventures Épiques avec Tales of Bruss'hell",
-      "description": "Rejoignez notre communauté d'amateurs de jeux de rôle, de peintres de figurines et de conteurs.",
+      "title": "Libérez Vos Aventures Épiques",
+      "description": "Rejoignez d'autres aventuriers pour des campagnes épiques et des expériences de jeu inoubliables",
       "eventsButton": "Événements à Venir",
-      "joinButton": "Rejoindre Notre Communauté"
+      "joinButton": "Rejoignez-nous",
+      "quote": "Les dés sont peut-être aléatoires, mais les histoires que nous créons ensemble dureront toujours. Chaque lancer est une nouvelle possibilité, chaque personnage une nouvelle perspective.",
+      "quoteAuthor": "Maître de Guilde"
     },
     "quickLinks": {
       "events": {
@@ -138,6 +140,15 @@
     "statusUpcoming": "À venir",
     "statusOngoing": "En cours",
     "statusCompleted": "Terminé",
+    "titleHostEvent": "Organisez Votre Propre Événement",
+    "descriptionHostEvent": "Vous avez une idée d'événement ? Nous recherchons toujours des membres passionnés pour organiser des parties, des ateliers ou d'autres activités.",
+    "descriptionHostEvent2": "Que vous soyez un Maître de Jeu expérimenté ou débutant, nous fournissons un soutien et des ressources pour faire de votre événement un succès.",
+    "buttonHostEvent": "Proposer un Événement",
+    "newsletterTitle": "Restez Informé",
+    "newsletterDescription": "Abonnez-vous à notre newsletter pour recevoir des mises à jour sur les événements à venir, les ateliers et les actualités de la communauté.",
+    "emailPlaceholder": "Entrez votre email",
+    "buttonNewsletter": "S'abonner",
+    "privacyPolicy": "En vous abonnant, vous acceptez notre Politique de Confidentialité et nos Conditions d'Utilisation.",
     "new": {
       "title": "Créer un Nouvel Événement",
       "basicInfo": "Informations de Base",
@@ -255,6 +266,7 @@
     "titleSupportOurMission": "Soutenez Notre Mission",
     "descriptionSupportOurMission": "Votre cotisation aide à financer nos initiatives et à créer des espaces de jeu inclusifs.",
     "titleMembershipOptions": "Formules d'Adhésion",
+    "titleMostPopular": "Le Plus Populaire",
     "titleBasicMembership": "Adhésion de Base",
     "titleStandardMembership": "Adhésion Standard",
     "titlePremiumMembership": "Adhésion Premium",
@@ -267,6 +279,7 @@
     "descriptionLendingLibrary": "Accès à la bibliothèque de prêt",
     "descriptionExclusiveEvents": "Événements exclusifs pour membres premium",
     "descriptionAnnualGiftPackage": "Cadeau annuel avec des articles Tales of Bruss'hell",
+    "descriptionMembershipOptions": "Choisissez la formule d'adhésion qui vous convient le mieux. Chaque option offre des avantages spécifiques.",
     "membershipValidation": "Toute adhésion est valable un an à compter de l'inscription.",
     "membershipAssistance": "Besoin d'une aide financière ?",
     "membershipAssistanceLink": "Découvrez notre programme d'accessibilité.",
@@ -341,7 +354,8 @@
       "title": "Informations de Contact",
       "labelGeneralInquiries": "Pour toute demande générale :",
       "labelAvailability": "Disponible du lundi au vendredi, de 10h à 18h :",
-      "labelLocation": "Nos événements ont généralement lieu à :"
+      "labelLocation": "Nos événements ont généralement lieu à :",
+      "labelDiscord": "Rejoignez-nous sur Discord"
     },
     "titleConnectWithUs": "Rejoignez-Nous",
     "descriptionConnectWithUs": "Suivez-nous sur les réseaux sociaux pour ne rien manquer des événements et des actualités de la communauté.",
@@ -1112,7 +1126,7 @@
     "feedback": {
       "title": "Retour d'Information et Assistance",
       "intro": "Nous accueillons vos commentaires sur l'accessibilité de notre site web et de nos événements. Si vous rencontrez des obstacles à l'accessibilité ou avez des suggestions d'amélioration, veuillez nous contacter à :",
-      "email": "Email : accessibility@dndasbl.org",
+      "email": "Email : info@talesofbrusshell.be",
       "phone": "Téléphone : +32 123 456 789",
       "response": "Nous essayons de répondre aux commentaires dans un délai de 3 jours ouvrables."
     },

@@ -6,23 +6,26 @@ import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import type { Locale } from "@/lib/i18n/locales"
+import LoadingAnimation from "@/components/LoadingAnimation"
 
 export default function RootPage() {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState<Locale | null>(null)
+  const [showLoading, setShowLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    // Check if the user has already selected a language
-    const storedLanguage = localStorage.getItem("selectedLanguage") as Locale | null
-
-    if (storedLanguage) {
-      // If they have, redirect to that language
-      router.push(`/${storedLanguage}`)
-    } else {
-      // If not, show the language selection modal
-      setIsOpen(true)
-    }
+    // Always show loading animation for 8 seconds
+    const timer = setTimeout(() => {
+      setShowLoading(false)
+      const storedLanguage = localStorage.getItem("selectedLanguage") as Locale | null
+      if (storedLanguage) {
+        router.push(`/${storedLanguage}`)
+      } else {
+        setIsOpen(true)
+      }
+    }, 5000)
+    return () => clearTimeout(timer)
   }, [router])
 
   const handleLanguageSelect = (language: Locale) => {
@@ -42,11 +45,14 @@ export default function RootPage() {
     }
   }
 
+  if (showLoading) {
+    return <LoadingAnimation />
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-stone-100">
       <div className="text-center">
         <h1 className="font-serif text-4xl mb-4 text-brick-red">Tales of Bruss'hell</h1>
-        <p className="text-muted-foreground animate-pulse">Loading...</p>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
