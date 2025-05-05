@@ -4,6 +4,14 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { getLocale } from "@/lib/i18n/locales"
 
+interface ExtendedSession {
+  user: {
+    id: string
+    email: string
+    name: string
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = new URL(request.url).searchParams
@@ -57,11 +65,33 @@ export async function GET(request: NextRequest) {
       },
       skip: skip,
       take: pageSize,
-      include: {
+      select: {
+        id: true,
+        slug: true,
+        imageUrl: true,
+        publishedAt: true,
+        isPublished: true,
+        readTime: true,
+        category: true,
+        tags: true,
+        authorId: true,
+        createdAt: true,
+        updatedAt: true,
+        isFeatured: true,
         translations: includeTranslations
           ? {
               where: {
                 languageCode,
+              },
+              select: {
+                id: true,
+                blogPostId: true,
+                languageCode: true,
+                title: true,
+                description: true,
+                content: true,
+                metaDescription: true,
+                metaKeywords: true,
               },
             }
           : false,
@@ -84,7 +114,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions) as ExtendedSession | null
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -107,11 +137,12 @@ export async function POST(request: NextRequest) {
     const blogPost = await prisma.blogPost.create({
       data: {
         slug,
-        imageUrl, // Include imageUrl in the creation
+        imageUrl,
         isPublished,
         publishedAt: publishedAt ? new Date(publishedAt) : null,
         readTime,
         category,
+        authorId: session.user.id,
         translations: {
           create: translations.map((translation: any) => ({
             languageCode: translation.languageCode,

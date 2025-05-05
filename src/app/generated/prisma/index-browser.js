@@ -147,7 +147,9 @@ exports.Prisma.EventScalarFieldEnum = {
   spotsLeft: 'spotsLeft',
   price: 'price',
   priceMembers: 'priceMembers',
+  pricePremium: 'pricePremium',
   eventType: 'eventType',
+  isArchived: 'isArchived',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
@@ -172,12 +174,14 @@ exports.Prisma.BlogPostScalarFieldEnum = {
   imageUrl: 'imageUrl',
   publishedAt: 'publishedAt',
   isPublished: 'isPublished',
-  isFeatured: 'isFeatured',
   readTime: 'readTime',
   category: 'category',
+  tags: 'tags',
   authorId: 'authorId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isFeatured: 'isFeatured',
+  isArchived: 'isArchived'
 };
 
 exports.Prisma.BlogPostTranslationScalarFieldEnum = {
@@ -186,7 +190,9 @@ exports.Prisma.BlogPostTranslationScalarFieldEnum = {
   languageCode: 'languageCode',
   title: 'title',
   description: 'description',
-  content: 'content'
+  content: 'content',
+  metaDescription: 'metaDescription',
+  metaKeywords: 'metaKeywords'
 };
 
 exports.Prisma.ContactSubmissionScalarFieldEnum = {
@@ -234,9 +240,84 @@ exports.Prisma.WebsiteSettingScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BlogStatsScalarFieldEnum = {
+  id: 'id',
+  totalPosts: 'totalPosts',
+  publishedPosts: 'publishedPosts',
+  draftPosts: 'draftPosts',
+  archivedPosts: 'archivedPosts',
+  recentPosts: 'recentPosts',
+  postsByCategory: 'postsByCategory',
+  postsByMonth: 'postsByMonth',
+  postsByAuthor: 'postsByAuthor',
+  averageReadTime: 'averageReadTime',
+  postTrend: 'postTrend',
+  publishingRate: 'publishingRate',
+  completionRate: 'completionRate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EventStatsScalarFieldEnum = {
+  id: 'id',
+  totalEvents: 'totalEvents',
+  upcomingEvents: 'upcomingEvents',
+  ongoingEvents: 'ongoingEvents',
+  totalParticipants: 'totalParticipants',
+  eventsByType: 'eventsByType',
+  eventsByMonth: 'eventsByMonth',
+  averageParticipants: 'averageParticipants',
+  participationRate: 'participationRate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MemberStatsScalarFieldEnum = {
+  id: 'id',
+  totalMembers: 'totalMembers',
+  activeMembers: 'activeMembers',
+  newMembers: 'newMembers',
+  membershipTypes: 'membershipTypes',
+  membersByType: 'membersByType',
+  membersByMonth: 'membersByMonth',
+  retentionRate: 'retentionRate',
+  growthRate: 'growthRate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageStatsScalarFieldEnum = {
+  id: 'id',
+  totalMessages: 'totalMessages',
+  newMessages: 'newMessages',
+  repliedMessages: 'repliedMessages',
+  responseRate: 'responseRate',
+  messagesByMonth: 'messagesByMonth',
+  responseTrend: 'responseTrend',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserStatsScalarFieldEnum = {
+  id: 'id',
+  totalUsers: 'totalUsers',
+  activeUsers: 'activeUsers',
+  newUsers: 'newUsers',
+  userRoles: 'userRoles',
+  usersByMonth: 'usersByMonth',
+  activityRate: 'activityRate',
+  growthRate: 'growthRate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -247,6 +328,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 
@@ -260,7 +347,12 @@ exports.Prisma.ModelName = {
   ContactSubmission: 'ContactSubmission',
   MembershipApplication: 'MembershipApplication',
   EventRegistration: 'EventRegistration',
-  WebsiteSetting: 'WebsiteSetting'
+  WebsiteSetting: 'WebsiteSetting',
+  BlogStats: 'BlogStats',
+  EventStats: 'EventStats',
+  MemberStats: 'MemberStats',
+  MessageStats: 'MessageStats',
+  UserStats: 'UserStats'
 };
 
 /**

@@ -23,12 +23,10 @@ function getLocale(request: NextRequest) {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Skip middleware for static assets, API routes, admin routes, blog/all, and files
+  // Skip middleware for static assets, API routes, and files
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    pathname.startsWith("/admin") ||
-    pathname === "/blog/all" ||
     pathname.includes(".")
   ) {
     return NextResponse.next()
@@ -48,9 +46,15 @@ export function middleware(request: NextRequest) {
   const locale = getLocale(request)
   const newUrl = new URL(`/${locale}${pathname}`, request.url)
 
-  return NextResponse.redirect(newUrl)
+  const response = NextResponse.redirect(newUrl)
+  
+  // Add a custom header to indicate if we're in the admin section
+  const isAdminRoute = request.nextUrl.pathname.includes("/admin")
+  response.headers.set("x-is-admin", isAdminRoute ? "true" : "false")
+  
+  return response
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|admin).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 }

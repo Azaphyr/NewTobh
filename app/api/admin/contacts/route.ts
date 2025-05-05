@@ -10,15 +10,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const contacts = await prisma.contactSubmission.findMany({
+    const searchParams = request.nextUrl.searchParams
+    const isRead = searchParams.get("isRead")
+
+    const where = isRead ? { isRead: isRead === "true" } : {}
+
+    const submissions = await prisma.contactSubmission.findMany({
+      where,
       orderBy: {
         createdAt: "desc",
       },
     })
 
-    return NextResponse.json({ contacts })
+    return NextResponse.json({ submissions })
   } catch (error) {
-    console.error("Error fetching contacts:", error)
-    return NextResponse.json({ error: "Failed to fetch contacts" }, { status: 500 })
+    console.error("Error fetching contact submissions:", error)
+    return NextResponse.json({ error: "Failed to fetch contact submissions" }, { status: 500 })
   }
 }

@@ -98,8 +98,12 @@ export const authOptions: NextAuthOptions = {
       console.log("Auth - Redirect Callback - URL:", url)
       console.log("Auth - Redirect Callback - Base URL:", baseUrl)
       
-      // If URL is relative, prepend the locale
+      // If URL is relative, handle admin routes differently
       if (url.startsWith("/")) {
+        // Don't add locale to admin routes
+        if (url.startsWith("/admin")) {
+          return `${baseUrl}${url}`
+        }
         // Check if URL already has a locale
         const hasLocale = locales.some(locale => url.startsWith(`/${locale}/`))
         if (!hasLocale) {

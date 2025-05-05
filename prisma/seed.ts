@@ -199,6 +199,7 @@ async function main() {
       publishedAt: new Date("2025-04-28"),
       readTime: 5,
       category: "Dungeon Mastering",
+      tags: ["D&D", "Tips", "Beginner", "DM Guide"],
       authorId: admin.id,
       translations: [
         {
@@ -278,6 +279,7 @@ async function main() {
       publishedAt: new Date("2025-04-15"),
       readTime: 8,
       category: "Miniature Painting",
+      tags: ["Miniatures", "Painting", "Beginner", "Equipment"],
       authorId: admin.id,
       translations: [
         {

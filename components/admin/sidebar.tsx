@@ -4,16 +4,49 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
-import { Dice1Icon as Dice, LayoutDashboard, Calendar, FileText, Users, Mail, Settings, LogOut } from "lucide-react"
+import {
+  LayoutDashboard,
+  FileText,
+  Calendar,
+  Users,
+  Mail,
+  UserPlus,
+  LogOut,
+  Dice1Icon as Dice,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/events", label: "Events", icon: Calendar },
-  { href: "/admin/blog", label: "Blog Posts", icon: FileText },
-  { href: "/admin/members", label: "Members", icon: Users },
-  { href: "/admin/contacts", label: "Contact Submissions", icon: Mail },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+const navigation = [
+  {
+    name: "Dashboard",
+    href: "/admin",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Blog Posts",
+    href: "/admin-blog",
+    icon: FileText,
+  },
+  {
+    name: "Events",
+    href: "/admin/events",
+    icon: Calendar,
+  },
+  {
+    name: "Members",
+    href: "/admin/members",
+    icon: Users,
+  },
+  {
+    name: "Contacts",
+    href: "/admin/contacts",
+    icon: Mail,
+  },
+  {
+    name: "Users",
+    href: "/admin/users",
+    icon: UserPlus,
+  },
 ]
 
 export default function AdminSidebar() {
@@ -29,7 +62,7 @@ export default function AdminSidebar() {
       </div>
       <nav className="flex-1 p-4">
         <ul className="space-y-1">
-          {navItems.map((item) => (
+          {navigation.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
@@ -41,7 +74,7 @@ export default function AdminSidebar() {
                 )}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span>{item.name}</span>
               </Link>
             </li>
           ))}

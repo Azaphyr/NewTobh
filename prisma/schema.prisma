@@ -9,7 +9,7 @@ datasource db {
 }
 
 model AdminUser {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(cuid())
   email        String     @unique
   passwordHash String
   name         String
@@ -29,7 +29,7 @@ model Language {
 }
 
 model Event {
-  id            Int                 @id @default(autoincrement())
+  id            String              @id @default(cuid())
   slug          String              @unique
   imageUrl      String?
   eventDate     DateTime            @db.Timestamptz(6)
@@ -40,18 +40,20 @@ model Event {
   spotsLeft     Int?
   price         Decimal?            @db.Decimal(10, 2)
   priceMembers  Decimal?            @db.Decimal(10, 2)
+  pricePremium  Decimal?            @db.Decimal(10, 2)
   eventType     String
+  isArchived    Boolean             @default(false)
   createdAt     DateTime            @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime            @default(now()) @db.Timestamptz(6)
-  createdById   Int?
+  createdById   String?
   createdBy     AdminUser?          @relation(fields: [createdById], references: [id])
   registrations EventRegistration[]
   translations  EventTranslation[]
 }
 
 model EventTranslation {
-  id              Int      @id @default(autoincrement())
-  eventId         Int
+  id              String   @id @default(cuid())
+  eventId         String
   languageCode    String
   title           String
   description     String
@@ -67,36 +69,40 @@ model EventTranslation {
 }
 
 model BlogPost {
-  id           Int                   @id @default(autoincrement())
+  id           String                @id @default(cuid())
   slug         String                @unique
   imageUrl     String?
   publishedAt  DateTime?             @db.Timestamptz(6)
   isPublished  Boolean               @default(false)
   readTime     Int?
-  category     String
-  authorId     Int?
+  category     String                @default("news")
+  tags         String[]
+  authorId     String?
   createdAt    DateTime              @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime              @default(now()) @db.Timestamptz(6)
   isFeatured   Boolean               @default(false)
+  isArchived   Boolean               @default(false)
   author       AdminUser?            @relation(fields: [authorId], references: [id])
   translations BlogPostTranslation[]
 }
 
 model BlogPostTranslation {
-  id           Int      @id @default(autoincrement())
-  blogPostId   Int
-  languageCode String
-  title        String
-  description  String
-  content      String
-  blogPost     BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
-  language     Language @relation(fields: [languageCode], references: [code], onDelete: Cascade)
+  id              String   @id @default(cuid())
+  blogPostId      String
+  languageCode    String
+  title           String
+  description     String
+  content         String
+  metaDescription String?
+  metaKeywords    String?
+  blogPost        BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  language        Language @relation(fields: [languageCode], references: [code], onDelete: Cascade)
 
   @@unique([blogPostId, languageCode])
 }
 
 model ContactSubmission {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   name      String
   email     String
   subject   String
@@ -106,7 +112,7 @@ model ContactSubmission {
 }
 
 model MembershipApplication {
-  id              Int      @id @default(autoincrement())
+  id              String   @id @default(cuid())
   firstName       String
   lastName        String
   email           String
@@ -121,8 +127,8 @@ model MembershipApplication {
 }
 
 model EventRegistration {
-  id        Int      @id @default(autoincrement())
-  eventId   Int
+  id        String   @id @default(cuid())
+  eventId   String
   firstName String
   lastName  String
   email     String
@@ -134,10 +140,81 @@ model EventRegistration {
 }
 
 model WebsiteSetting {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   settingKey   String    @unique
   settingValue String?
   languageCode String?
   updatedAt    DateTime  @default(now()) @db.Timestamptz(6)
   language     Language? @relation(fields: [languageCode], references: [code])
+}
+
+model BlogStats {
+  id              String   @id @default(cuid())
+  totalPosts      Int      @default(0)
+  publishedPosts  Int      @default(0)
+  draftPosts      Int      @default(0)
+  archivedPosts   Int      @default(0)
+  recentPosts     Int      @default(0)
+  postsByCategory Json     @default("[]")
+  postsByMonth    Json     @default("[]")
+  postsByAuthor   Json     @default("[]")
+  averageReadTime Int      @default(0)
+  postTrend       Float    @default(0)
+  publishingRate  Float    @default(0)
+  completionRate  Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model EventStats {
+  id                  String   @id @default(cuid())
+  totalEvents         Int      @default(0)
+  upcomingEvents      Int      @default(0)
+  ongoingEvents       Int      @default(0)
+  totalParticipants   Int      @default(0)
+  eventsByType        Json     @default("[]")
+  eventsByMonth       Json     @default("[]")
+  averageParticipants Int      @default(0)
+  participationRate   Float    @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model MemberStats {
+  id              String   @id @default(cuid())
+  totalMembers    Int      @default(0)
+  activeMembers   Int      @default(0)
+  newMembers      Int      @default(0)
+  membershipTypes Int      @default(0)
+  membersByType   Json     @default("[]")
+  membersByMonth  Json     @default("[]")
+  retentionRate   Float    @default(0)
+  growthRate      Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model MessageStats {
+  id              String   @id @default(cuid())
+  totalMessages   Int      @default(0)
+  newMessages     Int      @default(0)
+  repliedMessages Int      @default(0)
+  responseRate    Float    @default(0)
+  messagesByMonth Json     @default("[]")
+  responseTrend   Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model UserStats {
+  id           String   @id @default(cuid())
+  totalUsers   Int      @default(0)
+  activeUsers  Int      @default(0)
+  newUsers     Int      @default(0)
+  userRoles    Int      @default(0)
+  usersByMonth Json     @default("[]")
+  activityRate Float    @default(0)
+  growthRate   Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

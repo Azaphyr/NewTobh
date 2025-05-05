@@ -18,14 +18,18 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const body = await request.json()
     const { isRead } = body
 
-    const contact = await prisma.contactSubmission.update({
+    if (typeof isRead !== "boolean") {
+      return NextResponse.json({ error: "Invalid isRead value" }, { status: 400 })
+    }
+
+    const submission = await prisma.contactSubmission.update({
       where: { id },
       data: { isRead },
     })
 
-    return NextResponse.json(contact)
+    return NextResponse.json(submission)
   } catch (error) {
-    console.error("Error updating contact:", error)
-    return NextResponse.json({ error: "Failed to update contact" }, { status: 500 })
+    console.error("Error updating contact submission:", error)
+    return NextResponse.json({ error: "Failed to update contact submission" }, { status: 500 })
   }
 }

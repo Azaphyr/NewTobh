@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
     const where = {
       ...(type ? { eventType: type } : {}),
       ...(past ? { eventDate: { lt: new Date() } } : { eventDate: { gte: new Date() } }),
+      isArchived: false,
     }
 
     const events = await prisma.event.findMany({
