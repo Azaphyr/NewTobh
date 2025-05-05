@@ -427,7 +427,7 @@ export default function AdminPage() {
                                 <div className="flex items-center gap-2">
                                   {isMainMetric && getTrendIcon(Math.random() * 20 - 10)}
                                   <span className="font-semibold">
-                                    {isPercentage ? `${value}%` : value}
+                                    {isPercentage ? `${value as number}%` : value as string | number}
                                   </span>
                                 </div>
                               </div>
