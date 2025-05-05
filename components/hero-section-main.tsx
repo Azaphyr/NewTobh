@@ -97,12 +97,10 @@ export default function HeroSection() {
                   }}
                   priority
                 />
-              </div>
-
               {/* Glassmorphism UI elements */}
               {/* Stats card 1 */}
-              <div className="absolute top-10 right-0 backdrop-blur-md bg-white/10 rounded-xl border border-white/20 p-4 shadow-lg z-10 w-48">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="absolute top-10 right-0 backdrop-blur-md bg-title-ground rounded-xl border border-white/20 p-4 shadow-lg z-10 w-48">
+                <div className="flex items-center gap-2 mb-2 shadow-lg bg-deep-teal/20 rounded-xl">
                   <div className="w-4 h-4 rounded-full bg-golden-amber"></div>
                   <span className="text-white font-medium">Active Campaigns</span>
                 </div>
@@ -131,8 +129,8 @@ export default function HeroSection() {
               </div>
 
               {/* Stats card 2 */}
-              <div className="absolute bottom-32 left-0 backdrop-blur-md bg-white/10 rounded-xl border border-white/20 p-4 shadow-lg z-10 w-48">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="absolute bottom-32 left-0 backdrop-blur-md rounded-xl border border-white/20 p-4 shadow-lg z-10 w-48 bg-title-ground">
+                <div className="flex items-center gap-2 mb-2 shadow-lg bg-deep-teal/20 rounded-xl ">
                   <div className="w-4 h-4 rounded-full bg-brick-red"></div>
                   <span className="text-white font-medium">Critical Rolls</span>
                 </div>
@@ -146,6 +144,9 @@ export default function HeroSection() {
                   ))}
                 </div>
               </div>
+
+              </div>
+
 
               
 

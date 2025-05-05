@@ -25,6 +25,7 @@ const config = {
         "golden-amber": "#B06821",
         "dark-mahogany": "#511B18",
         "slate-blue": "#1b2a30",
+        "title-ground": "rgba(33, 50, 66, 0.32)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
