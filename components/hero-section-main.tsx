@@ -15,7 +15,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-dark-mahogany/90 via-slate-900/90 to-dark-mahogany/95 z-10" />
         <Image
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/backDnd.jpg?height=1080&width=1920"
           alt="Background"
           width={1920}
           height={1080}
