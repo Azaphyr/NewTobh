@@ -47,6 +47,7 @@ export default function BlogPage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
   const POSTS_PER_PAGE = 6;
   
   useEffect(() => {
@@ -79,7 +80,24 @@ export default function BlogPage() {
       }
     };
 
+    // Fetch featured post
+    const fetchFeaturedPost = async () => {
+      try {
+        const params = new URLSearchParams();
+        params.append("featured", "true");
+        params.append("includeTranslations", "true");
+        params.append("languageCode", locale);
+        params.append("limit", "1");
+        const response = await fetch(`/api/blog?${params.toString()}`);
+        const data = await response.json();
+        setFeaturedPost(data.posts && data.posts.length > 0 ? data.posts[0] : null);
+      } catch (error) {
+        setFeaturedPost(null);
+      }
+    };
+
     fetchBlogPosts();
+    fetchFeaturedPost();
   }, [locale, page]);
   
   const loadMore = () => {
@@ -110,8 +128,8 @@ export default function BlogPage() {
           priority
         />
         <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("blog.title")}</h1>
-          <p className="text-lg md:text-xl max-w-2xl">{t("blog.description")}</p>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("blog.public.title")}</h1>
+          <p className="text-lg md:text-xl max-w-2xl">{t("blog.public.description")}</p>
         </div>
       </section>
 
@@ -121,26 +139,26 @@ export default function BlogPage() {
           <div className="flex flex-col md:flex-row gap-4 justify-between">
             <div className="relative w-full md:w-96">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input type="search" placeholder={t("blog.searchPlaceholder")} className="pl-10" />
+              <Input type="search" placeholder={t("blog.public.searchPlaceholder")} className="pl-10" />
             </div>
             <div className="flex flex-wrap gap-2">
               <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.categories.all")}
+                {t("blog.public.categories.all")}
               </Badge>
               <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.categories.dungeonMastering")}
+                {t("blog.public.categories.dungeonMastering")}
               </Badge>
               <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.categories.characterBuilding")}
+                {t("blog.public.categories.characterBuilding")}
               </Badge>
               <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.categories.miniaturePainting")}
+                {t("blog.public.categories.miniaturePainting")}
               </Badge>
               <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.categories.storytelling")}
+                {t("blog.public.categories.storytelling")}
               </Badge>
               <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.categories.community")}
+                {t("blog.public.categories.community")}
               </Badge>
             </div>
           </div>
@@ -148,50 +166,49 @@ export default function BlogPage() {
       </section>
 
       {/* Featured Article */}
-      <section className="py-12">
-        <div className="container">
-          <h2 className="font-serif text-2xl font-bold mb-6">{t("blog.featureArticle.titleFeaturedArticle")}</h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-            <div className="lg:col-span-3">
-              <Image
-                src="/placeholder.svg?height=400&width=800"
-                alt="Creating Memorable NPCs"
-                width={800}
-                height={400}
-                className="w-full aspect-[16/9] object-cover rounded-lg"
-              />
-            </div>
-            <div className="lg:col-span-2 flex flex-col justify-center">
-              <Badge className="w-fit mb-2 bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
-                Dungeon Mastering
-              </Badge>
-              <h3 className="font-serif text-3xl font-bold mb-2">
-                Creating Memorable NPCs That Your Players Will Love
-              </h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                <Calendar className="h-4 w-4" />
-                <span>April 28, 2025</span>
-                <span>•</span>
-                <span>10 min read</span>
+      {featuredPost && (
+        <section className="py-12">
+          <div className="container">
+            <h2 className="font-serif text-2xl font-bold mb-6">{t("blog.public.featureArticle.titleFeaturedArticle")}</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              <div className="lg:col-span-3">
+                <Image
+                  src={featuredPost.imageUrl || "/placeholder.svg?height=400&width=800"}
+                  alt={featuredPost.translations[0]?.title || "Featured Article"}
+                  width={800}
+                  height={400}
+                  className="w-full aspect-[16/9] object-cover rounded-lg"
+                />
               </div>
-              <p className="text-muted-foreground mb-6">
-                Non-player characters bring your world to life. Learn how to create distinctive personalities that your
-                players will remember long after the session ends. This comprehensive guide covers voice acting,
-                character motivations, and how to make NPCs that drive your story forward.
-              </p>
-              <Button asChild className="w-fit bg-brick-red hover:bg-brick-red/90">
-                <Link href="/blog/creating-memorable-npcs">{t("blog.featureArticle.buttonFeaturedArticle")}</Link>
-              </Button>
+              <div className="lg:col-span-2 flex flex-col justify-center">
+                <Badge className="w-fit mb-2 bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
+                  {featuredPost.category}
+                </Badge>
+                <h3 className="font-serif text-3xl font-bold mb-2">
+                  {featuredPost.translations[0]?.title}
+                </h3>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                  <Calendar className="h-4 w-4" />
+                  <span>{featuredPost.publishedAt ? format(new Date(featuredPost.publishedAt), "MMMM d, yyyy") : ""}</span>
+                  <span>•</span>
+                  <span>{featuredPost.readTime} min read</span>
+                </div>
+                <p className="text-muted-foreground mb-6">
+                  {featuredPost.translations[0]?.description}
+                </p>
+                <Button asChild className="w-fit bg-brick-red hover:bg-brick-red/90">
+                  <Link href={`/blog/${featuredPost.slug}`}>{t("blog.public.featureArticle.buttonFeaturedArticle")}</Link>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Latest Articles */}
       <section className="py-12 bg-stone-100">
         <div className="container">
-          <h2 className="font-serif text-2xl font-bold mb-6">{t("blog.titleLatestArticles")}</h2>
+          <h2 className="font-serif text-2xl font-bold mb-6">{t("blog.public.titleLatestArticles")}</h2>
 
           {isBlogLoading && page === 1 ? (
             <div className="text-center py-8">
@@ -258,7 +275,7 @@ export default function BlogPage() {
                     disabled={isLoadingMore}
                     className="bg-brick-red hover:bg-brick-red/90"
                   >
-                    {isLoadingMore ? t("blog.loadingMore") : t("blog.loadMore")}
+                    {isLoadingMore ? t("blog.public.loadingMore") : t("blog.public.loadMore")}
                   </Button>
                 </div>
               )}
