@@ -585,6 +585,8 @@
         "confirmUnpublish": "Are you sure you want to unpublish this post?",
         "confirmArchive": "Are you sure you want to archive this post?",
         "confirmUnarchive": "Are you sure you want to unarchive this post?",
+        "confirmSetFeatured": "Are you sure you want to set this post as featured? This will remove the featured status from any other post.",
+        "confirmRemoveFeatured": "Are you sure you want to remove the featured status from this post?",
         "successDelete": "Post deleted successfully",
         "successPublish": "Post published successfully",
         "successUnpublish": "Post unpublished successfully",

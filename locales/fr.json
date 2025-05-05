@@ -1134,5 +1134,17 @@
       "technology": "Mise en œuvre de nouvelles technologies et normes à mesure qu'elles deviennent disponibles",
       "review": "Cette déclaration a été créée le 29 avril 2025 et sera révisée et mise à jour annuellement ou lorsque des changements significatifs sont apportés au site web ou à nos services."
     }
+  },
+  "login": {
+    "title": "Bienvenue",
+    "description": "Connectez-vous à votre compte pour continuer",
+    "labelEmail": "Email",
+    "placeholderEmail": "Entrez votre email",
+    "labelPassword": "Mot de passe",
+    "placeholderPassword": "Entrez votre mot de passe",
+    "buttonSubmit": "Se connecter",
+    "buttonLoading": "Connexion en cours...",
+    "errorInvalidCredentials": "Email ou mot de passe invalide",
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer."
   }
 }
