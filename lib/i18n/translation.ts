@@ -17,14 +17,14 @@ export const getTranslatedContent = async (
     if (table === "event_translations") {
       return prisma.eventTranslation.findFirst({
         where: {
-          eventId: id,
+          eventId: id.toString(),
           languageCode: lang,
         },
       })
     } else {
       return prisma.blogPostTranslation.findFirst({
         where: {
-          blogPostId: id,
+          blogPostId: id.toString(),
           languageCode: lang,
         },
       })
