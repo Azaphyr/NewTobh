@@ -12,8 +12,8 @@ import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface BlogPostTranslation {
-  id: number
-  blogPostId: number
+  id: string
+  blogPostId: string
   languageCode: string
   title: string
   description: string
@@ -23,7 +23,7 @@ interface BlogPostTranslation {
 }
 
 interface BlogPost {
-  id: number
+  id: string
   slug: string
   imageUrl?: string
   publishedAt?: string
@@ -31,7 +31,7 @@ interface BlogPost {
   readTime?: number
   category: string
   tags: string[]
-  authorId?: number
+  authorId?: string
   createdAt: string
   updatedAt: string
   isFeatured: boolean
@@ -84,7 +84,7 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
           // Initialize translations for both languages
           const translationsMap: Record<string, BlogPostTranslation> = {
             en: {
-              id: 0,
+              id: "",
               blogPostId: data.id,
               languageCode: "en",
               title: "",
@@ -94,7 +94,7 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
               metaKeywords: null,
             },
             fr: {
-              id: 0,
+              id: "",
               blogPostId: data.id,
               languageCode: "fr",
               title: "",

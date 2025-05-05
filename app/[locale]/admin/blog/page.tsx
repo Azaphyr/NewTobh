@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/tooltip"
 
 interface BlogPostTranslation {
-  id: number
-  blogPostId: number
+  id: string
+  blogPostId: string
   languageCode: string
   title: string
   description: string
@@ -34,7 +34,7 @@ interface BlogPostTranslation {
 }
 
 interface BlogPost {
-  id: number
+  id: string
   slug: string
   imageUrl?: string
   publishedAt?: string
@@ -42,7 +42,7 @@ interface BlogPost {
   readTime?: number
   category: string
   tags: string[]
-  authorId?: number
+  authorId?: string
   createdAt: string
   updatedAt: string
   isFeatured: boolean

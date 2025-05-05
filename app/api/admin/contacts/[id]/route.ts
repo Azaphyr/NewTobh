@@ -10,11 +10,6 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = Number.parseInt(params.id)
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
-    }
-
     const body = await request.json()
     const { isRead } = body
 
@@ -23,7 +18,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     const submission = await prisma.contactSubmission.update({
-      where: { id },
+      where: { id: params.id },
       data: { isRead },
     })
 

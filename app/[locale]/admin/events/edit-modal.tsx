@@ -12,8 +12,8 @@ import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface EventTranslation {
-  id: number
-  eventId: number
+  id: string
+  eventId: string
   languageCode: string
   title: string
   description: string
@@ -26,7 +26,7 @@ interface EventTranslation {
 }
 
 interface Event {
-  id: number
+  id: string
   slug: string
   imageUrl?: string
   eventDate: string
@@ -89,7 +89,7 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
           // Initialize translations for both languages
           const translationsMap: Record<string, EventTranslation> = {
             en: {
-              id: 0,
+              id: "",
               eventId: data.id,
               languageCode: "en",
               title: "",
@@ -102,7 +102,7 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
               instructorBio: "",
             },
             fr: {
-              id: 0,
+              id: "",
               eventId: data.id,
               languageCode: "fr",
               title: "",

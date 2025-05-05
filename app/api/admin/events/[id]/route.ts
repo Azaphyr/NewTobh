@@ -13,13 +13,8 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = parseInt(params.id)
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
-    }
-
     const event = await prisma.event.findUnique({
-      where: { id },
+      where: { id: params.id },
       include: {
         translations: true,
       },
@@ -49,11 +44,6 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = parseInt(params.id)
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
-    }
-
     const data = await request.json()
     const {
       slug,
@@ -79,38 +69,34 @@ export async function PUT(
 
     // Check if event exists
     const existingEvent = await prisma.event.findUnique({
-      where: { id },
+      where: { id: params.id },
     })
 
     if (!existingEvent) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 })
     }
 
-    // Update event and its translations
+    // Update the event
     const updatedEvent = await prisma.event.update({
-      where: { id },
+      where: { id: params.id },
       data: {
         slug,
         eventType,
-        eventDate: new Date(eventDate),
-        eventEndDate: eventEndDate ? new Date(eventEndDate) : null,
+        eventDate,
+        eventEndDate,
         location,
         address,
         capacity,
-        price: price ? parseFloat(price) : null,
-        priceMembers: priceMembers ? parseFloat(priceMembers) : null,
-        pricePremium: pricePremium ? parseFloat(pricePremium) : null,
+        price,
+        priceMembers,
+        pricePremium,
         translations: {
           deleteMany: {},
-          create: translations.map((t: any) => ({
-            languageCode: t.languageCode,
-            title: t.title,
-            description: t.description,
-            longDescription: t.longDescription,
-            requirements: t.requirements,
-            additionalInfo: t.additionalInfo,
-            instructorName: t.instructorName,
-            instructorBio: t.instructorBio,
+          create: translations.map((translation: any) => ({
+            languageCode: translation.languageCode,
+            title: translation.title,
+            description: translation.description,
+            shortDescription: translation.shortDescription,
           })),
         },
       },
@@ -148,7 +134,7 @@ export async function PATCH(
 
     const event = await prisma.event.update({
       where: {
-        id: parseInt(params.id)
+        id: params.id
       },
       data: {
         isArchived
@@ -174,7 +160,7 @@ export async function DELETE(
 
     const event = await prisma.event.delete({
       where: {
-        id: parseInt(params.id)
+        id: params.id
       }
     })
 

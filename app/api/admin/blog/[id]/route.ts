@@ -13,13 +13,8 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = parseInt(params.id)
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
-    }
-
     const blogPost = await prisma.blogPost.findUnique({
-      where: { id },
+      where: { id: params.id },
       include: {
         translations: true,
       },
@@ -49,17 +44,12 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = parseInt(params.id)
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
-    }
-
     const data = await request.json()
     const { translations, ...postData } = data
 
     // First, get the existing post to check current translations
     const existingPost = await prisma.blogPost.findUnique({
-      where: { id },
+      where: { id: params.id },
       include: { translations: true },
     })
 
@@ -67,39 +57,18 @@ export async function PUT(
       return NextResponse.json({ error: "Blog post not found" }, { status: 404 })
     }
 
-    // Update the blog post and its translations
+    // Update the blog post
     const updatedPost = await prisma.blogPost.update({
-      where: { id },
+      where: { id: params.id },
       data: {
-        slug: postData.slug,
-        category: postData.category,
-        isPublished: postData.isPublished,
-        isFeatured: postData.isFeatured,
-        readTime: postData.readTime,
-        tags: postData.tags,
+        ...postData,
         translations: {
-          upsert: translations.map((translation: any) => ({
-            where: {
-              blogPostId_languageCode: {
-                blogPostId: id,
-                languageCode: translation.languageCode,
-              },
-            },
-            create: {
-              languageCode: translation.languageCode,
-              title: translation.title,
-              description: translation.description,
-              content: translation.content,
-              metaDescription: translation.metaDescription,
-              metaKeywords: translation.metaKeywords,
-            },
-            update: {
-              title: translation.title,
-              description: translation.description,
-              content: translation.content,
-              metaDescription: translation.metaDescription,
-              metaKeywords: translation.metaKeywords,
-            },
+          deleteMany: {},
+          create: translations.map((translation: any) => ({
+            languageCode: translation.languageCode,
+            title: translation.title,
+            description: translation.description,
+            content: translation.content,
           })),
         },
       },
@@ -128,14 +97,9 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = parseInt(params.id)
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
-    }
-
     // Delete the blog post and its translations
     await prisma.blogPost.delete({
-      where: { id },
+      where: { id: params.id },
     })
 
     return NextResponse.json({ success: true })
@@ -167,7 +131,7 @@ export async function PATCH(
 
     // First get the current post to check its status
     const currentPost = await prisma.blogPost.findUnique({
-      where: { id: parseInt(params.id) }
+      where: { id: params.id }
     })
 
     if (!currentPost) {
@@ -179,7 +143,7 @@ export async function PATCH(
       await prisma.blogPost.updateMany({
         where: {
           isFeatured: true,
-          id: { not: parseInt(params.id) }
+          id: { not: params.id }
         },
         data: {
           isFeatured: false
@@ -189,7 +153,7 @@ export async function PATCH(
 
     const blogPost = await prisma.blogPost.update({
       where: {
-        id: parseInt(params.id)
+        id: params.id
       },
       data: {
         ...(typeof isArchived === "boolean" && {

@@ -14,8 +14,6 @@ export async function DELETE(
   }
 
   try {
-    const id = parseInt(params.id)
-
     // Don't allow deleting the last admin user
     const totalUsers = await prisma.adminUser.count()
     if (totalUsers <= 1) {
@@ -24,7 +22,7 @@ export async function DELETE(
 
     // Delete user
     await prisma.adminUser.delete({
-      where: { id },
+      where: { id: params.id },
     })
 
     return new NextResponse(null, { status: 204 })

@@ -22,8 +22,8 @@ import {
 } from "@/components/ui/tooltip"
 
 interface EventTranslation {
-  id: number
-  eventId: number
+  id: string
+  eventId: string
   languageCode: string
   title: string
   description: string
@@ -31,7 +31,7 @@ interface EventTranslation {
 }
 
 interface Event {
-  id: number
+  id: string
   slug: string
   imageUrl?: string
   eventDate: string

@@ -358,7 +358,7 @@
   "blog": {
     "public": {
       "title": "Blog",
-      "description": "Conseils, histoires et actualités de notre communauté.",
+      "description": "Conseils, histoires et mises à jour de notre communauté.",
       "searchPlaceholder": "Rechercher des articles...",
       "backToBlog": "Retour au Blog",
       "share": "Partager",
@@ -393,7 +393,7 @@
       "contribute": {
         "title": "Partagez Vos Connaissances",
         "description": "Vous êtes passionné par D&D, la peinture de miniatures ou la narration ? Nous accueillons les contributeurs invités sur notre blog !",
-        "description2": "Que vous soyez un Maître de Donjon expérimenté avec des conseils à partager, un artiste avec des tutoriels de peinture, ou un conteur avec des idées sur le développement des personnages, nous aimerions mettre en valeur votre expertise.",
+        "description2": "Que vous soyez un Maître de Donjon expérimenté avec des conseils à partager, un artiste avec des tutoriels de peinture, ou un narrateur avec des idées sur le développement des personnages, nous aimerions mettre en valeur votre expertise.",
         "button": "Soumettre une Idée d'Article"
       }
     },

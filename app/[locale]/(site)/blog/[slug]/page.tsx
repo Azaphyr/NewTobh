@@ -143,7 +143,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                       className="flex items-center gap-1 text-brick-red hover:text-brick-red/80"
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      {t("blog.backToBlog")}
+                      {t("blog.public.backToBlog")}
                     </Link>
                     <Button
                       variant="ghost"
@@ -151,7 +151,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                       className="flex items-center gap-1"
                     >
                       <Share2 className="h-4 w-4" />
-                      {t("blog.share")}
+                      {t("blog.public.share")}
                     </Button>
                   </div>
 
@@ -181,15 +181,15 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                   <div className="flex items-center gap-4 mt-8 pt-8 border-t">
                     <Button variant="ghost" size="sm" className="flex items-center gap-1">
                       <ThumbsUp className="h-4 w-4" />
-                      {t("blog.like")}
+                      {t("blog.public.like")}
                     </Button>
                     <Button variant="ghost" size="sm" className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4" />
-                      {t("blog.comment")}
+                      {t("blog.public.comment")}
                     </Button>
                     <Button variant="ghost" size="sm" className="flex items-center gap-1">
                       <Bookmark className="h-4 w-4" />
-                      {t("blog.bookmark")}
+                      {t("blog.public.bookmark")}
                     </Button>
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                 <div className="space-y-8">
                   {/* Related Posts */}
                   <div>
-                    <h3 className="font-serif text-xl font-bold mb-4">{t("blog.relatedPosts")}</h3>
+                    <h3 className="font-serif text-xl font-bold mb-4">{t("blog.public.relatedPosts")}</h3>
                     <div className="space-y-4">
                       {[1, 2, 3].map((i) => (
                         <div key={i} className="flex gap-4">
@@ -224,22 +224,22 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
 
                   {/* Categories */}
                   <div>
-                    <h3 className="font-serif text-xl font-bold mb-4">{t("blog.categoriesTitle")}</h3>
+                    <h3 className="font-serif text-xl font-bold mb-4">{t("blog.public.categoriesTitle")}</h3>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.categories.dungeonMastering")}
+                        {t("blog.public.categories.dungeonMastering")}
                       </Badge>
                       <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.categories.characterBuilding")}
+                        {t("blog.public.categories.characterBuilding")}
                       </Badge>
                       <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.categories.miniaturePainting")}
+                        {t("blog.public.categories.miniaturePainting")}
                       </Badge>
                       <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.categories.storytelling")}
+                        {t("blog.public.categories.storytelling")}
                       </Badge>
                       <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.categories.community")}
+                        {t("blog.public.categories.community")}
                       </Badge>
                     </div>
                   </div>
