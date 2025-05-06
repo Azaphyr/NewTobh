@@ -1,4 +1,7 @@
-import nodemailer from "nodemailer"
+import { Resend } from 'resend'
+
+// Initialize Resend with API key
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 type EmailPayload = {
   to: string
@@ -6,32 +9,27 @@ type EmailPayload = {
   html: string
 }
 
-// Configure email transport
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER_HOST,
-  port: Number(process.env.EMAIL_SERVER_PORT),
-  secure: Boolean(process.env.EMAIL_SERVER_SECURE),
-  auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
-  },
-})
-
 export const sendEmail = async (payload: EmailPayload) => {
   try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Tales of Bruss\'hell <info@talesofbrusshell.be>',
       ...payload,
     })
-    return { success: true, messageId: info.messageId }
+
+    if (error) {
+      console.error('Error sending email:', error)
+      return { success: false, error }
+    }
+
+    return { success: true, messageId: data?.id }
   } catch (error) {
-    console.error("Error sending email:", error)
+    console.error('Error sending email:', error)
     return { success: false, error }
   }
 }
 
 export const sendContactFormEmail = async (name: string, email: string, subject: string, message: string) => {
-  const adminEmail = process.env.ADMIN_EMAIL || "info@talesofbrusshell.org"
+  const adminEmail = process.env.ADMIN_EMAIL || 'info@talesofbrusshell.be'
 
   const html = `
     <h2>New Contact Form Submission</h2>
@@ -39,7 +37,7 @@ export const sendContactFormEmail = async (name: string, email: string, subject:
     <p><strong>Email:</strong> ${email}</p>
     <p><strong>Subject:</strong> ${subject}</p>
     <p><strong>Message:</strong></p>
-    <p>${message.replace(/\n/g, "<br>")}</p>
+    <p>${message.replace(/\n/g, '<br>')}</p>
   `
 
   return sendEmail({
@@ -72,9 +70,9 @@ export const sendEventRegistrationConfirmation = async (
   eventTitle: string,
   eventDate: Date,
 ) => {
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "full",
-    timeStyle: "short",
+  const formattedDate = new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'full',
+    timeStyle: 'short',
   }).format(eventDate)
 
   const html = `

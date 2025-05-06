@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useTranslation } from "@/lib/i18n/client"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ImageIcon, XIcon } from "lucide-react"
 
 interface EventTranslation {
   id: string
@@ -56,6 +57,13 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
   const [translations, setTranslations] = useState<Record<string, EventTranslation>>({})
   const [activeLanguage, setActiveLanguage] = useState<string>(locale)
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+  const [isDragActive, setIsDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showLibrary, setShowLibrary] = useState(false)
+  const [cloudinaryImages, setCloudinaryImages] = useState<{ url: string; public_id: string; }[]>([])
+  const [isLoadingLibrary, setIsLoadingLibrary] = useState(false)
 
   useEffect(() => {
     if (event && isOpen) {
@@ -68,6 +76,7 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
           setCurrentEvent(data)
           
           // Initialize form data with all fields from the fetched event
+          const allowedTypes = ["one-shot", "workshop", "campaign"];
           const initialFormData = {
             id: data.id,
             slug: data.slug || "",
@@ -81,7 +90,7 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
             price: data.price,
             priceMembers: data.priceMembers,
             pricePremium: data.pricePremium,
-            eventType: data.eventType || "workshop",
+            eventType: allowedTypes.includes(data.eventType) ? data.eventType : "workshop",
           }
           console.log('Initializing form data:', initialFormData)
           setFormData(initialFormData)
@@ -118,14 +127,13 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
 
           // Update with existing translations
           data.translations.forEach((translation: EventTranslation) => {
-            console.log('Processing translation:', translation)
             translationsMap[translation.languageCode] = {
               id: translation.id,
               eventId: translation.eventId,
               languageCode: translation.languageCode,
               title: translation.title,
               description: translation.description,
-              shortDescription: translation.shortDescription,
+              shortDescription: translation.description || "",
               longDescription: translation.longDescription,
               requirements: translation.requirements,
               additionalInfo: translation.additionalInfo,
@@ -135,6 +143,10 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
           })
           console.log('Final translations map:', translationsMap)
           setTranslations(translationsMap)
+
+          // Set image preview to the event's imageUrl if no new image is selected
+          setImageFile(null)
+          setImagePreviewUrl(data.imageUrl || null)
         })
         .catch((error) => {
           console.error('Error fetching event:', error)
@@ -149,13 +161,38 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
 
     setIsLoading(true)
     try {
+      // First, handle image upload if there's a new image
+      if (imageFile instanceof File) {
+        const imageFormData = new FormData()
+        imageFormData.append("image", imageFile)
+        
+        const imageResponse = await fetch(`/api/admin/events/${currentEvent.id}/upload`, {
+          method: "POST",
+          body: imageFormData,
+        })
+
+        if (!imageResponse.ok) {
+          throw new Error("Failed to upload image")
+        }
+      }
+
+      // Then update the event data
       const response = await fetch(`/api/admin/events/${currentEvent.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          slug: formData.slug,
+          eventType: formData.eventType,
+          eventDate: formData.eventDate,
+          eventEndDate: formData.eventEndDate,
+          location: formData.location,
+          address: formData.address,
+          capacity: formData.capacity,
+          price: formData.price,
+          priceMembers: formData.priceMembers,
+          pricePremium: formData.pricePremium,
           translations: Object.values(translations),
         }),
       })
@@ -190,6 +227,141 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
     })
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0])
+      setImagePreviewUrl(URL.createObjectURL(e.target.files[0]))
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setImageFile(e.dataTransfer.files[0])
+      setImagePreviewUrl(URL.createObjectURL(e.dataTransfer.files[0]))
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(false)
+  }
+
+  const openLibrary = async () => {
+    setShowLibrary(true)
+    setIsLoadingLibrary(true)
+    try {
+      const res = await fetch('/api/cloudinary/events')
+      const data = await res.json()
+      setCloudinaryImages(data.images || [])
+    } catch (err) {
+      console.error('Error fetching images from Cloudinary:', err)
+      setCloudinaryImages([])
+    } finally {
+      setIsLoadingLibrary(false)
+    }
+  }
+
+  const handleSelectCloudinaryImage = (img: { url: string; public_id: string }) => {
+    setImagePreviewUrl(img.url)
+    setImageFile(null)
+    setShowLibrary(false)
+  }
+
+  const handleRemoveImage = () => {
+    setImageFile(null)
+    setImagePreviewUrl(currentEvent?.imageUrl || null)
+  }
+
+  const renderImageSection = () => (
+    <div className="space-y-2">
+      <Label htmlFor="image" className="text-dark-mahogany">Event Image</Label>
+      <div className="flex flex-row items-center gap-4 mb-2">
+        <Button type="button" variant="outline" onClick={openLibrary} className="border-deep-teal/20 text-deep-teal">
+          Choose from Library
+        </Button>
+      </div>
+      <label
+        htmlFor="image"
+        className={`flex flex-col items-center justify-center border-2 border-dashed rounded-md cursor-pointer transition-colors min-h-[180px] relative
+          ${isDragActive ? 'border-brick-red bg-brick-red/10' : 'border-deep-teal/20 bg-white hover:border-brick-red/60'}`}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        tabIndex={0}
+        aria-label="Event image upload area"
+      >
+        <input
+          id="image"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          style={{ display: 'none' }}
+          ref={fileInputRef}
+        />
+        {imagePreviewUrl ? (
+          <div className="relative flex flex-col items-center justify-center w-full h-full">
+            <img
+              src={imagePreviewUrl}
+              alt="Preview"
+              className="max-h-40 rounded shadow border object-contain"
+            />
+            <button
+              type="button"
+              onClick={e => { e.stopPropagation(); handleRemoveImage(); }}
+              className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1 border border-gray-300 shadow"
+              aria-label="Remove image"
+            >
+              <XIcon className="w-4 h-4 text-brick-red" />
+            </button>
+            <span className="text-xs text-muted-foreground mt-2">{imageFile?.name}</span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-8">
+            <ImageIcon className="w-10 h-10 text-deep-teal mb-2" />
+            <span className="text-deep-teal font-medium">Drag & drop or click to upload</span>
+            <span className="text-xs text-muted-foreground mt-1">PNG, JPG, JPEG, GIF, SVG, WEBP</span>
+          </div>
+        )}
+      </label>
+
+      {/* Cloudinary Library Modal */}
+      <Dialog open={showLibrary} onOpenChange={setShowLibrary}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Select an Image from Library</DialogTitle>
+            <DialogClose asChild>
+              <button className="absolute right-4 top-4">✕</button>
+            </DialogClose>
+          </DialogHeader>
+          {isLoadingLibrary ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : (
+            <div className="grid grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+              {cloudinaryImages.length === 0 && <div className="col-span-3 text-center text-muted-foreground">No images found.</div>}
+              {cloudinaryImages.map(img => (
+                <button
+                  key={img.public_id}
+                  type="button"
+                  className="border rounded hover:border-brick-red focus:border-brick-red transition p-1 bg-white"
+                  onClick={() => handleSelectCloudinaryImage(img)}
+                >
+                  <img src={img.url} alt={img.public_id} className="object-cover w-full h-32 rounded" />
+                </button>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+
   if (!currentEvent) return null
 
   return (
@@ -221,10 +393,9 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
                   <SelectValue placeholder={t("admin.events.edit.selectEventType")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="workshop">{t("admin.events.types.workshop")}</SelectItem>
-                  <SelectItem value="conference">{t("admin.events.types.conference")}</SelectItem>
-                  <SelectItem value="seminar">{t("admin.events.types.seminar")}</SelectItem>
-                  <SelectItem value="meetup">{t("admin.events.types.meetup")}</SelectItem>
+                  <SelectItem value="one-shot">One-Shot</SelectItem>
+                  <SelectItem value="workshop">Workshop</SelectItem>
+                  <SelectItem value="campaign">Campaign</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -402,6 +573,8 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
               ))}
             </Tabs>
           </div>
+
+          {renderImageSection()}
 
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={onClose}>

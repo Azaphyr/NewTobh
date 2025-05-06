@@ -226,7 +226,9 @@
       "workshop": "Atelier",
       "conference": "Conférence",
       "seminar": "Séminaire",
-      "meetup": "Rencontre"
+      "meetup": "Rencontre",
+      "one-shot": "One-Shot",
+      "campaign": "Campagne"
     },
     "showArchived": "Afficher les Événements Archivés",
     "statusArchived": "Archivé"
@@ -844,7 +846,8 @@
         "date": "Date de l'Événement",
         "endDate": "Date de Fin",
         "pricing": "Tarification",
-        "instructor": "Informations sur l'Instructeur"
+        "instructor": "Informations sur l'Instructeur",
+        "slugHelper": "En minuscules, sans espaces, utilisez des tirets (ex: mon-evenement)"
       },
       "edit": {
         "title": "Modifier l'Événement",
@@ -879,7 +882,9 @@
         "workshop": "Atelier",
         "conference": "Conférence",
         "seminar": "Séminaire",
-        "meetup": "Rencontre"
+        "meetup": "Rencontre",
+        "one-shot": "One-Shot",
+        "campaign": "Campagne"
       },
       "showArchived": "Afficher les Événements Archivés",
       "statusArchived": "Archivé"
@@ -971,51 +976,21 @@
     },
     "contacts": {
       "title": "Messages de Contact",
-      "searchPlaceholder": "Rechercher des messages...",
-      "loading": "Chargement des messages...",
-      "noMessages": "Aucun message trouvé",
-      "noContacts": "Aucun message de contact disponible",
-      "errorFetch": "Échec du chargement des messages",
-      "errorDelete": "Échec de la suppression du message",
-      "successDelete": "Message supprimé avec succès",
-      "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce message ?",
+      "searchPlaceholder": "Rechercher des contacts...",
+      "loading": "Chargement des contacts...",
+      "noContacts": "Aucun contact trouvé",
       "name": "Nom",
       "email": "Email",
       "subject": "Sujet",
       "message": "Message",
-      "date": "Date",
       "status": "Statut",
+      "date": "Date",
       "actions": "Actions",
       "buttonView": "Voir",
-      "buttonDelete": "Supprimer",
-      "buttonViewTooltip": "Voir les détails du message",
-      "buttonDeleteTooltip": "Supprimer ce message",
-      "statusNew": "Nouveau",
+      "buttonClose": "Fermer",
+      "buttonReply": "Répondre",
       "statusRead": "Lu",
-      "statusReplied": "Répondu",
-      "statusArchived": "Archivé",
-      "view": {
-        "title": "Détails du Message",
-        "from": "De",
-        "date": "Date de Réception",
-        "subject": "Sujet",
-        "message": "Message",
-        "buttonReply": "Répondre",
-        "buttonArchive": "Archiver",
-        "buttonDelete": "Supprimer",
-        "buttonBack": "Retour aux Messages",
-        "replyForm": {
-          "title": "Répondre au Message",
-          "subject": "Sujet",
-          "message": "Message",
-          "buttonSend": "Envoyer la Réponse",
-          "buttonSending": "Envoi en cours...",
-          "buttonCancel": "Annuler",
-          "success": "Réponse envoyée avec succès",
-          "error": "Échec de l'envoi de la réponse"
-        }
-      },
-      "showArchived": "Afficher les Messages Archivés"
+      "statusUnread": "Non lu"
     },
     "users": {
       "title": "Gestion des Utilisateurs",

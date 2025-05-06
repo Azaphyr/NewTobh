@@ -16,13 +16,14 @@ import { SiDiscord } from "react-icons/si";
 
 export default function ContactPage() {
   const searchParams = useSearchParams()
-  const subjectParam = searchParams.get("subject")
+  const subjectParam = searchParams?.get("subject")
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: subjectParam || "",
     message: "",
+    website: "", // honeypot field
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -38,21 +39,50 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, subject: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Check honeypot field - if it's filled, it's likely a bot
+    if (formData.website) {
+      // Silently reject the submission
+      setIsSubmitted(true)
+      return
+    }
+
     setIsSubmitting(true)
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form')
+      }
+
       setIsSubmitted(true)
       setFormData({
         name: "",
         email: "",
         subject: "",
         message: "",
+        website: "",
       })
-    }, 1500)
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      // You might want to show an error message to the user here
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -94,6 +124,19 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Hidden honeypot field */}
+                  <div className="hidden">
+                    <label htmlFor="website" className="sr-only">Website</label>
+                    <input
+                      type="text"
+                      id="website"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-medium">
                       {t("contact.form.labelName")} <span className="text-red-500">*</span>

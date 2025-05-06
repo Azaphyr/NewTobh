@@ -228,7 +228,8 @@
       "languageTabs": {
         "en": "English",
         "fr": "French"
-      }
+      },
+      "slugHelper": "Lowercase, no spaces, use hyphens (e.g. my-event-title)"
     },
     "edit": {
       "title": "Edit Event",
@@ -263,7 +264,9 @@
       "workshop": "Workshop",
       "conference": "Conference",
       "seminar": "Seminar",
-      "meetup": "Meetup"
+      "meetup": "Meetup",
+      "one-shot": "One-Shot",
+      "campaign": "Campaign"
     },
     "showArchived": "Show Archived Events"
   },
@@ -814,7 +817,8 @@
         "languageTabs": {
           "en": "English",
           "fr": "French"
-        }
+        },
+        "slugHelper": "Lowercase, no spaces, use hyphens (e.g. my-event-title)"
       },
       "edit": {
         "title": "Edit Event",
@@ -849,7 +853,9 @@
         "workshop": "Workshop",
         "conference": "Conference",
         "seminar": "Seminar",
-        "meetup": "Meetup"
+        "meetup": "Meetup",
+        "one-shot": "One-Shot",
+        "campaign": "Campaign"
       },
       "showArchived": "Show Archived Events"
     },
@@ -939,52 +945,22 @@
       "statusArchived": "Archived"
     },
     "contacts": {
-      "title": "Contact Messages",
-      "searchPlaceholder": "Search messages...",
-      "loading": "Loading messages...",
-      "noMessages": "No messages found",
-      "noContacts": "No contact messages available",
-      "errorFetch": "Failed to fetch messages",
-      "errorDelete": "Failed to delete message",
-      "successDelete": "Message deleted successfully",
-      "confirmDelete": "Are you sure you want to delete this message?",
+      "title": "Contact Submissions",
+      "searchPlaceholder": "Search contacts...",
+      "loading": "Loading contacts...",
+      "noContacts": "No contacts found",
       "name": "Name",
       "email": "Email",
       "subject": "Subject",
       "message": "Message",
-      "date": "Date",
       "status": "Status",
+      "date": "Date",
       "actions": "Actions",
       "buttonView": "View",
-      "buttonDelete": "Delete",
-      "buttonViewTooltip": "View message details",
-      "buttonDeleteTooltip": "Delete this message",
-      "statusNew": "New",
+      "buttonClose": "Close",
+      "buttonReply": "Reply",
       "statusRead": "Read",
-      "statusReplied": "Replied",
-      "statusArchived": "Archived",
-      "view": {
-        "title": "Message Details",
-        "from": "From",
-        "date": "Date Received",
-        "subject": "Subject",
-        "message": "Message",
-        "buttonReply": "Reply",
-        "buttonArchive": "Archive",
-        "buttonDelete": "Delete",
-        "buttonBack": "Back to Messages",
-        "replyForm": {
-          "title": "Reply to Message",
-          "subject": "Subject",
-          "message": "Message",
-          "buttonSend": "Send Reply",
-          "buttonSending": "Sending...",
-          "buttonCancel": "Cancel",
-          "success": "Reply sent successfully",
-          "error": "Failed to send reply"
-        }
-      },
-      "showArchived": "Show Archived Messages"
+      "statusUnread": "Unread"
     },
     "users": {
       "title": "User Management",

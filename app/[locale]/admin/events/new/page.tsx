@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useTranslation } from "@/lib/i18n/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,8 +13,11 @@ import { fr, enUS } from "date-fns/locale"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarIcon, MapPinIcon, UsersIcon, CreditCardIcon, UserIcon, InfoIcon, ChevronDownIcon } from "lucide-react"
+import { CalendarIcon, MapPinIcon, UsersIcon, CreditCardIcon, UserIcon, InfoIcon, ChevronDownIcon, ImageIcon, XIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
 type Language = "en" | "fr"
 
@@ -53,8 +56,10 @@ export default function NewEventPage() {
     location: true,
     pricing: true,
     instructor: true,
-    additionalInfo: true
+    additionalInfo: true,
+    image: true
   })
+  const allowedTypes = ["one-shot", "workshop", "campaign"];
   const [formData, setFormData] = useState<EventFormData>({
     slug: "",
     eventDate: "",
@@ -64,7 +69,7 @@ export default function NewEventPage() {
     price: 0,
     priceMembers: 0,
     pricePremium: 0,
-    eventType: "",
+    eventType: allowedTypes.includes("") ? "" : "workshop",
     translations: {
       en: {
         title: "",
@@ -76,6 +81,13 @@ export default function NewEventPage() {
       }
     }
   })
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+  const [isDragActive, setIsDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [cloudinaryImages, setCloudinaryImages] = useState<{ url: string; public_id: string; }[]>([]);
+  const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
 
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({
@@ -121,17 +133,59 @@ export default function NewEventPage() {
     setActiveLanguage(value as Language)
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0])
+      setImagePreviewUrl(URL.createObjectURL(e.target.files[0]))
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setImageFile(e.dataTransfer.files[0])
+      setImagePreviewUrl(URL.createObjectURL(e.dataTransfer.files[0]))
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(false)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     try {
+      const formDataToSend = new FormData()
+      formDataToSend.append("slug", formData.slug)
+      formDataToSend.append("eventDate", formData.eventDate)
+      if (formData.eventEndDate) formDataToSend.append("eventEndDate", formData.eventEndDate)
+      formDataToSend.append("location", formData.location)
+      formDataToSend.append("address", formData.address)
+      formDataToSend.append("capacity", String(formData.capacity))
+      formDataToSend.append("price", String(formData.price))
+      formDataToSend.append("priceMembers", String(formData.priceMembers))
+      formDataToSend.append("pricePremium", String(formData.pricePremium))
+      formDataToSend.append("eventType", formData.eventType)
+      formDataToSend.append("translations", JSON.stringify([
+        { ...formData.translations.en, languageCode: "en" },
+        { ...formData.translations.fr, languageCode: "fr" },
+      ]))
+      if (imageFile) {
+        formDataToSend.append("image", imageFile)
+      }
+
       const response = await fetch("/api/admin/events", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       })
 
       if (!response.ok) {
@@ -147,6 +201,28 @@ export default function NewEventPage() {
       setIsSubmitting(false)
     }
   }
+
+  const openLibrary = async () => {
+    setShowLibrary(true);
+    setIsLoadingLibrary(true);
+    try {
+      const res = await fetch('/api/cloudinary/events');
+      const data = await res.json();
+      console.log('Cloudinary API response:', data);
+      setCloudinaryImages(data.images || []);
+    } catch (err) {
+      console.error('Error fetching images from Cloudinary:', err);
+      setCloudinaryImages([]);
+    } finally {
+      setIsLoadingLibrary(false);
+    }
+  };
+
+  const handleSelectCloudinaryImage = (img: { url: string; public_id: string }) => {
+    setImagePreviewUrl(img.url);
+    setImageFile(null);
+    setShowLibrary(false);
+  };
 
   return (
     <div className="space-y-6 p-6 bg-stone-100 min-h-screen">
@@ -252,33 +328,40 @@ export default function NewEventPage() {
                     required 
                     className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">{t("admin.events.new.slugHelper")}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="eventDate" className="text-dark-mahogany">{t("admin.events.new.date")}</Label>
                     <div className="relative">
-                      <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal" />
-                      <Input 
-                        id="eventDate" 
-                        type="datetime-local" 
-                        value={formData.eventDate}
-                        onChange={(e) => handleInputChange("eventDate", e.target.value)}
-                        required 
-                        className="pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                      <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal z-10" />
+                      <DatePicker
+                        selected={formData.eventDate ? new Date(formData.eventDate) : null}
+                        onChange={(date: Date | null) => date && handleInputChange("eventDate", date.toISOString())}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
+                        className="w-full pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal rounded-md"
+                        placeholderText="Select date and time"
+                        required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="eventEndDate" className="text-dark-mahogany">{t("admin.events.new.endDate")}</Label>
                     <div className="relative">
-                      <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal" />
-                      <Input 
-                        id="eventEndDate" 
-                        type="datetime-local" 
-                        value={formData.eventEndDate}
-                        onChange={(e) => handleInputChange("eventEndDate", e.target.value)}
-                        className="pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                      <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal z-10" />
+                      <DatePicker
+                        selected={formData.eventEndDate ? new Date(formData.eventEndDate) : null}
+                        onChange={(date: Date | null) => date && handleInputChange("eventEndDate", date.toISOString())}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
+                        className="w-full pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal rounded-md"
+                        placeholderText="Select end date and time"
                       />
                     </div>
                   </div>
@@ -293,10 +376,9 @@ export default function NewEventPage() {
                       <SelectValue placeholder={t("admin.events.new.selectEventType")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="workshop">{t("admin.events.new.workshop")}</SelectItem>
-                      <SelectItem value="game">{t("admin.events.new.game")}</SelectItem>
-                      <SelectItem value="tournament">{t("admin.events.new.tournament")}</SelectItem>
-                      <SelectItem value="social">{t("admin.events.new.social")}</SelectItem>
+                      <SelectItem value="one-shot">{t("admin.events.types.one-shot")}</SelectItem>
+                      <SelectItem value="workshop">{t("admin.events.types.workshop")}</SelectItem>
+                      <SelectItem value="campaign">{t("admin.events.types.campaign")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -566,6 +648,108 @@ export default function NewEventPage() {
                     </div>
                   </TabsContent>
                 </Tabs>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        <Collapsible
+          open={openSections.image}
+          onOpenChange={() => toggleSection('image')}
+          className="w-full"
+        >
+          <Card className="border-2 border-deep-teal/20 shadow-lg hover:shadow-xl transition-shadow">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="bg-gradient-to-r from-dark-mahogany/10 to-brick-red/10 border-b border-deep-teal/20">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-dark-mahogany">
+                    Event Image
+                  </CardTitle>
+                  <ChevronDownIcon className={`w-5 h-5 text-dark-mahogany transition-transform ${openSections.image ? 'transform rotate-180' : ''}`} />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="space-y-4 pt-6">
+                <Label htmlFor="image" className="text-dark-mahogany">Event Image</Label>
+                <div className="flex flex-row items-center gap-4 mb-2">
+                  <Button type="button" variant="outline" onClick={openLibrary} className="border-deep-teal/20 text-deep-teal">
+                    Choose from Library
+                  </Button>
+                </div>
+                <label
+                  htmlFor="image"
+                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-md cursor-pointer transition-colors min-h-[180px] relative
+                    ${isDragActive ? 'border-brick-red bg-brick-red/10' : 'border-deep-teal/20 bg-white hover:border-brick-red/60'}`}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  tabIndex={0}
+                  aria-label="Event image upload area"
+                >
+                  <input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                    ref={fileInputRef}
+                    required={!imagePreviewUrl}
+                  />
+                  {imagePreviewUrl ? (
+                    <div className="relative flex flex-col items-center justify-center w-full h-full">
+                      <img
+                        src={imagePreviewUrl}
+                        alt="Preview"
+                        className="max-h-40 rounded shadow border object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={e => { e.stopPropagation(); setImageFile(null); setImagePreviewUrl(null); }}
+                        className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1 border border-gray-300 shadow"
+                        aria-label="Remove image"
+                      >
+                        <XIcon className="w-4 h-4 text-brick-red" />
+                      </button>
+                      <span className="text-xs text-muted-foreground mt-2">{imageFile?.name}</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8">
+                      <ImageIcon className="w-10 h-10 text-deep-teal mb-2" />
+                      <span className="text-deep-teal font-medium">Drag & drop or click to upload</span>
+                      <span className="text-xs text-muted-foreground mt-1">PNG, JPG, JPEG, GIF, SVG, WEBP</span>
+                    </div>
+                  )}
+                </label>
+
+                {/* Cloudinary Library Modal */}
+                <Dialog open={showLibrary} onOpenChange={setShowLibrary}>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Select an Image from Library</DialogTitle>
+                      <DialogClose asChild>
+                        <button className="absolute right-4 top-4">✕</button>
+                      </DialogClose>
+                    </DialogHeader>
+                    {isLoadingLibrary ? (
+                      <div className="text-center py-8">Loading...</div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                        {cloudinaryImages.length === 0 && <div className="col-span-3 text-center text-muted-foreground">No images found.</div>}
+                        {cloudinaryImages.map(img => (
+                          <button
+                            key={img.public_id}
+                            type="button"
+                            className="border rounded hover:border-brick-red focus:border-brick-red transition p-1 bg-white"
+                            onClick={() => handleSelectCloudinaryImage(img)}
+                          >
+                            <img src={img.url} alt={img.public_id} className="object-cover w-full h-32 rounded" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </CollapsibleContent>
           </Card>

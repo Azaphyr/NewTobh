@@ -2,6 +2,10 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import formidable from "formidable"
+import { promises as fs } from "fs"
+import { listImagesInFolder, uploadImageToFolder } from "@/lib/services/cloudinaryService"
+import { UploadApiResponse } from "cloudinary"
 
 export async function GET(
   request: Request,
@@ -44,7 +48,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const data = await request.json()
+    const body = await request.json()
     const {
       slug,
       eventType,
@@ -57,7 +61,7 @@ export async function PUT(
       priceMembers,
       pricePremium,
       translations,
-    } = data
+    } = body
 
     // Validate required fields
     if (!slug || !eventType || !eventDate || !location || !capacity) {
@@ -82,21 +86,25 @@ export async function PUT(
       data: {
         slug,
         eventType,
-        eventDate,
-        eventEndDate,
+        eventDate: new Date(eventDate),
+        eventEndDate: eventEndDate ? new Date(eventEndDate) : null,
         location,
         address,
-        capacity,
-        price,
-        priceMembers,
-        pricePremium,
+        capacity: Number(capacity),
+        price: price ? Number(price) : null,
+        priceMembers: priceMembers ? Number(priceMembers) : null,
+        pricePremium: pricePremium ? Number(pricePremium) : null,
         translations: {
           deleteMany: {},
           create: translations.map((translation: any) => ({
             languageCode: translation.languageCode,
             title: translation.title,
             description: translation.description,
-            shortDescription: translation.shortDescription,
+            longDescription: translation.longDescription,
+            requirements: translation.requirements,
+            additionalInfo: translation.additionalInfo,
+            instructorName: translation.instructorName,
+            instructorBio: translation.instructorBio,
           })),
         },
       },

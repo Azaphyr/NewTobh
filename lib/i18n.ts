@@ -79,7 +79,7 @@ export const getTranslatedContent = async (
     // First try to get the translation in the requested locale
     const translation = await prisma.eventTranslation.findFirst({
       where: {
-        eventId: id,
+        eventId: id.toString(),
         languageCode: locale,
       },
     })
@@ -88,7 +88,7 @@ export const getTranslatedContent = async (
     if (!translation && defaultLocale && locale !== defaultLocale.code) {
       return prisma.eventTranslation.findFirst({
         where: {
-          eventId: id,
+          eventId: id.toString(),
           languageCode: defaultLocale.code,
         },
       })
@@ -99,7 +99,7 @@ export const getTranslatedContent = async (
     // First try to get the translation in the requested locale
     const translation = await prisma.blogPostTranslation.findFirst({
       where: {
-        blogPostId: id,
+        blogPostId: id.toString(),
         languageCode: locale,
       },
     })
@@ -108,7 +108,7 @@ export const getTranslatedContent = async (
     if (!translation && defaultLocale && locale !== defaultLocale.code) {
       return prisma.blogPostTranslation.findFirst({
         where: {
-          blogPostId: id,
+          blogPostId: id.toString(),
           languageCode: defaultLocale.code,
         },
       })

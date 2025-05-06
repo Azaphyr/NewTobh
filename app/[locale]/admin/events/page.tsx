@@ -58,6 +58,7 @@ export default function AdminEventsPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("active")
+  const [refreshFlag, setRefreshFlag] = useState(false)
 
   const fetchEvents = async (showArchived: boolean) => {
     try {
@@ -67,7 +68,7 @@ export default function AdminEventsPage() {
         throw new Error("Failed to fetch events")
       }
       const data = await response.json()
-      setEvents(data)
+      setEvents(data.events)
     } catch (error) {
       console.error("Error fetching events:", error)
       toast.error(t("admin.events.errorFetching"))
@@ -78,7 +79,7 @@ export default function AdminEventsPage() {
 
   useEffect(() => {
     fetchEvents(activeTab === "archived")
-  }, [activeTab])
+  }, [activeTab, refreshFlag])
 
   const formatDate = (date: string) => {
     return format(new Date(date), "PPP", { locale: locale === "fr" ? fr : enUS })
@@ -164,10 +165,29 @@ export default function AdminEventsPage() {
       }
 
       toast.success(event.isArchived ? t("admin.events.successUnarchive") : t("admin.events.successArchive"))
-      fetchEvents(activeTab === "archived")
+      setRefreshFlag(flag => !flag)
     } catch (error) {
       console.error("Error updating event:", error)
       toast.error(t("admin.events.errorUpdate"))
+    }
+  }
+
+  const handlePermanentDelete = async (event: Event) => {
+    if (!confirm(t("admin.events.confirmDelete"))) {
+      return
+    }
+    try {
+      const response = await fetch(`/api/admin/events/${event.id}`, {
+        method: "DELETE",
+      })
+      if (!response.ok) {
+        throw new Error("Failed to delete event")
+      }
+      toast.success(t("admin.events.successDelete"))
+      setRefreshFlag(flag => !flag)
+    } catch (error) {
+      console.error("Error deleting event:", error)
+      toast.error(t("admin.events.errorDelete"))
     }
   }
 
@@ -372,6 +392,25 @@ export default function AdminEventsPage() {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
+                            {event.isArchived && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => handlePermanentDelete(event)}
+                                      className="h-8 w-8"
+                                    >
+                                      <Trash2 className="h-4 w-4 text-brick-red" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>{t("admin.events.buttonDelete")}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
