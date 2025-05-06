@@ -36,6 +36,7 @@ interface Event {
   priceMembers?: number;
   eventType: string;
   translations: EventTranslation[];
+  isArchived: boolean;
 }
 
 export default function EventsPage() {
@@ -44,6 +45,7 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const { t, locale } = useTranslation();
+  const [activeTab, setActiveTab] = useState("actual");
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -86,10 +88,31 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* Events Listing */}
+      {/* Events Listing with Tabs */}
       <section className="py-16">
         <div className="container">
-          <EventsList events={events} />
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="mb-6 flex rounded-lg shadow border border-stone-200 overflow-hidden bg-white">
+              <TabsTrigger
+                value="actual"
+                className="flex-1 px-6 py-3 text-lg font-semibold transition-colors data-[state=active]:bg-brick-red data-[state=active]:text-white data-[state=inactive]:bg-stone-100 data-[state=inactive]:text-brick-red focus:outline-none"
+              >
+                {t("events.statusUpcoming")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="archived"
+                className="flex-1 px-6 py-3 text-lg font-semibold transition-colors data-[state=active]:bg-brick-red data-[state=active]:text-white data-[state=inactive]:bg-stone-100 data-[state=inactive]:text-brick-red focus:outline-none"
+              >
+                {t("events.statusPast")}
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="actual">
+              <EventsList events={events.filter(e => !e.isArchived)} />
+            </TabsContent>
+            <TabsContent value="archived">
+              <EventsList events={events.filter(e => e.isArchived)} />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 

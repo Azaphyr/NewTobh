@@ -63,6 +63,9 @@ export async function PUT(
       priceMembers,
       pricePremium,
       translations,
+      language,
+      modifiedBy,
+      gameType,
     } = body
 
     // Validate required fields
@@ -109,6 +112,9 @@ export async function PUT(
             instructorBio: translation.instructorBio,
           })),
         },
+        language,
+        modifiedBy: session.user?.name || null,
+        gameType,
       },
       include: {
         translations: true,
@@ -137,10 +143,10 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const { isArchived } = body
+    const { isArchived, language, modifiedBy, gameType } = body
 
-    if (typeof isArchived !== "boolean") {
-      return new NextResponse("Invalid isArchived value", { status: 400 })
+    if (typeof isArchived !== "boolean" && typeof language === "undefined" && typeof modifiedBy === "undefined" && typeof gameType === "undefined") {
+      return new NextResponse("No valid fields to update", { status: 400 })
     }
 
     const event = await prisma.event.update({
@@ -148,7 +154,10 @@ export async function PATCH(
         id: params.id
       },
       data: {
-        isArchived
+        ...(typeof isArchived === "boolean" ? { isArchived } : {}),
+        ...(typeof language !== "undefined" ? { language } : {}),
+        ...(typeof modifiedBy !== "undefined" ? { modifiedBy } : {}),
+        ...(typeof gameType !== "undefined" ? { gameType } : {}),
       }
     })
 

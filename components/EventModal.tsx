@@ -34,6 +34,7 @@ interface EventModalProps {
     priceMembers?: number;
     pricePremium?: number;
     eventType: string;
+    gameType?: string;
     translations?: EventTranslation[];
   };
   onClose: () => void;
@@ -59,6 +60,7 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose }) => {
     instructorName: undefined,
     instructorBio: undefined
   };
+  const language = (event as any).language || translation.languageCode;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -84,9 +86,20 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose }) => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
-              <Badge className="bg-golden-amber hover:bg-golden-amber/90 text-white mb-2">
-                {t(`events.types.${event.eventType}`)}
-              </Badge>
+              <div className="flex flex-row items-center gap-2 mb-2">
+                <Badge className="bg-golden-amber hover:bg-golden-amber/90 text-white">
+                  {t(`events.types.${event.eventType}`)}
+                </Badge>
+                {event.gameType && (
+                  <Badge className="bg-deep-teal/90 text-white">{event.gameType}</Badge>
+                )}
+                {language === "en" && (
+                  <Badge className="bg-blue-600 text-white">English</Badge>
+                )}
+                {language === "fr" && (
+                  <Badge className="bg-red-600 text-white">Français</Badge>
+                )}
+              </div>
               <h2 className="text-2xl font-serif font-bold text-white">{translation.title}</h2>
             </div>
           </div>
@@ -121,29 +134,6 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose }) => {
                 <Users className="h-5 w-5 text-deep-teal" />
                 <span>{t('events.spotsLeft')} {event.spotsLeft}/{event.capacity}</span>
               </div>
-              {event.price && (
-                <div className="flex items-center gap-2 text-gray-600">
-                  <DollarSign className="h-5 w-5 text-deep-teal" />
-                  <div>
-                    {event.pricePremium ? (
-                      <>
-                        <p className="line-through text-gray-400">€{event.price}</p>
-                        <p className="text-brick-red font-semibold">€{event.pricePremium} {t('events.pricePremium')}</p>
-                        {event.priceMembers && (
-                          <p className="text-deep-teal font-semibold">€{event.priceMembers} {t('events.priceMembers')}</p>
-                        )}
-                      </>
-                    ) : event.priceMembers ? (
-                      <>
-                        <p className="line-through text-gray-400">€{event.price}</p>
-                        <p className="text-brick-red font-semibold">€{event.priceMembers} {t('events.priceMembers')}</p>
-                      </>
-                    ) : (
-                      <p>€{event.price}</p>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -203,12 +193,6 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose }) => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
-            <Button
-              className="flex-1 bg-brick-red hover:bg-brick-red/90 text-white"
-              size="lg"
-            >
-              {t('events.registerNow')}
-            </Button>
             <Button
               variant="outline"
               className="flex-1"

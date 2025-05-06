@@ -67,7 +67,7 @@ export default async function handler(
     // Update the event with the new image URL
     const updatedEvent = await prisma.event.update({
       where: { id },
-      data: { imageUrl },
+      data: { imageUrl, modifiedBy: session.user?.name || null },
       include: {
         translations: true,
       },

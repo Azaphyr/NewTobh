@@ -43,6 +43,8 @@ interface Event {
   pricePremium?: number;
   eventType: string;
   translations: EventTranslation[];
+  language?: string;
+  gameType?: string;
 }
 
 interface EventsListProps {
@@ -200,6 +202,8 @@ export function EventsList({ events }: EventsListProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => {
             const translation = event.translations[0] || {};
+            const language = event.language;
+            const flagSrc = language === "fr" ? "/french-flag.jpg" : "/english-flag.png";
             const startTime = format(new Date(event.eventDate), "h:mm a");
             const endTime = event.eventEndDate
               ? format(new Date(event.eventEndDate), "h:mm a")
@@ -218,9 +222,23 @@ export function EventsList({ events }: EventsListProps) {
                     height={200}
                     className="w-full h-48 object-cover transition-transform group-hover:scale-105"
                   />
-                  <Badge className="absolute top-3 right-3 bg-golden-amber hover:bg-golden-amber/90 text-white">
-                    {event.eventType}
-                  </Badge>
+                  {/* Badges and flag row below the image */}
+                  <div className="flex flex-row items-center gap-2 px-4 py-2 bg-white border-b border-stone-200">
+                    <Badge className="bg-golden-amber hover:bg-golden-amber/90 text-white">
+                      {event.eventType}
+                    </Badge>
+                    {event.gameType ? (
+                      <Badge className="bg-deep-teal/90 text-white">
+                        {event.gameType}
+                      </Badge>
+                    ) : null}
+                    {language === "en" && (
+                      <Badge className="bg-blue-600 text-white">English</Badge>
+                    )}
+                    {language === "fr" && (
+                      <Badge className="bg-red-600 text-white">Français</Badge>
+                    )}
+                  </div>
                 </div>
                 <CardHeader>
                   <CardTitle className="font-serif">

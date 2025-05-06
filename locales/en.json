@@ -177,6 +177,7 @@
     "statusOngoing": "Ongoing",
     "statusCompleted": "Completed",
     "statusArchived": "Archived",
+    "statusPast": "Past Events",
     "noDescription": "No description available",
     "spotsLeft": "spots left",
     "noRequirements": "No specific requirements",
@@ -238,7 +239,12 @@
         "en": "English",
         "fr": "French"
       },
-      "slugHelper": "Lowercase, no spaces, use hyphens (e.g. my-event-title)"
+      "slugHelper": "Lowercase, no spaces, use hyphens (e.g. my-event-title)",
+      "language": "Language",
+      "gameType": "Game Type",
+      "addGameType": "Add",
+      "selectLanguage": "Select language",
+      "selectOrAddGameType": "Select or add a game type"
     },
     "edit": {
       "title": "Edit Event",
@@ -828,7 +834,12 @@
           "en": "English",
           "fr": "French"
         },
-        "slugHelper": "Lowercase, no spaces, use hyphens (e.g. my-event-title)"
+        "slugHelper": "Lowercase, no spaces, use hyphens (e.g. my-event-title)",
+        "language": "Language",
+        "gameType": "Game Type",
+        "addGameType": "Add",
+        "selectLanguage": "Select language",
+        "selectOrAddGameType": "Select or add a game type"
       },
       "edit": {
         "title": "Edit Event",

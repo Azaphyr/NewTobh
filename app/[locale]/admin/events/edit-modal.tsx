@@ -41,6 +41,8 @@ interface Event {
   pricePremium?: number
   eventType: string
   translations: EventTranslation[]
+  language?: "en" | "fr"
+  gameType?: string
 }
 
 interface EditModalProps {
@@ -64,6 +66,8 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
   const [showLibrary, setShowLibrary] = useState(false)
   const [cloudinaryImages, setCloudinaryImages] = useState<{ url: string; public_id: string; }[]>([])
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false)
+  const [gameTypes, setGameTypes] = useState<string[]>(["D&D", "Pathfinder", "Call of Cthulhu"])
+  const [newGameType, setNewGameType] = useState("")
 
   useEffect(() => {
     if (event && isOpen) {
@@ -91,6 +95,8 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
             priceMembers: data.priceMembers,
             pricePremium: data.pricePremium,
             eventType: allowedTypes.includes(data.eventType) ? data.eventType : "workshop",
+            language: toLanguage(data.language),
+            gameType: data.gameType || "",
           }
           console.log('Initializing form data:', initialFormData)
           setFormData(initialFormData)
@@ -193,6 +199,8 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
           price: formData.price,
           priceMembers: formData.priceMembers,
           pricePremium: formData.pricePremium,
+          language: formData.language,
+          gameType: formData.gameType,
           translations: Object.values(translations),
         }),
       })
@@ -401,6 +409,59 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="language" className="text-dark-mahogany">{t("admin.events.new.language")}</Label>
+              <Select
+                value={formData.language}
+                onValueChange={(value) => setFormData({ ...formData, language: toLanguage(value) })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("admin.events.new.selectLanguage")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">{t("admin.events.new.languageTabs.en")}</SelectItem>
+                  <SelectItem value="fr">{t("admin.events.new.languageTabs.fr")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="gameType" className="text-dark-mahogany">{t("admin.events.new.gameType")}</Label>
+              <Select
+                value={formData.gameType}
+                onValueChange={(value) => setFormData({ ...formData, gameType: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("admin.events.new.selectOrAddGameType")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {gameTypes.map((type) => (
+                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2 mt-2">
+                <Input
+                  type="text"
+                  placeholder={t("admin.events.new.addGameType")}
+                  value={newGameType}
+                  onChange={(e) => setNewGameType(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (newGameType && !gameTypes.includes(newGameType)) {
+                      setGameTypes([...gameTypes, newGameType]);
+                      setFormData((prev) => ({ ...prev, gameType: newGameType }));
+                      setNewGameType("");
+                    }
+                  }}
+                >
+                  {t("admin.events.new.addGameType")}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="eventDate">{t("admin.events.edit.eventDate")}</Label>
               <Input
                 id="eventDate"
@@ -588,4 +649,8 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditModalProp
       </DialogContent>
     </Dialog>
   )
+}
+
+function toLanguage(val: any): "en" | "fr" {
+  return val === "fr" ? "fr" : "en";
 } 

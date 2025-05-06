@@ -140,6 +140,8 @@
     "statusUpcoming": "À venir",
     "statusOngoing": "En cours",
     "statusCompleted": "Terminé",
+    "statusArchived": "Archivé",
+    "statusPast": "Événements Passés",
     "noDescription": "Aucune description disponible",
     "spotsLeft": "places restantes",
     "noRequirements": "Aucune exigence particulière",
@@ -832,8 +834,6 @@
         "instructorBio": "Biographie de l'Instructeur",
         "shortDescription": "Description Courte",
         "slug": "Slug",
-        "date": "Date de l'Événement",
-        "endDate": "Date de Fin (Optionnel)",
         "location": "Lieu",
         "address": "Adresse",
         "capacity": "Capacité",
@@ -857,7 +857,12 @@
         "endDate": "Date de Fin",
         "pricing": "Tarification",
         "instructor": "Informations sur l'Instructeur",
-        "slugHelper": "En minuscules, sans espaces, utilisez des tirets (ex: mon-evenement)"
+        "slugHelper": "En minuscules, sans espaces, utilisez des tirets (ex: mon-evenement)",
+        "language": "Langue",
+        "gameType": "Type de jeu",
+        "addGameType": "Ajouter",
+        "selectLanguage": "Sélectionnez la langue",
+        "selectOrAddGameType": "Sélectionnez ou ajoutez un type de jeu"
       },
       "edit": {
         "title": "Modifier l'Événement",
@@ -998,7 +1003,7 @@
       "actions": "Actions",
       "buttonView": "Voir",
       "buttonClose": "Fermer",
-        "buttonReply": "Répondre",
+      "buttonReply": "Répondre",
       "statusRead": "Lu",
       "statusUnread": "Non lu"
     },

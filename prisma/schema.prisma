@@ -49,6 +49,9 @@ model Event {
   createdBy     AdminUser?          @relation(fields: [createdById], references: [id])
   registrations EventRegistration[]
   translations  EventTranslation[]
+  language      String?              
+  modifiedBy    String?
+  gameType      String?
 }
 
 model EventTranslation {

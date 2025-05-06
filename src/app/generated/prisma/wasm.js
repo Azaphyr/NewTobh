@@ -152,7 +152,10 @@ exports.Prisma.EventScalarFieldEnum = {
   isArchived: 'isArchived',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  createdById: 'createdById'
+  createdById: 'createdById',
+  language: 'language',
+  modifiedBy: 'modifiedBy',
+  gameType: 'gameType'
 };
 
 exports.Prisma.EventTranslationScalarFieldEnum = {

@@ -4559,6 +4559,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     createdById: string | null
+    language: string | null
+    modifiedBy: string | null
+    gameType: string | null
   }
 
   export type EventMaxAggregateOutputType = {
@@ -4579,6 +4582,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     createdById: string | null
+    language: string | null
+    modifiedBy: string | null
+    gameType: string | null
   }
 
   export type EventCountAggregateOutputType = {
@@ -4599,6 +4605,9 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     createdById: number
+    language: number
+    modifiedBy: number
+    gameType: number
     _all: number
   }
 
@@ -4637,6 +4646,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     createdById?: true
+    language?: true
+    modifiedBy?: true
+    gameType?: true
   }
 
   export type EventMaxAggregateInputType = {
@@ -4657,6 +4669,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     createdById?: true
+    language?: true
+    modifiedBy?: true
+    gameType?: true
   }
 
   export type EventCountAggregateInputType = {
@@ -4677,6 +4692,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     createdById?: true
+    language?: true
+    modifiedBy?: true
+    gameType?: true
     _all?: true
   }
 
@@ -4784,6 +4802,9 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     createdById: string | null
+    language: string | null
+    modifiedBy: string | null
+    gameType: string | null
     _count: EventCountAggregateOutputType | null
     _avg: EventAvgAggregateOutputType | null
     _sum: EventSumAggregateOutputType | null
@@ -4823,6 +4844,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
+    language?: boolean
+    modifiedBy?: boolean
+    gameType?: boolean
     createdBy?: boolean | Event$createdByArgs<ExtArgs>
     registrations?: boolean | Event$registrationsArgs<ExtArgs>
     translations?: boolean | Event$translationsArgs<ExtArgs>
@@ -4847,6 +4871,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
+    language?: boolean
+    modifiedBy?: boolean
+    gameType?: boolean
     createdBy?: boolean | Event$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -4868,6 +4895,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
+    language?: boolean
+    modifiedBy?: boolean
+    gameType?: boolean
     createdBy?: boolean | Event$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -4889,9 +4919,12 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
+    language?: boolean
+    modifiedBy?: boolean
+    gameType?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "imageUrl" | "eventDate" | "eventEndDate" | "location" | "address" | "capacity" | "spotsLeft" | "price" | "priceMembers" | "pricePremium" | "eventType" | "isArchived" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "imageUrl" | "eventDate" | "eventEndDate" | "location" | "address" | "capacity" | "spotsLeft" | "price" | "priceMembers" | "pricePremium" | "eventType" | "isArchived" | "createdAt" | "updatedAt" | "createdById" | "language" | "modifiedBy" | "gameType", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | Event$createdByArgs<ExtArgs>
     registrations?: boolean | Event$registrationsArgs<ExtArgs>
@@ -4930,6 +4963,9 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       createdById: string | null
+      language: string | null
+      modifiedBy: string | null
+      gameType: string | null
     }, ExtArgs["result"]["event"]>
     composites: {}
   }
@@ -5373,6 +5409,9 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Event", 'DateTime'>
     readonly updatedAt: FieldRef<"Event", 'DateTime'>
     readonly createdById: FieldRef<"Event", 'String'>
+    readonly language: FieldRef<"Event", 'String'>
+    readonly modifiedBy: FieldRef<"Event", 'String'>
+    readonly gameType: FieldRef<"Event", 'String'>
   }
     
 
@@ -19306,7 +19345,10 @@ export namespace Prisma {
     isArchived: 'isArchived',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    createdById: 'createdById'
+    createdById: 'createdById',
+    language: 'language',
+    modifiedBy: 'modifiedBy',
+    gameType: 'gameType'
   };
 
   export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
@@ -19779,6 +19821,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Event"> | Date | string
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     createdById?: StringNullableFilter<"Event"> | string | null
+    language?: StringNullableFilter<"Event"> | string | null
+    modifiedBy?: StringNullableFilter<"Event"> | string | null
+    gameType?: StringNullableFilter<"Event"> | string | null
     createdBy?: XOR<AdminUserNullableScalarRelationFilter, AdminUserWhereInput> | null
     registrations?: EventRegistrationListRelationFilter
     translations?: EventTranslationListRelationFilter
@@ -19802,6 +19847,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrderInput | SortOrder
+    language?: SortOrderInput | SortOrder
+    modifiedBy?: SortOrderInput | SortOrder
+    gameType?: SortOrderInput | SortOrder
     createdBy?: AdminUserOrderByWithRelationInput
     registrations?: EventRegistrationOrderByRelationAggregateInput
     translations?: EventTranslationOrderByRelationAggregateInput
@@ -19828,6 +19876,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Event"> | Date | string
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     createdById?: StringNullableFilter<"Event"> | string | null
+    language?: StringNullableFilter<"Event"> | string | null
+    modifiedBy?: StringNullableFilter<"Event"> | string | null
+    gameType?: StringNullableFilter<"Event"> | string | null
     createdBy?: XOR<AdminUserNullableScalarRelationFilter, AdminUserWhereInput> | null
     registrations?: EventRegistrationListRelationFilter
     translations?: EventTranslationListRelationFilter
@@ -19851,6 +19902,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrderInput | SortOrder
+    language?: SortOrderInput | SortOrder
+    modifiedBy?: SortOrderInput | SortOrder
+    gameType?: SortOrderInput | SortOrder
     _count?: EventCountOrderByAggregateInput
     _avg?: EventAvgOrderByAggregateInput
     _max?: EventMaxOrderByAggregateInput
@@ -19879,6 +19933,9 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
     createdById?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    language?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    modifiedBy?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    gameType?: StringNullableWithAggregatesFilter<"Event"> | string | null
   }
 
   export type EventTranslationWhereInput = {
@@ -20990,6 +21047,9 @@ export namespace Prisma {
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     createdBy?: AdminUserCreateNestedOneWithoutEventsInput
     registrations?: EventRegistrationCreateNestedManyWithoutEventInput
     translations?: EventTranslationCreateNestedManyWithoutEventInput
@@ -21013,6 +21073,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     registrations?: EventRegistrationUncheckedCreateNestedManyWithoutEventInput
     translations?: EventTranslationUncheckedCreateNestedManyWithoutEventInput
   }
@@ -21034,6 +21097,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: AdminUserUpdateOneWithoutEventsNestedInput
     registrations?: EventRegistrationUpdateManyWithoutEventNestedInput
     translations?: EventTranslationUpdateManyWithoutEventNestedInput
@@ -21057,6 +21123,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     registrations?: EventRegistrationUncheckedUpdateManyWithoutEventNestedInput
     translations?: EventTranslationUncheckedUpdateManyWithoutEventNestedInput
   }
@@ -21079,6 +21148,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
   }
 
   export type EventUpdateManyMutationInput = {
@@ -21098,6 +21170,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EventUncheckedUpdateManyInput = {
@@ -21118,6 +21193,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EventTranslationCreateInput = {
@@ -22468,6 +22546,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
+    language?: SortOrder
+    modifiedBy?: SortOrder
+    gameType?: SortOrder
   }
 
   export type EventAvgOrderByAggregateInput = {
@@ -22496,6 +22577,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
+    language?: SortOrder
+    modifiedBy?: SortOrder
+    gameType?: SortOrder
   }
 
   export type EventMinOrderByAggregateInput = {
@@ -22516,6 +22600,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
+    language?: SortOrder
+    modifiedBy?: SortOrder
+    gameType?: SortOrder
   }
 
   export type EventSumOrderByAggregateInput = {
@@ -24132,6 +24219,9 @@ export namespace Prisma {
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     registrations?: EventRegistrationCreateNestedManyWithoutEventInput
     translations?: EventTranslationCreateNestedManyWithoutEventInput
   }
@@ -24153,6 +24243,9 @@ export namespace Prisma {
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     registrations?: EventRegistrationUncheckedCreateNestedManyWithoutEventInput
     translations?: EventTranslationUncheckedCreateNestedManyWithoutEventInput
   }
@@ -24239,6 +24332,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Event"> | Date | string
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     createdById?: StringNullableFilter<"Event"> | string | null
+    language?: StringNullableFilter<"Event"> | string | null
+    modifiedBy?: StringNullableFilter<"Event"> | string | null
+    gameType?: StringNullableFilter<"Event"> | string | null
   }
 
   export type BlogPostTranslationCreateWithoutLanguageInput = {
@@ -24604,6 +24700,9 @@ export namespace Prisma {
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     createdBy?: AdminUserCreateNestedOneWithoutEventsInput
     registrations?: EventRegistrationCreateNestedManyWithoutEventInput
   }
@@ -24626,6 +24725,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     registrations?: EventRegistrationUncheckedCreateNestedManyWithoutEventInput
   }
 
@@ -24683,6 +24785,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: AdminUserUpdateOneWithoutEventsNestedInput
     registrations?: EventRegistrationUpdateManyWithoutEventNestedInput
   }
@@ -24705,6 +24810,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     registrations?: EventRegistrationUncheckedUpdateManyWithoutEventNestedInput
   }
 
@@ -24982,6 +25090,9 @@ export namespace Prisma {
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     createdBy?: AdminUserCreateNestedOneWithoutEventsInput
     translations?: EventTranslationCreateNestedManyWithoutEventInput
   }
@@ -25004,6 +25115,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
     translations?: EventTranslationUncheckedCreateNestedManyWithoutEventInput
   }
 
@@ -25040,6 +25154,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: AdminUserUpdateOneWithoutEventsNestedInput
     translations?: EventTranslationUpdateManyWithoutEventNestedInput
   }
@@ -25062,6 +25179,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     translations?: EventTranslationUncheckedUpdateManyWithoutEventNestedInput
   }
 
@@ -25145,6 +25265,9 @@ export namespace Prisma {
     isArchived?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    language?: string | null
+    modifiedBy?: string | null
+    gameType?: string | null
   }
 
   export type BlogPostUpdateWithoutAuthorInput = {
@@ -25211,6 +25334,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     registrations?: EventRegistrationUpdateManyWithoutEventNestedInput
     translations?: EventTranslationUpdateManyWithoutEventNestedInput
   }
@@ -25232,6 +25358,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
     registrations?: EventRegistrationUncheckedUpdateManyWithoutEventNestedInput
     translations?: EventTranslationUncheckedUpdateManyWithoutEventNestedInput
   }
@@ -25253,6 +25382,9 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    modifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    gameType?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlogPostTranslationCreateManyLanguageInput = {

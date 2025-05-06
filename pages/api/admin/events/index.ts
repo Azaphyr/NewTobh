@@ -53,6 +53,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         priceMembers,
         eventType,
         translations,
+        language,
+        modifiedBy,
+        gameType,
       } = fields;
 
       // Handle possible array values from formidable
@@ -98,6 +101,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           priceMembers: priceMembers ? getNumber(priceMembers) : undefined,
           eventType: getString(eventType),
           createdById: session.user.id,
+          language: language ? getString(language) : undefined,
+          modifiedBy: modifiedBy ? getString(modifiedBy) : undefined,
+          gameType: gameType ? getString(gameType) : undefined,
           translations: {
             create: JSON.parse(getString(translations)).map((t: any) => ({
               languageCode: t.languageCode,

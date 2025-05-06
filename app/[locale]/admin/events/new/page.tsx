@@ -33,6 +33,8 @@ interface EventFormData {
   priceMembers: number
   pricePremium: number
   eventType: string
+  language: "en" | "fr"
+  gameType: string
   translations: {
     [key in Language]: {
       title: string
@@ -60,6 +62,8 @@ export default function NewEventPage() {
     image: true
   })
   const allowedTypes = ["one-shot", "workshop", "campaign"];
+  const [gameTypes, setGameTypes] = useState<string[]>(["D&D", "Pathfinder", "Call of Cthulhu"]);
+  const [newGameType, setNewGameType] = useState("");
   const [formData, setFormData] = useState<EventFormData>({
     slug: "",
     eventDate: "",
@@ -70,6 +74,8 @@ export default function NewEventPage() {
     priceMembers: 0,
     pricePremium: 0,
     eventType: allowedTypes.includes("") ? "" : "workshop",
+    language: "en",
+    gameType: "",
     translations: {
       en: {
         title: "",
@@ -108,6 +114,8 @@ export default function NewEventPage() {
         priceMembers: memberPrice,
         pricePremium: premiumPrice
       }))
+    } else if (field === "language" || field === "gameType") {
+      setFormData(prev => ({ ...prev, [field]: value }))
     } else {
       setFormData(prev => ({
         ...prev,
@@ -175,6 +183,8 @@ export default function NewEventPage() {
       formDataToSend.append("priceMembers", String(formData.priceMembers))
       formDataToSend.append("pricePremium", String(formData.pricePremium))
       formDataToSend.append("eventType", formData.eventType)
+      formDataToSend.append("language", formData.language)
+      formDataToSend.append("gameType", formData.gameType)
       formDataToSend.append("translations", JSON.stringify([
         { ...formData.translations.en, languageCode: "en" },
         { ...formData.translations.fr, languageCode: "fr" },
@@ -381,6 +391,57 @@ export default function NewEventPage() {
                       <SelectItem value="campaign">{t("admin.events.types.campaign")}</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="language" className="text-dark-mahogany">{t("admin.events.new.language")}</Label>
+                  <Select
+                    value={formData.language}
+                    onValueChange={(value) => handleInputChange("language", value)}
+                  >
+                    <SelectTrigger className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal">
+                      <SelectValue placeholder={t("admin.events.new.selectLanguage")}/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">{t("admin.events.new.languageTabs.en")}</SelectItem>
+                      <SelectItem value="fr">{t("admin.events.new.languageTabs.fr")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="gameType" className="text-dark-mahogany">{t("admin.events.new.gameType")}</Label>
+                  <Select
+                    value={formData.gameType}
+                    onValueChange={(value) => handleInputChange("gameType", value)}
+                  >
+                    <SelectTrigger className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal">
+                      <SelectValue placeholder={t("admin.events.new.selectOrAddGameType")}/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {gameTypes.map((type) => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="flex gap-2 mt-2">
+                    <Input
+                      type="text"
+                      placeholder={t("admin.events.new.addGameType")}
+                      value={newGameType}
+                      onChange={(e) => setNewGameType(e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (newGameType && !gameTypes.includes(newGameType)) {
+                          setGameTypes([...gameTypes, newGameType]);
+                          setFormData((prev) => ({ ...prev, gameType: newGameType }));
+                          setNewGameType("");
+                        }
+                      }}
+                    >
+                      {t("admin.events.new.addGameType")}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </CollapsibleContent>
