@@ -140,7 +140,16 @@
     "statusUpcoming": "À venir",
     "statusOngoing": "En cours",
     "statusCompleted": "Terminé",
-    "titleHostEvent": "Organisez Votre Propre Événement",
+    "noDescription": "Aucune description disponible",
+    "spotsLeft": "places restantes",
+    "noRequirements": "Aucune exigence particulière",
+    "noInstructor": "Aucune information sur l'instructeur disponible",
+    "noAdditionalInfo": "Aucune information supplémentaire disponible",
+    "registerNow": "S'inscrire maintenant",
+    "close": "Fermer",
+    "pricePremium": "Prix Membre Premium",
+    "priceMembers": "Prix Membre",
+    "titleHostEvent": "Organiser Votre Propre Événement",
     "descriptionHostEvent": "Vous avez une idée d'événement ? Nous recherchons toujours des membres passionnés pour organiser des parties, des ateliers ou d'autres activités.",
     "descriptionHostEvent2": "Que vous soyez un Maître de Jeu expérimenté ou débutant, nous fournissons un soutien et des ressources pour faire de votre événement un succès.",
     "buttonHostEvent": "Proposer un Événement",
@@ -231,7 +240,8 @@
       "campaign": "Campagne"
     },
     "showArchived": "Afficher les Événements Archivés",
-    "statusArchived": "Archivé"
+    "statusArchived": "Archivé",
+    "imageAlt": "Image de l'événement pour"
   },
   "eventList": {
     "filters": "Filtres",
@@ -988,7 +998,7 @@
       "actions": "Actions",
       "buttonView": "Voir",
       "buttonClose": "Fermer",
-      "buttonReply": "Répondre",
+        "buttonReply": "Répondre",
       "statusRead": "Lu",
       "statusUnread": "Non lu"
     },

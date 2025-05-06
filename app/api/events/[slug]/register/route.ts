@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { sendEventRegistrationConfirmation } from "@/lib/email"
+import { sendEventRegistrationConfirmation } from "@/lib/email/email"
 
 export async function POST(request: NextRequest, { params }: { params: { slug: string } }) {
   try {

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { sendContactFormEmail } from "@/lib/email"
+import { sendContactFormEmail } from "@/lib/email/email"
 
 // Rate limiting configuration from environment variables
 const RATE_LIMIT_WINDOW = parseInt(process.env.RATE_LIMIT_WINDOW || "3600000") // Default to 1 hour if not set
@@ -68,11 +68,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, email, subject, message } = body
+    const { name, email, subject, message, language = 'en' } = body
 
     // Basic validation
     if (!name || !email || !subject || !message) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    }
+
+    // Validate language
+    if (language && !['en', 'fr'].includes(language)) {
+      return NextResponse.json({ error: "Invalid language" }, { status: 400 })
     }
 
     // Additional bot protection checks
@@ -97,11 +102,12 @@ export async function POST(request: NextRequest) {
         email,
         subject,
         message,
+        language,
       },
     })
 
     // Send email notification
-    await sendContactFormEmail(name, email, subject, message)
+    await sendContactFormEmail(name, email, subject, message, language)
 
     return NextResponse.json({ success: true, id: submission.id })
   } catch (error) {

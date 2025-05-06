@@ -177,6 +177,15 @@
     "statusOngoing": "Ongoing",
     "statusCompleted": "Completed",
     "statusArchived": "Archived",
+    "noDescription": "No description available",
+    "spotsLeft": "spots left",
+    "noRequirements": "No specific requirements",
+    "noInstructor": "No instructor information available",
+    "noAdditionalInfo": "No additional information available",
+    "registerNow": "Register Now",
+    "close": "Close",
+    "pricePremium": "Premium Member Price",
+    "priceMembers": "Member Price",
     "titleHostEvent": "Host Your Own Event",
     "descriptionHostEvent": "Have an idea for an event? We're always looking for passionate community members to host games, workshops, or other activities.",
     "descriptionHostEvent2": "Whether you're an experienced Game Master or just starting out, we provide support and resources to help make your event a success.",
@@ -268,7 +277,8 @@
       "one-shot": "One-Shot",
       "campaign": "Campaign"
     },
-    "showArchived": "Show Archived Events"
+    "showArchived": "Show Archived Events",
+    "imageAlt": "Event image for"
   },
   "eventList": {
     "filters": "Filters",

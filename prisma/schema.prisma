@@ -107,6 +107,7 @@ model ContactSubmission {
   email     String
   subject   String
   message   String
+  language  String   @default("en")
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
 }

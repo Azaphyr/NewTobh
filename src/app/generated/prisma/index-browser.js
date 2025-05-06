@@ -201,6 +201,7 @@ exports.Prisma.ContactSubmissionScalarFieldEnum = {
   email: 'email',
   subject: 'subject',
   message: 'message',
+  language: 'language',
   isRead: 'isRead',
   createdAt: 'createdAt'
 };

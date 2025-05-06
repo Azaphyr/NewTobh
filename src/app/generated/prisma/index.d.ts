@@ -9347,6 +9347,7 @@ export namespace Prisma {
     email: string | null
     subject: string | null
     message: string | null
+    language: string | null
     isRead: boolean | null
     createdAt: Date | null
   }
@@ -9357,6 +9358,7 @@ export namespace Prisma {
     email: string | null
     subject: string | null
     message: string | null
+    language: string | null
     isRead: boolean | null
     createdAt: Date | null
   }
@@ -9367,6 +9369,7 @@ export namespace Prisma {
     email: number
     subject: number
     message: number
+    language: number
     isRead: number
     createdAt: number
     _all: number
@@ -9379,6 +9382,7 @@ export namespace Prisma {
     email?: true
     subject?: true
     message?: true
+    language?: true
     isRead?: true
     createdAt?: true
   }
@@ -9389,6 +9393,7 @@ export namespace Prisma {
     email?: true
     subject?: true
     message?: true
+    language?: true
     isRead?: true
     createdAt?: true
   }
@@ -9399,6 +9404,7 @@ export namespace Prisma {
     email?: true
     subject?: true
     message?: true
+    language?: true
     isRead?: true
     createdAt?: true
     _all?: true
@@ -9482,6 +9488,7 @@ export namespace Prisma {
     email: string
     subject: string
     message: string
+    language: string
     isRead: boolean
     createdAt: Date
     _count: ContactSubmissionCountAggregateOutputType | null
@@ -9509,6 +9516,7 @@ export namespace Prisma {
     email?: boolean
     subject?: boolean
     message?: boolean
+    language?: boolean
     isRead?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["contactSubmission"]>
@@ -9519,6 +9527,7 @@ export namespace Prisma {
     email?: boolean
     subject?: boolean
     message?: boolean
+    language?: boolean
     isRead?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["contactSubmission"]>
@@ -9529,6 +9538,7 @@ export namespace Prisma {
     email?: boolean
     subject?: boolean
     message?: boolean
+    language?: boolean
     isRead?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["contactSubmission"]>
@@ -9539,11 +9549,12 @@ export namespace Prisma {
     email?: boolean
     subject?: boolean
     message?: boolean
+    language?: boolean
     isRead?: boolean
     createdAt?: boolean
   }
 
-  export type ContactSubmissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "subject" | "message" | "isRead" | "createdAt", ExtArgs["result"]["contactSubmission"]>
+  export type ContactSubmissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "subject" | "message" | "language" | "isRead" | "createdAt", ExtArgs["result"]["contactSubmission"]>
 
   export type $ContactSubmissionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ContactSubmission"
@@ -9554,6 +9565,7 @@ export namespace Prisma {
       email: string
       subject: string
       message: string
+      language: string
       isRead: boolean
       createdAt: Date
     }, ExtArgs["result"]["contactSubmission"]>
@@ -9984,6 +9996,7 @@ export namespace Prisma {
     readonly email: FieldRef<"ContactSubmission", 'String'>
     readonly subject: FieldRef<"ContactSubmission", 'String'>
     readonly message: FieldRef<"ContactSubmission", 'String'>
+    readonly language: FieldRef<"ContactSubmission", 'String'>
     readonly isRead: FieldRef<"ContactSubmission", 'Boolean'>
     readonly createdAt: FieldRef<"ContactSubmission", 'DateTime'>
   }
@@ -19354,6 +19367,7 @@ export namespace Prisma {
     email: 'email',
     subject: 'subject',
     message: 'message',
+    language: 'language',
     isRead: 'isRead',
     createdAt: 'createdAt'
   };
@@ -20134,6 +20148,7 @@ export namespace Prisma {
     email?: StringFilter<"ContactSubmission"> | string
     subject?: StringFilter<"ContactSubmission"> | string
     message?: StringFilter<"ContactSubmission"> | string
+    language?: StringFilter<"ContactSubmission"> | string
     isRead?: BoolFilter<"ContactSubmission"> | boolean
     createdAt?: DateTimeFilter<"ContactSubmission"> | Date | string
   }
@@ -20144,6 +20159,7 @@ export namespace Prisma {
     email?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    language?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
   }
@@ -20157,6 +20173,7 @@ export namespace Prisma {
     email?: StringFilter<"ContactSubmission"> | string
     subject?: StringFilter<"ContactSubmission"> | string
     message?: StringFilter<"ContactSubmission"> | string
+    language?: StringFilter<"ContactSubmission"> | string
     isRead?: BoolFilter<"ContactSubmission"> | boolean
     createdAt?: DateTimeFilter<"ContactSubmission"> | Date | string
   }, "id">
@@ -20167,6 +20184,7 @@ export namespace Prisma {
     email?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    language?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
     _count?: ContactSubmissionCountOrderByAggregateInput
@@ -20183,6 +20201,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"ContactSubmission"> | string
     subject?: StringWithAggregatesFilter<"ContactSubmission"> | string
     message?: StringWithAggregatesFilter<"ContactSubmission"> | string
+    language?: StringWithAggregatesFilter<"ContactSubmission"> | string
     isRead?: BoolWithAggregatesFilter<"ContactSubmission"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"ContactSubmission"> | Date | string
   }
@@ -21386,6 +21405,7 @@ export namespace Prisma {
     email: string
     subject: string
     message: string
+    language?: string
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -21396,6 +21416,7 @@ export namespace Prisma {
     email: string
     subject: string
     message: string
+    language?: string
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -21406,6 +21427,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21416,6 +21438,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21426,6 +21449,7 @@ export namespace Prisma {
     email: string
     subject: string
     message: string
+    language?: string
     isRead?: boolean
     createdAt?: Date | string
   }
@@ -21436,6 +21460,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21446,6 +21471,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     subject?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
     isRead?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22729,6 +22755,7 @@ export namespace Prisma {
     email?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    language?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
   }
@@ -22739,6 +22766,7 @@ export namespace Prisma {
     email?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    language?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
   }
@@ -22749,6 +22777,7 @@ export namespace Prisma {
     email?: SortOrder
     subject?: SortOrder
     message?: SortOrder
+    language?: SortOrder
     isRead?: SortOrder
     createdAt?: SortOrder
   }

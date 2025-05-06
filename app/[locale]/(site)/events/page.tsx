@@ -12,6 +12,7 @@ import { useTranslation } from "@/lib/i18n/client"
 import { useEffect, useState } from "react"
 
 interface EventTranslation {
+  languageCode: string;
   title: string;
   description: string;
   longDescription?: string;
@@ -22,7 +23,7 @@ interface EventTranslation {
 }
 
 interface Event {
-  id: number;
+  id: string;
   slug: string;
   imageUrl?: string;
   eventDate: string;

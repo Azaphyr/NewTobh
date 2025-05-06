@@ -299,7 +299,7 @@ export function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Event Card */}
-            {events.map((event) => {
+            {events.slice(0, 3).map((event) => {
               const translation = event.translations[0] || {};
               const startTime = format(new Date(event.eventDate), "h:mm a");
               const endTime = event.eventEndDate

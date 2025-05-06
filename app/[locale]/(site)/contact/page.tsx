@@ -28,7 +28,7 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -62,6 +62,7 @@ export default function ContactPage() {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
+          language: locale,
         }),
       })
 
