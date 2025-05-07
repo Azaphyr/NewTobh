@@ -464,6 +464,33 @@
         "description2": "Whether you're a seasoned Dungeon Master with tips to share, an artist with painting tutorials, or a storyteller with insights on character development, we'd love to feature your expertise.",
         "button": "Submit an Article Idea"
       }
+    },
+    "new": {
+      "title": "Create New Blog Post",
+      "basicInfo": "Basic Information",
+      "content": "Content",
+      "seo": "SEO",
+      "media": "Media",
+      "formTitle": "Title",
+      "formDescription": "Description",
+      "description": "Description",
+      "slug": "Slug",
+      "slugDescription": "A URL-friendly version of the title. Use lowercase letters, numbers, and hyphens. Example: my-blog-post-title",
+      "publishDate": "Publish Date",
+      "author": "Author",
+      "category": "Category",
+      "selectCategory": "Select or add a category",
+      "addCategory": "Add Category",
+      "tags": "Tags",
+      "isPublished": "Published",
+      "isFeatured": "Featured",
+      "readTime": "Read Time (minutes)",
+      "metaDescription": "Meta Description",
+      "metaKeywords": "Meta Keywords",
+      "featuredImage": "Featured Image",
+      "buttonCreate": "Create Post",
+      "buttonCreating": "Creating...",
+      "buttonCancel": "Cancel"
     }
   },
   "admin": {
@@ -597,7 +624,9 @@
         "errorLoadFeatured": "Failed to load featured post",
         "errorSaveFeatured": "Failed to save featured post",
         "errorUpdateFeatured": "Failed to update featured post",
-        "errorDeleteFeatured": "Failed to delete featured post"
+        "errorDeleteFeatured": "Failed to delete featured post",
+        "yes": "Yes",
+        "no": "No"
       },
       "list": {
         "title": "Blog Posts",
@@ -635,6 +664,10 @@
         "errorSetFeatured": "Failed to set post as featured",
         "errorRemoveFeatured": "Failed to remove featured status"
       },
+      "status" : {
+        "published" : "Published",
+        "draft" : "Draft"
+      },
       "edit": {
         "title": "Edit Post",
         "slug": "Slug",
@@ -650,7 +683,9 @@
         },
         "buttonCancel": "Cancel",
         "buttonSave": "Save Changes",
-        "buttonSaving": "Saving..."
+        "buttonSaving": "Saving...",
+        "status" : "Status",
+        "featured" : "Featured"
       },
       "new": {
         "title": "Create New Post",
@@ -662,10 +697,12 @@
         "formDescription": "Description",
         "description": "Description",
         "slug": "Slug",
+        "slugDescription": "A URL-friendly version of the title. Use lowercase letters, numbers, and hyphens. Example: my-blog-post-title",
         "publishDate": "Publish Date",
         "author": "Author",
         "category": "Category",
-        "selectCategory": "Select a category",
+        "selectCategory": "Select or add a category",
+        "addCategory": "Add Category",
         "news": "News",
         "events": "Events",
         "tutorials": "Tutorials",
@@ -701,7 +738,8 @@
         "buttonSetFeaturedTooltip": "Set this post as the featured post",
         "confirmSetFeatured": "Are you sure you want to set this post as the featured post? This will remove the featured status from any other post.",
         "successSetFeatured": "Post set as featured successfully",
-        "errorSetFeatured": "Failed to set post as featured"
+        "errorSetFeatured": "Failed to set post as featured",
+        "submit": "Submit"
       }
     },
     "events": {

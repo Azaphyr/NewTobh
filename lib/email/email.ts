@@ -1,4 +1,4 @@
-import { getAdminContactFormTemplate, getUserContactFormTemplate } from '../email-templates'
+import { getAdminContactFormTemplate, getUserContactFormTemplate } from './email-templates'
 
 interface EmailOptions {
   to: string;

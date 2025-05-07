@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { fr, enUS } from "date-fns/locale"
-import { EditIcon, TrashIcon, Pencil, Trash2, Archive, ArchiveRestore, Send, XCircle, Star } from "lucide-react"
+import { EditIcon, TrashIcon, Pencil, Trash2, Archive, ArchiveRestore, Send, XCircle, Star, Plus } from "lucide-react"
 import { EditBlogPostModal } from "./edit-modal"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -33,6 +33,15 @@ interface BlogPostTranslation {
   metaKeywords?: string
 }
 
+interface Category {
+  id: string
+  slug: string
+  nameEn: string
+  nameFr: string
+  createdAt: string
+  updatedAt: string
+}
+
 interface BlogPost {
   id: string
   slug: string
@@ -40,7 +49,8 @@ interface BlogPost {
   publishedAt?: string
   isPublished: boolean
   readTime?: number
-  category: string
+  categoryId?: string
+  category?: Category
   tags: string[]
   authorId?: string
   createdAt: string
@@ -48,6 +58,9 @@ interface BlogPost {
   isFeatured: boolean
   isArchived: boolean
   translations: BlogPostTranslation[]
+  author: {
+    name: string
+  }
 }
 
 interface ApiResponse {
@@ -69,6 +82,7 @@ export default function AdminBlogPage() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("active")
+  const [showArchived, setShowArchived] = useState(false)
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -78,7 +92,7 @@ export default function AdminBlogPage() {
     if (status === "authenticated") {
       fetchPosts()
     }
-  }, [status, router, activeTab])
+  }, [status, router, activeTab, showArchived, searchQuery])
 
   async function fetchPosts() {
     try {
@@ -86,11 +100,10 @@ export default function AdminBlogPage() {
       const params = new URLSearchParams({
         includeTranslations: "true",
         languageCode: locale,
+        ...(searchQuery && { search: searchQuery }),
       })
       
-      const endpoint = activeTab === "archived" 
-        ? "/api/admin/blog/archived"
-        : "/api/admin/blog"
+      const endpoint = showArchived ? "/api/admin/blog/archived" : "/api/admin/blog"
 
       const response = await fetch(`${endpoint}?${params.toString()}`, {
         method: 'GET',
@@ -122,77 +135,56 @@ export default function AdminBlogPage() {
 
     try {
       const response = await fetch(`/api/admin/blog/${post.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isArchived: !post.isArchived
-        }),
+        method: "DELETE",
       })
 
       if (!response.ok) {
-        throw new Error("Failed to update blog post")
+        throw new Error("Failed to delete blog post")
       }
 
       toast.success(post.isArchived ? t("admin.blog.successUnarchive") : t("admin.blog.successArchive"))
       fetchPosts()
     } catch (error) {
-      console.error("Error updating blog post:", error)
-      toast.error(t("admin.blog.errorUpdate"))
+      console.error("Error deleting blog post:", error)
+      toast.error(t("admin.blog.errorDelete"))
     }
   }
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | null) => {
+    if (!date) return "-"
     return format(new Date(date), "PPP", { locale: locale === "fr" ? fr : enUS })
   }
 
-  const getCategoryBadge = (category: string) => {
+  const getCategoryBadge = (category?: Category) => {
+    if (!category) {
+      return <Badge variant="outline">{t("admin.blog.categories.uncategorized")}</Badge>
+    }
+
     const variants = {
-      news: "default",
-      events: "secondary",
-      tutorials: "outline",
-      reviews: "destructive"
+      'tabletop': "default",
+      'miniature-painting': "secondary",
+      'story-telling': "outline"
     } as const
 
-    const labels = {
-      news: t("admin.blog.categories.news"),
-      events: t("admin.blog.categories.events"),
-      tutorials: t("admin.blog.categories.tutorials"),
-      reviews: t("admin.blog.categories.reviews")
-    }
+    const variant = variants[category.slug as keyof typeof variants] || "outline"
+    const name = locale === "fr" ? category.nameFr : category.nameEn
 
-    if (!category || !variants[category as keyof typeof variants]) {
-      return <Badge variant="outline">{category || 'Uncategorized'}</Badge>
-    }
-
-    return (
-      <Badge variant={variants[category as keyof typeof variants]}>
-        {labels[category as keyof typeof labels]}
-      </Badge>
-    )
+    return <Badge variant={variant}>{name}</Badge>
   }
 
   const getPostStatus = (post: BlogPost) => {
-    if (!post.isPublished) return "draft"
-    if (!post.publishedAt) return "draft"
-    
-    const now = new Date()
-    const publishedAt = new Date(post.publishedAt)
-    return now >= publishedAt ? "published" : "scheduled"
+    return post.isPublished ? "published" : "draft"
   }
 
-  const getStatusBadge = (status: "draft" | "published" | "scheduled") => {
+  const getStatusBadge = (status: "draft" | "published") => {
     const variants = {
       draft: "outline",
-      published: "default",
-      scheduled: "secondary"
+      published: "default"
     } as const
 
     const labels = {
-      draft: t("admin.blog.statusDraft"),
-      published: t("admin.blog.statusPublished"),
-      scheduled: t("admin.blog.statusScheduled")
+      draft: t("admin.blog.status.draft"),
+      published: t("admin.blog.status.published")
     }
 
     return (
@@ -213,7 +205,7 @@ export default function AdminBlogPage() {
     )
 
     // Filter based on archive status
-    const matchesArchiveStatus = activeTab === "archived" ? post.isArchived : !post.isArchived
+    const matchesArchiveStatus = showArchived ? post.isArchived : !post.isArchived
 
     return matchesSearch && matchesArchiveStatus
   })
@@ -307,6 +299,28 @@ export default function AdminBlogPage() {
     }
   }
 
+  const handleArchive = async (id: string) => {
+    try {
+      const response = await fetch(`/api/admin/blog/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          isArchived: true,
+        }),
+      })
+
+      if (!response.ok) throw new Error('Failed to archive post')
+
+      toast.success(t('success.archive'))
+      fetchPosts()
+    } catch (error) {
+      console.error('Error archiving post:', error)
+      toast.error(t('errors.archiveFailed'))
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
@@ -328,6 +342,7 @@ export default function AdminBlogPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{t("admin.blog.title")}</h1>
         <Button onClick={() => router.push("/admin/blog/new")}>
+          <Plus className="-ml-1 mr-2 h-5 w-5" />
           {t("admin.blog.buttonNew")}
         </Button>
       </div>
@@ -369,7 +384,7 @@ export default function AdminBlogPage() {
                             {translation?.title || t("admin.blog.untitled")}
                           </h3>
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>{getCategoryBadge(featuredPost?.category || '')}</span>
+                            <span>{getCategoryBadge(featuredPost?.category)}</span>
                             {featuredPost?.publishedAt && (
                               <span>{formatDate(featuredPost.publishedAt)}</span>
                             )}

@@ -242,7 +242,6 @@
       "campaign": "Campagne"
     },
     "showArchived": "Afficher les Événements Archivés",
-    "statusArchived": "Archivé",
     "imageAlt": "Image de l'événement pour"
   },
   "eventList": {
@@ -435,50 +434,22 @@
       "formDescription": "Description",
       "description": "Description",
       "slug": "Slug",
+      "slugDescription": "Une version URL-friendly du titre. Utilisez des lettres minuscules, des chiffres et des tirets. Exemple : mon-article-de-blog",
       "publishDate": "Date de Publication",
       "author": "Auteur",
       "category": "Catégorie",
-      "selectCategory": "Sélectionner une catégorie",
-      "news": "Actualités",
-      "events": "Événements",
-      "tutorials": "Tutoriels",
-      "reviews": "Avis",
-      "formContent": "Contenu",
-      "metaDescription": "Meta Description",
-      "metaKeywords": "Meta Mots-clés",
-      "featuredImage": "Image à la Une",
+      "selectCategory": "Sélectionner ou ajouter une catégorie",
+      "addCategory": "Ajouter",
+      "tags": "Tags",
+      "isPublished": "Publié",
+      "isFeatured": "Mis en Avant",
+      "readTime": "Temps de Lecture (minutes)",
+      "metaDescription": "Description Meta",
+      "metaKeywords": "Mots-clés Meta",
+      "featuredImage": "Image Principale",
       "buttonCreate": "Créer l'Article",
       "buttonCreating": "Création en cours...",
-      "buttonCancel": "Annuler",
-      "languageTabs": {
-        "en": "Anglais",
-        "fr": "Français"
-      },
-      "tags": "Tags",
-      "addTag": "Ajouter un Tag",
-      "removeTag": "Supprimer le Tag",
-      "tagPlaceholder": "Entrez un tag et appuyez sur Entrée",
-      "isPublished": "Publié",
-      "isFeatured": "Article en Vedette",
-      "readTime": "Temps de Lecture (minutes)",
-      "buttonPublish": "Publier",
-      "buttonPublishTooltip": "Rendre cet article visible au public",
-      "confirmPublish": "Êtes-vous sûr de vouloir publier cet article ?",
-      "successPublish": "Article publié avec succès",
-      "errorPublish": "Échec de la publication de l'article",
-      "buttonUnpublish": "Dépublier",
-      "buttonUnpublishTooltip": "Masquer cet article du public",
-      "confirmUnpublish": "Êtes-vous sûr de vouloir dépublier cet article ?",
-      "successUnpublish": "Article dépublié avec succès",
-      "errorUnpublish": "Échec de la dépublication de l'article",
-      "buttonArchive": "Archiver",
-      "buttonArchiveTooltip": "Déplacer cet article vers les archives",
-      "buttonUnarchive": "Désarchiver",
-      "buttonUnarchiveTooltip": "Restaurer cet article depuis les archives",
-      "buttonSetFeaturedTooltip": "Définir cet article comme article à la une",
-      "confirmSetFeatured": "Êtes-vous sûr de vouloir définir cet article comme article à la une ? Cela supprimera le statut d'article à la une de tout autre article.",
-      "successSetFeatured": "Article défini comme article à la une avec succès",
-      "errorSetFeatured": "Échec de la définition de l'article comme article à la une"
+      "buttonCancel": "Annuler"
     },
     "edit": {
       "title": "Modifier l'Article",
@@ -567,6 +538,10 @@
       "errorUnarchive": "Échec de la désarchivation de l'article",
       "errorSetFeatured": "Échec de la définition de l'article comme article à la une",
       "errorRemoveFeatured": "Échec du retrait du statut d'article à la une"
+    },
+    "status": {
+      "published": "Publié",
+      "draft": "Brouillon"
     }
   },
   "admin": {
@@ -661,6 +636,10 @@
       "buttonArchiveTooltip": "Déplacer cet article vers les archives",
       "statusActive": "Actif",
       "statusArchived": "Archivé",
+      "status": {
+        "published": "Publié",
+        "draft": "Brouillon"
+      },
       "featured": {
         "title": "Article à la Une",
         "noFeatured": "Aucun article à la une défini",
@@ -675,7 +654,9 @@
         "errorLoadFeatured": "Échec du chargement de l'article à la une",
         "errorSaveFeatured": "Échec de l'enregistrement de l'article à la une",
         "errorUpdateFeatured": "Échec de la mise à jour de l'article à la une",
-        "errorDeleteFeatured": "Échec de la suppression de l'article à la une"
+        "errorDeleteFeatured": "Échec de la suppression de l'article à la une",
+        "yes": "Oui",
+        "no": "Non"
       },
       "list": {
         "title": "Articles de Blog",
@@ -722,13 +703,15 @@
         "description": "Description",
         "metaDescription": "Meta Description",
         "metaKeywords": "Meta Mots-clés",
+        "status": "Statut",
         "languageTabs": {
           "en": "Anglais",
           "fr": "Français"
         },
         "buttonCancel": "Annuler",
         "buttonSave": "Enregistrer les Modifications",
-        "buttonSaving": "Enregistrement..."
+        "buttonSaving": "Enregistrement...",
+        "featured": "Article en Vedette"
       },
       "new": {
         "title": "Créer un Nouvel Article",
@@ -740,10 +723,10 @@
         "formDescription": "Description",
         "description": "Description",
         "slug": "Slug",
+        "slugDescription": "Une version URL-friendly du titre. Utilisez des lettres minuscules, des chiffres et des tirets. Exemple : mon-article-de-blog",
         "publishDate": "Date de Publication",
         "author": "Auteur",
         "category": "Catégorie",
-        "selectCategory": "Sélectionner une catégorie",
         "news": "Actualités",
         "events": "Événements",
         "tutorials": "Tutoriels",
@@ -759,6 +742,8 @@
           "en": "Anglais",
           "fr": "Français"
         },
+        "selectCategory": "Sélectionner ou ajouter une catégorie",
+        "addCategory": "Ajouter une Catégorie",
         "tags": "Tags",
         "addTag": "Ajouter un Tag",
         "removeTag": "Supprimer le Tag",
@@ -783,7 +768,8 @@
         "buttonSetFeaturedTooltip": "Définir cet article comme article à la une",
         "confirmSetFeatured": "Êtes-vous sûr de vouloir définir cet article comme article à la une ? Cela supprimera le statut d'article à la une de tout autre article.",
         "successSetFeatured": "Article défini comme article à la une avec succès",
-        "errorSetFeatured": "Échec de la définition de l'article comme article à la une"
+        "errorSetFeatured": "Échec de la définition de l'article comme article à la une",
+        "submit": "Soumettre"
       }
     },
     "events": {

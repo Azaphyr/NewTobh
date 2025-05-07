@@ -171,6 +171,15 @@ exports.Prisma.EventTranslationScalarFieldEnum = {
   instructorBio: 'instructorBio'
 };
 
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  nameEn: 'nameEn',
+  nameFr: 'nameFr',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.BlogPostScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -178,7 +187,7 @@ exports.Prisma.BlogPostScalarFieldEnum = {
   publishedAt: 'publishedAt',
   isPublished: 'isPublished',
   readTime: 'readTime',
-  category: 'category',
+  categoryId: 'categoryId',
   tags: 'tags',
   authorId: 'authorId',
   createdAt: 'createdAt',
@@ -346,6 +355,7 @@ exports.Prisma.ModelName = {
   Language: 'Language',
   Event: 'Event',
   EventTranslation: 'EventTranslation',
+  Category: 'Category',
   BlogPost: 'BlogPost',
   BlogPostTranslation: 'BlogPostTranslation',
   ContactSubmission: 'ContactSubmission',

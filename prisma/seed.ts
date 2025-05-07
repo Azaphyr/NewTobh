@@ -518,6 +518,33 @@ async function main() {
 
   console.log("Website settings created")
 
+  // Create initial categories
+  const categories = [
+    {
+      slug: 'tabletop',
+      nameEn: 'Tabletop Games',
+      nameFr: 'Jeux de Table'
+    },
+    {
+      slug: 'miniature-painting',
+      nameEn: 'Miniature Painting',
+      nameFr: 'Peinture de Figurines'
+    },
+    {
+      slug: 'story-telling',
+      nameEn: 'Story Telling',
+      nameFr: 'Art de Raconter'
+    }
+  ]
+
+  for (const category of categories) {
+    await prisma.category.create({
+      data: category
+    })
+  }
+
+  console.log('Categories seeded successfully')
+
   console.log("Seed completed successfully!")
 }
 

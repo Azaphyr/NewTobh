@@ -49,6 +49,9 @@ model Event {
   createdBy     AdminUser?          @relation(fields: [createdById], references: [id])
   registrations EventRegistration[]
   translations  EventTranslation[]
+  language      String?
+  modifiedBy    String?
+  gameType      String?
 }
 
 model EventTranslation {
@@ -68,6 +71,16 @@ model EventTranslation {
   @@unique([eventId, languageCode])
 }
 
+model Category {
+  id        String     @id @default(cuid())
+  slug      String     @unique
+  nameEn    String
+  nameFr    String
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
+  blogPosts BlogPost[]
+}
+
 model BlogPost {
   id           String                @id @default(cuid())
   slug         String                @unique
@@ -75,11 +88,12 @@ model BlogPost {
   publishedAt  DateTime?             @db.Timestamptz(6)
   isPublished  Boolean               @default(false)
   readTime     Int?
-  category     String                @default("news")
+  categoryId   String?
+  category     Category?             @relation(fields: [categoryId], references: [id])
   tags         String[]
   authorId     String?
   createdAt    DateTime              @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime              @updatedAt @db.Timestamptz(6)
   isFeatured   Boolean               @default(false)
   isArchived   Boolean               @default(false)
   author       AdminUser?            @relation(fields: [authorId], references: [id])
@@ -107,6 +121,7 @@ model ContactSubmission {
   email     String
   subject   String
   message   String
+  language  String   @default("en")
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
 }

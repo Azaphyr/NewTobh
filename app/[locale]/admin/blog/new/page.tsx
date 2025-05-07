@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useTranslation } from "@/lib/i18n/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,18 +11,56 @@ import { useRouter } from "next/navigation"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarIcon, ImageIcon, TagIcon, UserIcon, InfoIcon, ChevronDownIcon } from "lucide-react"
+import { CalendarIcon, ImageIcon, TagIcon, UserIcon, InfoIcon, ChevronDownIcon, XIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog'
+import { useSession } from 'next-auth/react'
+import StarterKit from '@tiptap/starter-kit'
+import Image from '@tiptap/extension-image'
+import Link from '@tiptap/extension-link'
+import Heading from '@tiptap/extension-heading'
+import TextAlign from '@tiptap/extension-text-align'
+import { 
+  Bold, 
+  Italic, 
+  List, 
+  ListOrdered, 
+  Quote, 
+  Link as LinkIcon,
+  Undo,
+  Redo,
+  Heading1,
+  Heading2,
+  Heading3,
+  Code,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+} from 'lucide-react'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import BlogEditor from '@/components/BlogEditor'
+
 
 type Language = "en" | "fr"
+
+interface Category {
+  id: string
+  slug: string
+  nameEn: string
+  nameFr: string
+}
 
 interface BlogFormData {
   slug: string
   imageUrl?: string
   publishDate: string
   author: string
-  category: string
+  categoryId: string
   tags: string[]
+  isPublished: boolean
+  isFeatured: boolean
+  readTime: number
   translations: {
     [key in Language]: {
       title: string
@@ -37,6 +75,7 @@ interface BlogFormData {
 export default function NewBlogPage() {
   const { t, locale } = useTranslation()
   const router = useRouter()
+  const { data: session } = useSession()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeLanguage, setActiveLanguage] = useState<Language>(locale as Language)
   const [openSections, setOpenSections] = useState({
@@ -49,8 +88,11 @@ export default function NewBlogPage() {
     slug: "",
     publishDate: "",
     author: "",
-    category: "",
+    categoryId: "",
     tags: [],
+    isPublished: false,
+    isFeatured: false,
+    readTime: 0,
     translations: {
       en: {
         title: "",
@@ -68,6 +110,25 @@ export default function NewBlogPage() {
       }
     }
   })
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+  const [isDragActive, setIsDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showLibrary, setShowLibrary] = useState(false)
+  const [cloudinaryImages, setCloudinaryImages] = useState<{ url: string; public_id: string; }[]>([])
+  const [isLoadingLibrary, setIsLoadingLibrary] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    // Fetch categories when component mounts
+    fetch('/api/admin/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(error => {
+        console.error('Error fetching categories:', error)
+        toast.error(t("admin.blog.errorFetchCategories"))
+      })
+  }, [t])
 
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({
@@ -76,7 +137,7 @@ export default function NewBlogPage() {
     }))
   }
 
-  const handleInputChange = (field: string, value: string | string[]) => {
+  const handleInputChange = (field: string, value: string | number | boolean | string[]) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -100,31 +161,105 @@ export default function NewBlogPage() {
     setActiveLanguage(value as Language)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0])
+      setImagePreviewUrl(URL.createObjectURL(e.target.files[0]))
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
+    setIsDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setImageFile(e.dataTransfer.files[0])
+      setImagePreviewUrl(URL.createObjectURL(e.dataTransfer.files[0]))
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setIsDragActive(false)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session) return;
+
+    setIsSubmitting(true);
+    const formDataToSend = new FormData();
+
+    // Add basic fields from state
+    formDataToSend.append('slug', formData.slug);
+    formDataToSend.append('publishDate', formData.publishDate);
+    formDataToSend.append('categoryId', formData.categoryId);
+    formDataToSend.append('tags', JSON.stringify(formData.tags));
+    formDataToSend.append('isPublished', formData.isPublished.toString());
+    formDataToSend.append('isFeatured', formData.isFeatured.toString());
+    formDataToSend.append('readTime', formData.readTime.toString());
+
+    // Add translations from state
+    const translations = [
+      {
+        languageCode: 'en',
+        ...formData.translations.en,
+      },
+      {
+        languageCode: 'fr',
+        ...formData.translations.fr,
+      },
+    ];
+    formDataToSend.append('translations', JSON.stringify(translations));
+
+    // Add image if selected
+    if (imageFile) {
+      formDataToSend.append('image', imageFile);
+    }
 
     try {
-      const response = await fetch("/api/admin/blog", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      const response = await fetch('/api/admin/blog', {
+        method: 'POST',
+        body: formDataToSend,
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to create blog post")
+        throw new Error('Failed to create blog post');
       }
 
-      toast.success(t("admin.blog.successCreate"))
-      router.push("/admin/blog")
+      toast.success(t('admin.blog.successCreate'));
+      router.push('/admin/blog');
     } catch (error) {
-      console.error("Failed to create blog post:", error)
-      toast.error(t("admin.blog.errorCreate"))
+      console.error('Error creating blog post:', error);
+      toast.error(t('admin.blog.errorCreate'));
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
+  };
+
+  const openLibrary = async () => {
+    setShowLibrary(true)
+    setIsLoadingLibrary(true)
+    try {
+      const res = await fetch('/api/cloudinary/blogs')
+      const data = await res.json()
+      setCloudinaryImages(data.images || [])
+    } catch (err) {
+      console.error('Error fetching images from Cloudinary:', err)
+      setCloudinaryImages([])
+    } finally {
+      setIsLoadingLibrary(false)
+    }
+  }
+
+  const handleSelectCloudinaryImage = (img: { url: string; public_id: string }) => {
+    setImagePreviewUrl(img.url)
+    setImageFile(null)
+    setShowLibrary(false)
   }
 
   return (
@@ -219,54 +354,83 @@ export default function NewBlogPage() {
                     required 
                     className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
                   />
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.blog.new.slugDescription")}
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="publishDate" className="text-dark-mahogany">{t("admin.blog.new.publishDate")}</Label>
                     <div className="relative">
-                      <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal" />
-                      <Input 
-                        id="publishDate" 
-                        type="datetime-local" 
-                        value={formData.publishDate}
-                        onChange={(e) => handleInputChange("publishDate", e.target.value)}
-                        required 
-                        className="pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                      <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal z-10" />
+                      <DatePicker
+                        selected={formData.publishDate ? new Date(formData.publishDate) : null}
+                        onChange={(date: Date | null) => date && handleInputChange("publishDate", date.toISOString())}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="yyyy-MM-dd HH:mm"
+                        className="w-full pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal rounded-md"
+                        placeholderText="Select date and time"
+                        required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="author" className="text-dark-mahogany">{t("admin.blog.new.author")}</Label>
-                    <div className="relative">
-                      <UserIcon className="absolute left-3 top-2.5 h-5 w-5 text-deep-teal" />
-                      <Input 
-                        id="author" 
-                        value={formData.author}
-                        onChange={(e) => handleInputChange("author", e.target.value)}
-                        required 
-                        className="pl-10 border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
-                      />
-                    </div>
+                    <Label htmlFor="readTime" className="text-dark-mahogany">{t("admin.blog.new.readTime")}</Label>
+                    <Input 
+                      id="readTime" 
+                      type="number"
+                      min="1"
+                      value={formData.readTime}
+                      onChange={(e) => handleInputChange("readTime", parseInt(e.target.value))}
+                      required 
+                      className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="category" className="text-dark-mahogany">{t("admin.blog.new.category")}</Label>
                   <Select 
-                    value={formData.category}
-                    onValueChange={(value) => handleInputChange("category", value)}
+                    value={formData.categoryId}
+                    onValueChange={(value) => handleInputChange("categoryId", value)}
                   >
                     <SelectTrigger className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal">
                       <SelectValue placeholder={t("admin.blog.new.selectCategory")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="news">{t("admin.blog.new.news")}</SelectItem>
-                      <SelectItem value="events">{t("admin.blog.new.events")}</SelectItem>
-                      <SelectItem value="tutorials">{t("admin.blog.new.tutorials")}</SelectItem>
-                      <SelectItem value="reviews">{t("admin.blog.new.reviews")}</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {locale === 'en' ? category.nameEn : category.nameFr}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="isPublished"
+                      checked={formData.isPublished}
+                      onChange={(e) => handleInputChange("isPublished", e.target.checked)}
+                      className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                    />
+                    <Label htmlFor="isPublished">{t("admin.blog.new.isPublished")}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="isFeatured"
+                      checked={formData.isFeatured}
+                      onChange={(e) => handleInputChange("isFeatured", e.target.checked)}
+                      className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                    />
+                    <Label htmlFor="isFeatured">{t("admin.blog.new.isFeatured")}</Label>
+                  </div>
                 </div>
               </CardContent>
             </CollapsibleContent>
@@ -304,24 +468,18 @@ export default function NewBlogPage() {
                   <TabsContent value="en" className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="content-en">{t("admin.blog.new.content")} (English)</Label>
-                      <Textarea 
-                        id="content-en" 
+                      <BlogEditor
                         value={formData.translations.en.content}
-                        onChange={(e) => handleTranslationChange("content", e.target.value)}
-                        required 
-                        className="min-h-[400px] border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                        onChange={content => handleTranslationChange('content', content)}
                       />
                     </div>
                   </TabsContent>
                   <TabsContent value="fr" className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="content-fr">{t("admin.blog.new.content")} (Français)</Label>
-                      <Textarea 
-                        id="content-fr" 
+                      <BlogEditor
                         value={formData.translations.fr.content}
-                        onChange={(e) => handleTranslationChange("content", e.target.value)}
-                        required 
-                        className="min-h-[400px] border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
+                        onChange={content => handleTranslationChange('content', content)}
                       />
                     </div>
                   </TabsContent>
@@ -426,40 +584,92 @@ export default function NewBlogPage() {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <CardContent className="space-y-4 pt-6">
-                <div className="space-y-2">
-                  <Label htmlFor="imageUrl" className="text-dark-mahogany">{t("admin.blog.new.featuredImage")}</Label>
-                  <Input 
-                    id="imageUrl" 
-                    type="url"
-                    value={formData.imageUrl}
-                    onChange={(e) => handleInputChange("imageUrl", e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                    className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal"
-                  />
+                <div className="flex flex-row items-center gap-4 mb-2">
+                  <Button type="button" variant="outline" onClick={openLibrary} className="border-deep-teal/20 text-deep-teal">
+                    Choose from Library
+                  </Button>
                 </div>
+                <label
+                  htmlFor="image"
+                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-md cursor-pointer transition-colors min-h-[180px] relative
+                    ${isDragActive ? 'border-brick-red bg-brick-red/10' : 'border-deep-teal/20 bg-white hover:border-brick-red/60'}`}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  tabIndex={0}
+                  aria-label="Blog post image upload area"
+                >
+                  <input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                    ref={fileInputRef}
+                    required={!imagePreviewUrl}
+                  />
+                  {imagePreviewUrl ? (
+                    <div className="relative flex flex-col items-center justify-center w-full h-full">
+                      <img
+                        src={imagePreviewUrl}
+                        alt="Preview"
+                        className="max-h-40 rounded shadow border object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={e => { e.stopPropagation(); setImageFile(null); setImagePreviewUrl(null); }}
+                        className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1 border border-gray-300 shadow"
+                        aria-label="Remove image"
+                      >
+                        <XIcon className="w-4 h-4 text-brick-red" />
+                      </button>
+                      <span className="text-xs text-muted-foreground mt-2">{imageFile?.name}</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8">
+                      <ImageIcon className="w-10 h-10 text-deep-teal mb-2" />
+                      <span className="text-deep-teal font-medium">Drag & drop or click to upload</span>
+                      <span className="text-xs text-muted-foreground mt-1">PNG, JPG, JPEG, GIF, SVG, WEBP</span>
+                    </div>
+                  )}
+                </label>
+
+                <Dialog open={showLibrary} onOpenChange={setShowLibrary}>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Select an Image from Library</DialogTitle>
+                      <DialogClose asChild>
+                        <button className="absolute right-4 top-4">✕</button>
+                      </DialogClose>
+                    </DialogHeader>
+                    {isLoadingLibrary ? (
+                      <div className="text-center py-8">Loading...</div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                        {cloudinaryImages.length === 0 && <div className="col-span-3 text-center text-muted-foreground">No images found.</div>}
+                        {cloudinaryImages.map(img => (
+                          <button
+                            key={img.public_id}
+                            type="button"
+                            className="border rounded hover:border-brick-red focus:border-brick-red transition p-1 bg-white"
+                            onClick={() => handleSelectCloudinaryImage(img)}
+                          >
+                            <img src={img.url} alt={img.public_id} className="object-cover w-full h-32 rounded" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </CollapsibleContent>
           </Card>
         </Collapsible>
 
-        <div className="flex justify-end space-x-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/admin/blog")}
-            className="border-deep-teal/20 text-dark-mahogany hover:bg-stone-50 hover:text-dark-mahogany"
-          >
-            {t("admin.blog.new.buttonCancel")}
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="bg-gradient-to-r from-dark-mahogany to-brick-red hover:from-dark-mahogany/90 hover:to-brick-red/90 text-white"
-          >
-            {isSubmitting ? t("admin.blog.new.buttonCreating") : t("admin.blog.new.buttonCreate")}
-          </Button>
-        </div>
+        <Button type="submit" disabled={isSubmitting} className="w-full bg-deep-teal hover:bg-deep-teal/90 text-white">
+          {isSubmitting ? 'Submitting...' : t("admin.blog.new.submit")}
+        </Button>
       </form>
     </div>
-  )
-} 
+  );
+}

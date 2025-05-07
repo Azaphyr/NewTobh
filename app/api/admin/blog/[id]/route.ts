@@ -1,119 +1,53 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { getServerSession } from "next-auth/next"
+import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!session?.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 })
     }
 
     const blogPost = await prisma.blogPost.findUnique({
       where: { id: params.id },
       include: {
         translations: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        category: {
+          select: {
+            id: true,
+            slug: true,
+            nameEn: true,
+            nameFr: true
+          }
+        }
       },
     })
 
     if (!blogPost) {
-      return NextResponse.json({ error: "Blog post not found" }, { status: 404 })
+      return new NextResponse("Blog post not found", { status: 404 })
     }
 
     return NextResponse.json(blogPost)
   } catch (error) {
     console.error("Error fetching blog post:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch blog post" },
-      { status: 500 }
-    )
+    return new NextResponse("Internal Server Error", { status: 500 })
   }
 }
 
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const session = await getServerSession(authOptions)
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const data = await request.json()
-    const { translations, ...postData } = data
-
-    // First, get the existing post to check current translations
-    const existingPost = await prisma.blogPost.findUnique({
-      where: { id: params.id },
-      include: { translations: true },
-    })
-
-    if (!existingPost) {
-      return NextResponse.json({ error: "Blog post not found" }, { status: 404 })
-    }
-
-    // Update the blog post
-    const updatedPost = await prisma.blogPost.update({
-      where: { id: params.id },
-      data: {
-        ...postData,
-        translations: {
-          deleteMany: {},
-          create: translations.map((translation: any) => ({
-            languageCode: translation.languageCode,
-            title: translation.title,
-            description: translation.description,
-            content: translation.content,
-          })),
-        },
-      },
-      include: {
-        translations: true,
-      },
-    })
-
-    return NextResponse.json(updatedPost)
-  } catch (error) {
-    console.error("Error updating blog post:", error)
-    return NextResponse.json(
-      { error: "Failed to update blog post" },
-      { status: 500 }
-    )
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const session = await getServerSession(authOptions)
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    // Delete the blog post and its translations
-    await prisma.blogPost.delete({
-      where: { id: params.id },
-    })
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error("Error deleting blog post:", error)
-    return NextResponse.json(
-      { error: "Failed to delete blog post" },
-      { status: 500 }
-    )
-  }
-}
-
-export async function PATCH(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -123,61 +57,106 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const { isArchived, isPublished, isFeatured } = body
+    const { 
+      slug, 
+      publishDate, 
+      categoryId,
+      tags, 
+      isPublished, 
+      isFeatured, 
+      readTime, 
+      translations 
+    } = body
 
-    if (typeof isArchived !== "boolean" && typeof isPublished !== "boolean" && typeof isFeatured !== "boolean") {
-      return new NextResponse("Invalid value", { status: 400 })
+    if (!slug || !translations) {
+      return new NextResponse("Missing required fields", { status: 400 })
     }
 
-    // First get the current post to check its status
-    const currentPost = await prisma.blogPost.findUnique({
-      where: { id: params.id }
-    })
-
-    if (!currentPost) {
-      return new NextResponse("Blog post not found", { status: 404 })
-    }
-
-    // If setting as featured, first unfeature any other featured post
-    if (isFeatured === true) {
-      await prisma.blogPost.updateMany({
-        where: {
-          isFeatured: true,
-          id: { not: params.id }
-        },
-        data: {
-          isFeatured: false
-        }
-      })
-    }
-
-    const blogPost = await prisma.blogPost.update({
+    // Check if slug is already in use by another post
+    const existingPost = await prisma.blogPost.findFirst({
       where: {
-        id: params.id
-      },
-      data: {
-        ...(typeof isArchived === "boolean" && {
-          isArchived,
-          // When archiving, set isPublished to false
-          // When unarchiving, restore the previous isPublished status
-          isPublished: isArchived ? false : currentPost.isPublished
-        }),
-        ...(typeof isPublished === "boolean" && {
-          isPublished,
-          // If publishing, set publishedAt to now if not already set
-          ...(isPublished && !currentPost.publishedAt && {
-            publishedAt: new Date().toISOString()
-          })
-        }),
-        ...(typeof isFeatured === "boolean" && {
-          isFeatured
-        })
+        slug,
+        id: { not: params.id }
       }
+    })
+    
+    if (existingPost) {
+      return new NextResponse("Slug is already in use", { status: 400 })
+    }
+
+    // Update blog post and its translations
+    const blogPost = await prisma.blogPost.update({
+      where: { id: params.id },
+      data: {
+        slug,
+        publishedAt: isPublished ? new Date(publishDate) : null,
+        categoryId,
+        tags: tags || [],
+        isPublished: isPublished || false,
+        isFeatured: isFeatured || false,
+        readTime: readTime || null,
+        translations: {
+          deleteMany: {},
+          create: translations.map((t: any) => ({
+            languageCode: t.languageCode,
+            title: t.title,
+            description: t.description,
+            content: t.content,
+            metaDescription: t.metaDescription,
+            metaKeywords: t.metaKeywords,
+          })),
+        },
+      },
+      include: {
+        translations: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        category: {
+          select: {
+            id: true,
+            slug: true,
+            nameEn: true,
+            nameFr: true
+          }
+        }
+      },
     })
 
     return NextResponse.json(blogPost)
   } catch (error) {
-    console.error("[BLOG_PATCH]", error)
-    return new NextResponse("Internal error", { status: 500 })
+    console.error("Error updating blog post:", error)
+    return new NextResponse("Internal Server Error", { status: 500 })
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 })
+    }
+
+    // Delete translations first
+    await prisma.blogPostTranslation.deleteMany({
+      where: { blogPostId: params.id }
+    })
+
+    // Then delete the blog post
+    await prisma.blogPost.delete({
+      where: { id: params.id }
+    })
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Error deleting blog post:", error)
+    return new NextResponse("Internal Server Error", { status: 500 })
   }
 } 

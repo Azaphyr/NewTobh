@@ -217,55 +217,57 @@ export default function BlogPage() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {blogPosts.map((post) => {
-                  const translation = post.translations[0] || {};
-                  const startTime = format(new Date(post.createdAt), "h:mm a");
-                  const previewText = stripHtmlAndTruncate(translation.content, 100);
+                {blogPosts
+                  .filter(post => post.isPublished)
+                  .map((post) => {
+                    const translation = post.translations[0] || {};
+                    const startTime = format(new Date(post.createdAt), "h:mm a");
+                    const previewText = stripHtmlAndTruncate(translation.content, 100);
 
-                  return (
-                    <Card key={post.id} className="hover:shadow-md transition-all group">
-                      <div className="overflow-hidden rounded-t-lg">
-                        <Image
-                          src={post.imageUrl || "/placeholder.svg"}
-                          alt={translation.title || "Blog post image"}
-                          width={400}
-                          height={200}
-                          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                        />
-                      </div>
-                      <CardHeader>
-                        <Badge className="w-fit mb-2 bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
-                          {post.category}
-                        </Badge>
-                        <CardTitle className="font-serif">
-                          {translation.title}
-                        </CardTitle>
-                        <CardDescription>
-                          {startTime} {"- "}
-                          {post.readTime} min read
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="line-clamp-3">{previewText}</p>
-                      </CardContent>
-                      <CardFooter>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className="text-brick-red hover:text-brick-red/80 p-0 h-auto group"
-                        >
-                          <Link
-                            href={`/blog/${post.slug}`}
-                            className="flex items-center gap-1"
+                    return (
+                      <Card key={post.id} className="hover:shadow-md transition-all group">
+                        <div className="overflow-hidden rounded-t-lg">
+                          <Image
+                            src={post.imageUrl || "/placeholder.svg"}
+                            alt={translation.title || "Blog post image"}
+                            width={400}
+                            height={200}
+                            className="w-full h-48 object-cover transition-transform group-hover:scale-105"
+                          />
+                        </div>
+                        <CardHeader>
+                          <Badge className="w-fit mb-2 bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
+                            {post.category}
+                          </Badge>
+                          <CardTitle className="font-serif">
+                            {translation.title}
+                          </CardTitle>
+                          <CardDescription>
+                            {startTime} {"- "}
+                            {post.readTime} min read
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="line-clamp-3">{previewText}</p>
+                        </CardContent>
+                        <CardFooter>
+                          <Button
+                            asChild
+                            variant="ghost"
+                            className="text-brick-red hover:text-brick-red/80 p-0 h-auto group"
                           >
-                            {t("home.blog.readMore")}{" "}
-                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                          </Link>
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  );
-                })}
+                            <Link
+                              href={`/blog/${post.slug}`}
+                              className="flex items-center gap-1"
+                            >
+                              {t("home.blog.readMore")}{" "}
+                              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    );
+                  })}
               </div>
 
               {hasMore && (

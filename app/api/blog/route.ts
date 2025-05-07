@@ -4,11 +4,14 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { getLocale } from "@/lib/i18n/locales"
 
-interface ExtendedSession {
-  user: {
-    id: string
-    email: string
-    name: string
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string
+      name?: string | null
+      email?: string | null
+      image?: string | null
+    }
   }
 }
 
@@ -109,54 +112,5 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching blog posts:", error)
     return NextResponse.json({ error: "Failed to fetch blog posts" }, { status: 500 })
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions) as ExtendedSession | null
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const data = await request.json()
-    const { slug, imageUrl, isPublished, publishedAt, readTime, category, translations } = data
-
-    // Check if slug already exists
-    const existingPost = await prisma.blogPost.findUnique({
-      where: {
-        slug,
-      },
-    })
-
-    if (existingPost) {
-      return NextResponse.json({ error: "A blog post with this slug already exists" }, { status: 400 })
-    }
-
-    // Create blog post with translations
-    const blogPost = await prisma.blogPost.create({
-      data: {
-        slug,
-        imageUrl,
-        isPublished,
-        publishedAt: publishedAt ? new Date(publishedAt) : null,
-        readTime,
-        category,
-        authorId: session.user.id,
-        translations: {
-          create: translations.map((translation: any) => ({
-            languageCode: translation.languageCode,
-            title: translation.title,
-            description: translation.description,
-            content: translation.content,
-          })),
-        },
-      },
-    })
-
-    return NextResponse.json(blogPost)
-  } catch (error) {
-    console.error("Error creating blog post:", error)
-    return NextResponse.json({ error: "Failed to create blog post" }, { status: 500 })
   }
 }

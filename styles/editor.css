@@ -1,0 +1,150 @@
+/* Editor heading styles */
+.ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1.2em 0 0.5em 0;
+  color: #b22222;
+}
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  color: #8b0000;
+}
+.ProseMirror h3 {
+  font-size: 1.17rem;
+  font-weight: bold;
+  margin: 0.8em 0 0.5em 0;
+  color: #333;
+}
+
+/* Bullet and ordered list styles for the editor */
+.ProseMirror ul,
+.ProseMirror ol {
+  margin: 1em 0 1em 2em;
+  padding-left: 2em;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  margin: 0.2em 0;
+}
+
+/* Code block styles for the editor */
+.ProseMirror pre {
+  background: #23272e;
+  color: #f8f8f2;
+  font-family: 'Fira Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 1em;
+  border-radius: 6px;
+  padding: 1em;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+.ProseMirror code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Link styles for the editor */
+.ProseMirror a {
+  color: #2563eb; /* blue-600 */
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ProseMirror a:hover {
+  color: #1d4ed8; /* blue-700 */
+  text-decoration: underline;
+}
+
+/* Blockquote styles for the editor */
+.ProseMirror blockquote {
+  border-left: 4px solid #a3a3a3;
+  background: #f3f4f6;
+  color: #374151;
+  margin: 1em 0;
+  padding: 0.75em 1.5em;
+  font-style: italic;
+  border-radius: 0.5em;
+}
+
+/* Duplicate styles for .prose preview */
+.prose h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1.2em 0 0.5em 0;
+  color: #b22222;
+}
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  color: #8b0000;
+}
+.prose h3 {
+  font-size: 1.17rem;
+  font-weight: bold;
+  margin: 0.8em 0 0.5em 0;
+  color: #333;
+}
+.prose ul,
+.prose ol {
+  margin: 1em 0 1em 2em;
+  padding-left: 2em;
+}
+.prose ul {
+  list-style-type: disc;
+}
+.prose ol {
+  list-style-type: decimal;
+}
+.prose li {
+  margin: 0.2em 0;
+}
+.prose pre {
+  background: #23272e;
+  color: #f8f8f2;
+  font-family: 'Fira Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 1em;
+  border-radius: 6px;
+  padding: 1em;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+.prose code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+.prose a {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.prose a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+.prose blockquote {
+  border-left: 4px solid #a3a3a3;
+  background: #f3f4f6;
+  color: #374151;
+  margin: 1em 0;
+  padding: 0.75em 1.5em;
+  font-style: italic;
+  border-radius: 0.5em;
+} 

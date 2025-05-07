@@ -16,6 +16,7 @@ import {
 import { useTranslation } from "@/lib/i18n/client";
 import { useEffect, useState } from "react";
 import { use } from "react";
+import '@/styles/editor.css';
 
 interface BlogPostTranslation {
   id: number;
