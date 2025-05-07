@@ -88,14 +88,23 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
-    // Check if category has any blog posts
-    const postsCount = await prisma.blogPost.count({
-      where: { categoryId: params.id }
+    // Check if category is used as main category in any blog posts
+    const mainCategoryPostsCount = await prisma.blogPost.count({
+      where: { mainCategoryId: params.id }
     })
 
-    if (postsCount > 0) {
+    // Check if category is used as subcategory in any blog posts
+    const subCategoryPostsCount = await prisma.blogPost.count({
+      where: {
+        subCategoryIds: {
+          has: params.id
+        }
+      }
+    })
+
+    if (mainCategoryPostsCount > 0 || subCategoryPostsCount > 0) {
       return new NextResponse(
-        "Cannot delete category with associated blog posts. Please reassign or delete the posts first.",
+        "Cannot delete category that is used in blog posts. Please reassign or delete the posts first.",
         { status: 400 }
       )
     }

@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       whereClause.isPublished = true
     }
     if (category) {
-      whereClause.category = category
+      whereClause.mainCategoryId = category
     }
     if (featured) {
       whereClause.isFeatured = true
@@ -75,7 +75,8 @@ export async function GET(request: NextRequest) {
         publishedAt: true,
         isPublished: true,
         readTime: true,
-        category: true,
+        mainCategoryId: true,
+        subCategoryIds: true,
         tags: true,
         authorId: true,
         createdAt: true,
@@ -101,9 +102,44 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    // Fetch categories for all posts
+    const postsWithCategories = await Promise.all(
+      blogPosts.map(async (post) => {
+        const mainCategory = post.mainCategoryId
+          ? await prisma.category.findUnique({
+              where: { id: post.mainCategoryId },
+              select: {
+                id: true,
+                slug: true,
+                nameEn: true,
+                nameFr: true,
+              },
+            })
+          : null;
+
+        const subCategories = post.subCategoryIds.length > 0
+          ? await prisma.category.findMany({
+              where: { id: { in: post.subCategoryIds } },
+              select: {
+                id: true,
+                slug: true,
+                nameEn: true,
+                nameFr: true,
+              },
+            })
+          : [];
+
+        return {
+          ...post,
+          mainCategory,
+          subCategories,
+        };
+      })
+    );
+
     // Return posts with pagination metadata
     return NextResponse.json({
-      posts: blogPosts,
+      posts: postsWithCategories,
       total: totalPosts,
       page: page,
       pageSize: pageSize,

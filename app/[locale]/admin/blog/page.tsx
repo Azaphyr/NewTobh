@@ -49,8 +49,10 @@ interface BlogPost {
   publishedAt?: string
   isPublished: boolean
   readTime?: number
-  categoryId?: string
-  category?: Category
+  mainCategoryId?: string
+  subCategoryIds: string[]
+  mainCategory?: Category
+  subCategories?: Category[]
   tags: string[]
   authorId?: string
   createdAt: string
@@ -155,21 +157,69 @@ export default function AdminBlogPage() {
     return format(new Date(date), "PPP", { locale: locale === "fr" ? fr : enUS })
   }
 
-  const getCategoryBadge = (category?: Category) => {
-    if (!category) {
-      return <Badge variant="outline">{t("admin.blog.categories.uncategorized")}</Badge>
-    }
+  const getCategoryBadge = (post: BlogPost) => {
+    const MAX_VISIBLE_SUBCATEGORIES = 2;
 
-    const variants = {
-      'tabletop': "default",
-      'miniature-painting': "secondary",
-      'story-telling': "outline"
-    } as const
+    return (
+      <div className="flex flex-wrap gap-1 items-center">
+        {/* Main Category */}
+        {post.mainCategory ? (
+          <Badge variant="outline" className="bg-deep-teal/10 text-deep-teal border-deep-teal/20">
+            {locale === "fr" ? post.mainCategory.nameFr : post.mainCategory.nameEn}
+          </Badge>
+        ) : (
+          <Badge variant="outline">{t("admin.blog.categories.uncategorized")}</Badge>
+        )}
 
-    const variant = variants[category.slug as keyof typeof variants] || "outline"
-    const name = locale === "fr" ? category.nameFr : category.nameEn
-
-    return <Badge variant={variant}>{name}</Badge>
+        {/* Subcategories */}
+        {post.subCategories && post.subCategories.length > 0 && (
+          <>
+            <span className="text-muted-foreground text-xs">•</span>
+            <div className="flex flex-wrap gap-1">
+              {post.subCategories.slice(0, MAX_VISIBLE_SUBCATEGORIES).map((subCategory) => (
+                <Badge 
+                  key={subCategory.id} 
+                  variant="outline" 
+                  className="text-xs bg-muted text-muted-foreground"
+                >
+                  {locale === "fr" ? subCategory.nameFr : subCategory.nameEn}
+                </Badge>
+              ))}
+              {post.subCategories.length > MAX_VISIBLE_SUBCATEGORIES && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge 
+                        variant="outline" 
+                        className="text-xs bg-muted text-muted-foreground cursor-help"
+                      >
+                        +{post.subCategories.length - MAX_VISIBLE_SUBCATEGORIES} {t("admin.blog.categories.more")}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-[300px] p-2">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium mb-1">{t("admin.blog.categories.allSubcategories")}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {post.subCategories.map((subCategory) => (
+                            <Badge 
+                              key={subCategory.id} 
+                              variant="outline" 
+                              className="text-xs bg-muted text-muted-foreground"
+                            >
+                              {locale === "fr" ? subCategory.nameFr : subCategory.nameEn}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    )
   }
 
   const getPostStatus = (post: BlogPost) => {
@@ -384,7 +434,7 @@ export default function AdminBlogPage() {
                             {translation?.title || t("admin.blog.untitled")}
                           </h3>
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>{getCategoryBadge(featuredPost?.category)}</span>
+                            {featuredPost && <span>{getCategoryBadge(featuredPost)}</span>}
                             {featuredPost?.publishedAt && (
                               <span>{formatDate(featuredPost.publishedAt)}</span>
                             )}
@@ -463,7 +513,7 @@ export default function AdminBlogPage() {
                         <TableCell className="font-medium">
                           {translation.title || t("admin.blog.untitled")}
                         </TableCell>
-                        <TableCell>{getCategoryBadge(post.category)}</TableCell>
+                        <TableCell>{getCategoryBadge(post)}</TableCell>
                         <TableCell>{getStatusBadge(getPostStatus(post))}</TableCell>
                         <TableCell>{post.publishedAt ? formatDate(post.publishedAt) : "-"}</TableCell>
                         <TableCell className="text-right">
@@ -600,7 +650,7 @@ export default function AdminBlogPage() {
                         <TableCell className="font-medium">
                           {translation.title || t("admin.blog.untitled")}
                         </TableCell>
-                        <TableCell>{getCategoryBadge(post.category)}</TableCell>
+                        <TableCell>{getCategoryBadge(post)}</TableCell>
                         <TableCell>{getStatusBadge(getPostStatus(post))}</TableCell>
                         <TableCell>{post.publishedAt ? formatDate(post.publishedAt) : "-"}</TableCell>
                         <TableCell className="text-right">

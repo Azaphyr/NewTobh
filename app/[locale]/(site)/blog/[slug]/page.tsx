@@ -45,8 +45,10 @@ interface BlogPost {
   isPublished: boolean;
   isFeatured: boolean;
   readTime: number | null;
-  categoryId?: string;
-  category?: Category;
+  mainCategoryId?: string;
+  subCategoryIds: string[];
+  mainCategory?: Category;
+  subCategories?: Category[];
   authorId: number | null;
   createdAt: string;
   updatedAt: string;
@@ -71,7 +73,12 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
         const response = await fetch('/api/admin/categories');
         if (!response.ok) throw new Error('Failed to fetch categories');
         const data = await response.json();
-        setCategories(data);
+        
+        // Separate main categories and subcategories
+        const mainCats = data.filter((cat: Category) => !cat.slug.includes('/'));
+        const subCats = data.filter((cat: Category) => cat.slug.includes('/'));
+        
+        setCategories([...mainCats, ...subCats]); // Keep all categories for the sidebar
       } catch (error) {
         console.error('Error fetching categories:', error);
       } finally {
@@ -147,9 +154,18 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
               priority
             />
             <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-              <Badge className="mb-4 bg-brick-red/20 hover:bg-brick-red/30 text-white border-none">
-                {blogPosts[0].category ? getCategoryName(blogPosts[0].category) : t("blog.public.categories.uncategorized")}
-              </Badge>
+              <div className="flex flex-wrap gap-2 justify-center mb-4">
+                {blogPosts[0].mainCategory && (
+                  <Badge className="bg-brick-red/20 hover:bg-brick-red/30 text-white border-none">
+                    {getCategoryName(blogPosts[0].mainCategory)}
+                  </Badge>
+                )}
+                {blogPosts[0].subCategories?.map(category => (
+                  <Badge key={category.id} className="bg-deep-teal/20 hover:bg-deep-teal/30 text-white border-none">
+                    {getCategoryName(category)}
+                  </Badge>
+                ))}
+              </div>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 max-w-4xl">
                 {blogPosts[0].translations[0].title}
               </h1>
@@ -261,26 +277,66 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                   {/* Categories */}
                   <div>
                     <h3 className="font-serif text-xl font-bold mb-4">{t("blog.public.categoriesTitle")}</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {isCategoriesLoading ? (
-                        <Badge variant="outline" className="animate-pulse">
-                          {t("blog.public.categories.loading")}
-                        </Badge>
-                      ) : (
-                        categories.map((category) => (
-                          <Link 
-                            key={category.id}
-                            href={`/blog?category=${category.id}`}
-                          >
-                            <Badge 
-                              variant="outline" 
-                              className="hover:bg-purple-100 cursor-pointer"
-                            >
-                              {getCategoryName(category)}
+                    <div className="space-y-4">
+                      {/* Main Categories */}
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                          {t("blog.public.categories.mainCategories")}
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {isCategoriesLoading ? (
+                            <Badge variant="outline" className="animate-pulse">
+                              {t("blog.public.categories.loading")}
                             </Badge>
-                          </Link>
-                        ))
-                      )}
+                          ) : (
+                            categories
+                              .filter(cat => !cat.slug.includes('/'))
+                              .map((category) => (
+                                <Link 
+                                  key={category.id}
+                                  href={`/blog?mainCategory=${category.id}`}
+                                >
+                                  <Badge 
+                                    variant="outline" 
+                                    className="hover:bg-brick-red/10 hover:text-brick-red cursor-pointer"
+                                  >
+                                    {getCategoryName(category)}
+                                  </Badge>
+                                </Link>
+                              ))
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Sub Categories */}
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                          {t("blog.public.categories.subCategories")}
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {isCategoriesLoading ? (
+                            <Badge variant="outline" className="animate-pulse">
+                              {t("blog.public.categories.loading")}
+                            </Badge>
+                          ) : (
+                            categories
+                              .filter(cat => cat.slug.includes('/'))
+                              .map((category) => (
+                                <Link 
+                                  key={category.id}
+                                  href={`/blog?subCategory=${category.id}`}
+                                >
+                                  <Badge 
+                                    variant="outline" 
+                                    className="hover:bg-deep-teal/10 hover:text-deep-teal cursor-pointer"
+                                  >
+                                    {getCategoryName(category)}
+                                  </Badge>
+                                </Link>
+                              ))
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

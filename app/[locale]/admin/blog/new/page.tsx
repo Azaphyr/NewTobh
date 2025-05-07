@@ -56,7 +56,8 @@ interface BlogFormData {
   imageUrl?: string
   publishDate: string
   author: string
-  categoryId: string
+  mainCategoryId: string
+  subCategoryIds: string[]
   tags: string[]
   isPublished: boolean
   isFeatured: boolean
@@ -88,7 +89,8 @@ export default function NewBlogPage() {
     slug: "",
     publishDate: "",
     author: "",
-    categoryId: "",
+    mainCategoryId: "",
+    subCategoryIds: [],
     tags: [],
     isPublished: false,
     isFeatured: false,
@@ -191,13 +193,40 @@ export default function NewBlogPage() {
     e.preventDefault();
     if (!session) return;
 
+    // Validate required fields
+    if (!formData.slug) {
+      toast.error(t('admin.blog.errorMissingSlug'));
+      return;
+    }
+
+    if (!formData.mainCategoryId) {
+      toast.error(t('admin.blog.errorMissingMainCategory'));
+      return;
+    }
+
+    if (!formData.translations.en.title || !formData.translations.en.description || !formData.translations.en.content) {
+      toast.error(t('admin.blog.errorMissingEnglishContent'));
+      return;
+    }
+
+    if (!formData.translations.fr.title || !formData.translations.fr.description || !formData.translations.fr.content) {
+      toast.error(t('admin.blog.errorMissingFrenchContent'));
+      return;
+    }
+
+    if (!imageFile && !imagePreviewUrl) {
+      toast.error(t('admin.blog.errorMissingImage'));
+      return;
+    }
+
     setIsSubmitting(true);
     const formDataToSend = new FormData();
 
     // Add basic fields from state
     formDataToSend.append('slug', formData.slug);
     formDataToSend.append('publishDate', formData.publishDate);
-    formDataToSend.append('categoryId', formData.categoryId);
+    formDataToSend.append('mainCategoryId', formData.mainCategoryId);
+    formDataToSend.append('subCategoryIds', JSON.stringify(formData.subCategoryIds));
     formDataToSend.append('tags', JSON.stringify(formData.tags));
     formDataToSend.append('isPublished', formData.isPublished.toString());
     formDataToSend.append('isFeatured', formData.isFeatured.toString());
@@ -219,6 +248,21 @@ export default function NewBlogPage() {
     // Add image if selected
     if (imageFile) {
       formDataToSend.append('image', imageFile);
+    } else if (imagePreviewUrl) {
+      // If we have a preview URL but no file, it means we selected from library
+      // We need to fetch the image and create a file from it
+      try {
+        const response = await fetch(imagePreviewUrl);
+        const blob = await response.blob();
+        const filename = imagePreviewUrl.split('/').pop() || 'image.jpg';
+        const file = new File([blob], filename, { type: blob.type });
+        formDataToSend.append('image', file);
+      } catch (error) {
+        console.error('Error processing image from library:', error);
+        toast.error(t('admin.blog.errorProcessingImage'));
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     try {
@@ -228,14 +272,15 @@ export default function NewBlogPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create blog post');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create blog post');
       }
 
       toast.success(t('admin.blog.successCreate'));
       router.push('/admin/blog');
     } catch (error) {
       console.error('Error creating blog post:', error);
-      toast.error(t('admin.blog.errorCreate'));
+      toast.error(error instanceof Error ? error.message : t('admin.blog.errorCreate'));
     } finally {
       setIsSubmitting(false);
     }
@@ -391,23 +436,79 @@ export default function NewBlogPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="category" className="text-dark-mahogany">{t("admin.blog.new.category")}</Label>
-                  <Select 
-                    value={formData.categoryId}
-                    onValueChange={(value) => handleInputChange("categoryId", value)}
-                  >
-                    <SelectTrigger className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal">
-                      <SelectValue placeholder={t("admin.blog.new.selectCategory")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {locale === 'en' ? category.nameEn : category.nameFr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-4">
+                  {/* Main Category Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="mainCategory" className="text-dark-mahogany">
+                      {t("admin.blog.new.mainCategory")}
+                    </Label>
+                    <Select 
+                      value={formData.mainCategoryId}
+                      onValueChange={(value) => handleInputChange("mainCategoryId", value)}
+                    >
+                      <SelectTrigger className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal">
+                        <SelectValue placeholder={t("admin.blog.new.selectMainCategory")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {locale === 'en' ? category.nameEn : category.nameFr}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Subcategories Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="subCategories" className="text-dark-mahogany">
+                      {t("admin.blog.new.subCategories")}
+                    </Label>
+                    <Select 
+                      onValueChange={(value) => {
+                        if (!formData.subCategoryIds.includes(value)) {
+                          handleInputChange("subCategoryIds", [...formData.subCategoryIds, value])
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="border-deep-teal/20 focus:border-deep-teal focus:ring-deep-teal">
+                        <SelectValue placeholder={t("admin.blog.new.selectSubCategories")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories
+                          .filter(category => 
+                            category.id !== formData.mainCategoryId && 
+                            !formData.subCategoryIds.includes(category.id)
+                          )
+                          .map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {locale === 'en' ? category.nameEn : category.nameFr}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    {formData.subCategoryIds.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.subCategoryIds.map(id => {
+                          const category = categories.find(c => c.id === id);
+                          return category ? (
+                            <div key={id} className="flex items-center gap-1 bg-deep-teal/10 text-deep-teal px-2 py-1 rounded">
+                              <span>{locale === 'en' ? category.nameEn : category.nameFr}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleInputChange("subCategoryIds", 
+                                  formData.subCategoryIds.filter(catId => catId !== id)
+                                )}
+                                className="hover:text-brick-red"
+                              >
+                                <XIcon className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex gap-4">

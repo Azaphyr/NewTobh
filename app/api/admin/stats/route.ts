@@ -10,11 +10,6 @@ interface Category {
   nameFr: string
 }
 
-interface PostWithCategory {
-  categoryId: string | null
-  category: Category | null
-}
-
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -35,32 +30,54 @@ export async function GET() {
       where: { isFeatured: true }
     })
 
-    // Get posts by category
-    const postsByCategory = await prisma.blogPost.findMany({
+    // Get posts with their categories
+    const posts = await prisma.blogPost.findMany({
       select: {
-        categoryId: true,
-        category: {
+        mainCategoryId: true,
+        subCategoryIds: true
+      }
+    })
+
+    // Count posts per category (both main and subcategories)
+    const categoryCounts: Record<string, number> = {}
+    
+    for (const post of posts) {
+      // Count main category
+      if (post.mainCategoryId) {
+        const mainCategory = await prisma.category.findUnique({
+          where: { id: post.mainCategoryId },
           select: {
             id: true,
             slug: true,
             nameEn: true,
             nameFr: true
           }
-        }
-      }
-    })
+        })
 
-    // Count posts per category
-    const categoryCounts = postsByCategory.reduce((acc: Record<string, number>, post: PostWithCategory) => {
-      if (post.categoryId) {
-        const category = post.category
-        if (category) {
-          const key = category.slug
-          acc[key] = (acc[key] || 0) + 1
+        if (mainCategory) {
+          const mainKey = mainCategory.slug
+          categoryCounts[mainKey] = (categoryCounts[mainKey] || 0) + 1
         }
       }
-      return acc
-    }, {})
+
+      // Count subcategories
+      if (post.subCategoryIds.length > 0) {
+        const subCategories = await prisma.category.findMany({
+          where: { id: { in: post.subCategoryIds } },
+          select: {
+            id: true,
+            slug: true,
+            nameEn: true,
+            nameFr: true
+          }
+        })
+
+        for (const category of subCategories) {
+          const subKey = category.slug
+          categoryCounts[subKey] = (categoryCounts[subKey] || 0) + 1
+        }
+      }
+    }
 
     // Get total number of categories
     const totalCategories = await prisma.category.count()

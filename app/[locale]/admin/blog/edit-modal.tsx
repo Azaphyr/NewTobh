@@ -8,9 +8,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Check, ChevronsUpDown, XIcon, Loader2, ImageIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ImageIcon, XIcon, Loader2 } from "lucide-react"
 import BlogEditor from "@/components/BlogEditor"
 
 interface BlogPostTranslation {
@@ -38,8 +41,10 @@ interface BlogPost {
   publishedAt?: string
   isPublished: boolean
   readTime?: number
-  categoryId?: string
-  category?: Category
+  mainCategoryId?: string
+  subCategoryIds: string[]
+  mainCategory?: Category
+  subCategories?: Category[]
   tags: string[]
   authorId?: string
   createdAt: string
@@ -59,7 +64,9 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
   const { t, locale } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [formData, setFormData] = useState<Partial<BlogPost>>({})
+  const [formData, setFormData] = useState<Partial<BlogPost>>({
+    subCategoryIds: []
+  })
   const [translations, setTranslations] = useState<Record<string, BlogPostTranslation>>({})
   const [activeLanguage, setActiveLanguage] = useState<string>(locale)
   const [currentPost, setCurrentPost] = useState<BlogPost | null>(null)
@@ -86,7 +93,8 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
           const initialFormData = {
             id: data.id,
             slug: data.slug || "",
-            categoryId: data.categoryId,
+            mainCategoryId: data.mainCategoryId,
+            subCategoryIds: data.subCategoryIds || [],
             isPublished: data.isPublished,
             isFeatured: data.isFeatured,
             readTime: data.readTime,
@@ -166,11 +174,17 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
 
     setIsLoading(true)
     try {
-      // If there's a new image file, upload it first
-      if (imageFile instanceof File) {
+      // If there's a new image file or Cloudinary URL, handle it
+      if (imageFile instanceof File || imagePreviewUrl) {
         setIsUploading(true)
         const imageFormData = new FormData()
-        imageFormData.append("image", imageFile)
+        
+        if (imageFile instanceof File) {
+          imageFormData.append("image", imageFile)
+        } else if (imagePreviewUrl) {
+          // If we have a Cloudinary URL, send it directly
+          imageFormData.append("cloudinaryUrl", imagePreviewUrl)
+        }
         
         const uploadResponse = await fetch(`/api/admin/blog/${currentPost.id}/upload`, {
           method: "POST",
@@ -197,21 +211,40 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
-          translations: Object.values(translations),
+          slug: formData.slug,
+          publishDate: formData.publishedAt,
+          mainCategoryId: formData.mainCategoryId,
+          subCategoryIds: formData.subCategoryIds || [],
+          tags: formData.tags || [],
+          isPublished: formData.isPublished,
+          isFeatured: formData.isFeatured,
+          readTime: formData.readTime,
+          translations: Object.values(translations).map(translation => ({
+            id: translation.id,
+            languageCode: translation.languageCode,
+            title: translation.title,
+            description: translation.description,
+            content: translation.content,
+            metaDescription: translation.metaDescription,
+            metaKeywords: translation.metaKeywords,
+          })),
         }),
       })
 
       if (!response.ok) {
-        throw new Error("Failed to update blog post")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to update blog post")
       }
+
+      const updatedPost = await response.json()
+      console.log('Updated post:', updatedPost)
 
       toast.success(t("admin.blog.successUpdate"))
       onSave()
       onClose()
     } catch (error) {
       console.error("Error updating blog post:", error)
-      toast.error(t("admin.blog.errorUpdate"))
+      toast.error(error instanceof Error ? error.message : t("admin.blog.errorUpdate"))
     } finally {
       setIsLoading(false)
       setIsUploading(false)
@@ -446,22 +479,116 @@ export function EditBlogPostModal({ post, isOpen, onClose, onSave }: EditModalPr
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="category">{t("admin.blog.edit.category")}</Label>
-                  <Select
-                    value={formData.categoryId}
-                    onValueChange={(value) => setFormData({ ...formData, categoryId: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("admin.blog.edit.selectCategory")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {locale === 'en' ? category.nameEn : category.nameFr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="mainCategory">{t("admin.blog.edit.mainCategory")}</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className="w-full justify-between"
+                      >
+                        {formData.mainCategoryId
+                          ? categories.find((category) => category.id === formData.mainCategoryId)?.[locale === 'en' ? 'nameEn' : 'nameFr']
+                          : t("admin.blog.edit.selectMainCategory")}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput placeholder={t("admin.blog.edit.searchCategory")} />
+                        <CommandEmpty>{t("admin.blog.edit.noCategoryFound")}</CommandEmpty>
+                        <CommandGroup>
+                          {categories.map((category) => (
+                            <CommandItem
+                              key={category.id}
+                              value={category[locale === 'en' ? 'nameEn' : 'nameFr']}
+                              onSelect={() => {
+                                setFormData({ ...formData, mainCategoryId: category.id })
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  formData.mainCategoryId === category.id ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {locale === 'en' ? category.nameEn : category.nameFr}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="subCategories">{t("admin.blog.edit.subCategories")}</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className="w-full justify-between"
+                      >
+                        {t("admin.blog.edit.selectSubCategories")}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput placeholder={t("admin.blog.edit.searchCategory")} />
+                        <CommandEmpty>{t("admin.blog.edit.noCategoryFound")}</CommandEmpty>
+                        <CommandGroup>
+                          {categories
+                            .filter(category => 
+                              category.id !== formData.mainCategoryId && 
+                              !formData.subCategoryIds?.includes(category.id)
+                            )
+                            .map((category) => (
+                              <CommandItem
+                                key={`subcat-${category.id}`}
+                                value={category[locale === 'en' ? 'nameEn' : 'nameFr']}
+                                onSelect={() => {
+                                  if (!formData.subCategoryIds?.includes(category.id)) {
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      subCategoryIds: [...(prev.subCategoryIds || []), category.id]
+                                    }))
+                                  }
+                                }}
+                              >
+                                {locale === 'en' ? category.nameEn : category.nameFr}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {formData.subCategoryIds && formData.subCategoryIds.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.subCategoryIds.map((id, index) => {
+                        const category = categories.find(c => c.id === id);
+                        return category ? (
+                          <div 
+                            key={`subcat-tag-${id}-${index}`} 
+                            className="flex items-center gap-1 bg-deep-teal/10 text-deep-teal px-2 py-1 rounded"
+                          >
+                            <span>{locale === 'en' ? category.nameEn : category.nameFr}</span>
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({
+                                ...prev,
+                                subCategoryIds: prev.subCategoryIds?.filter(catId => catId !== id) || []
+                              }))}
+                              className="hover:text-brick-red"
+                            >
+                              <XIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">

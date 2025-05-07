@@ -55,7 +55,7 @@ async function updateBlogStats() {
     draftPosts,
     archivedPosts,
     recentPosts,
-    postsByCategory,
+    postsByMainCategory,
     postsByMonth,
     postsByAuthor,
     averageReadTime
@@ -70,9 +70,9 @@ async function updateBlogStats() {
       }
     }),
     prisma.blogPost.groupBy({
-      by: ['category'],
+      by: ['mainCategoryId'],
       _count: true,
-      orderBy: { _count: { category: 'desc' } }
+      orderBy: { _count: { mainCategoryId: 'desc' } }
     }),
     prisma.blogPost.groupBy({
       by: ['createdAt'],
@@ -92,6 +92,20 @@ async function updateBlogStats() {
     })
   ])
 
+  // Get category names for the stats
+  const categoryIds = postsByMainCategory.map(post => post.mainCategoryId).filter(Boolean) as string[]
+  const categories = await prisma.category.findMany({
+    where: { id: { in: categoryIds } },
+    select: { id: true, nameEn: true, nameFr: true }
+  })
+
+  // Map category IDs to their names
+  const postsByCategoryWithNames = postsByMainCategory.map(post => ({
+    categoryId: post.mainCategoryId,
+    categoryName: categories.find(c => c.id === post.mainCategoryId)?.nameEn || 'Uncategorized',
+    count: post._count
+  }))
+
   const postTrend = calculateTrend(postsByMonth)
   const publishingRate = recentPosts / 30
   const completionRate = totalPosts ? (publishedPosts / totalPosts) * 100 : 0
@@ -105,7 +119,7 @@ async function updateBlogStats() {
       draftPosts,
       archivedPosts,
       recentPosts,
-      postsByCategory: JSON.stringify(postsByCategory),
+      postsByCategory: JSON.stringify(postsByCategoryWithNames),
       postsByMonth: JSON.stringify(postsByMonth),
       postsByAuthor: JSON.stringify(postsByAuthor),
       averageReadTime: Math.round(averageReadTime._avg.readTime || 0),

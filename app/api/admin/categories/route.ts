@@ -3,17 +3,12 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// GET /api/admin/categories - List all categories
-export async function GET() {
+// GET /api/admin/categories - Get all categories
+export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
-      return new NextResponse("Unauthorized", { status: 401 })
-    }
-
     const categories = await prisma.category.findMany({
       orderBy: {
-        createdAt: 'desc'
+        nameEn: 'asc'
       }
     })
 

@@ -65,6 +65,11 @@ interface BlogPostTranslation {
   content: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 interface BlogPost {
   id: number;
   slug: string;
@@ -73,7 +78,10 @@ interface BlogPost {
   isPublished: boolean;
   isFeatured: boolean;
   readTime: number | null;
-  category: string;
+  mainCategoryId?: string;
+  subCategoryIds: string[];
+  mainCategory?: Category;
+  subCategories?: Category[];
   authorId: number | null;
   createdAt: string;
   updatedAt: string;
@@ -141,6 +149,10 @@ export function HomePage() {
     return plainText.length > maxLength
       ? plainText.substring(0, maxLength).trim() + "..."
       : plainText;
+  };
+
+  const getCategoryName = (category: Category | undefined): string => {
+    return category?.name || "Uncategorized";
   };
 
   return (
@@ -466,60 +478,81 @@ export function HomePage() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Blog Post 1 */}
-            {blogPosts.map((post) => {
-              const translation = post.translations[0] || {};
-              const startTime = format(new Date(post.createdAt), "h:mm a");
-              const previewText = stripHtmlAndTruncate(
-                translation.content,
-                100
-              );
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isBlogLoading ? (
+              <div className="col-span-full text-center py-8">
+                <p>Loading...</p>
+              </div>
+            ) : blogPosts && blogPosts.length > 0 ? (
+              blogPosts.map((post) => {
+                const translation = post.translations[0] || {};
+                const startTime = format(new Date(post.createdAt), "h:mm a");
+                const previewText = stripHtmlAndTruncate(
+                  translation.content,
+                  100
+                );
 
-              return (
-                <Card
-                  key={post.id}
-                  className="hover:shadow-md transition-all group"
-                >
-                  <div className="overflow-hidden rounded-t-lg">
-                    <Image
-                      src={post.imageUrl || "/placeholder.svg"}
-                      alt={translation.title || "Blog post image"}
-                      width={400}
-                      height={200}
-                      className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                    />
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="font-serif">
-                      {translation.title}
-                    </CardTitle>
-                    <CardDescription>
-                      {startTime} {"- "}
-                      {post.readTime} min read
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="line-clamp-3">{previewText}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button
-                      asChild
-                      variant="ghost"
-                      className="text-brick-red hover:text-brick-red/80 p-0 h-auto group"
-                    >
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="flex items-center gap-1"
+                return (
+                  <Card
+                    key={post.id}
+                    className="hover:shadow-md transition-all group"
+                  >
+                    <div className="overflow-hidden rounded-t-lg">
+                      <Image
+                        src={post.imageUrl || "/placeholder.svg"}
+                        alt={translation.title || "Blog post image"}
+                        width={400}
+                        height={200}
+                        className="w-full h-48 object-cover transition-transform group-hover:scale-105"
+                      />
+                    </div>
+                    <CardHeader>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {post.mainCategory && (
+                          <Badge className="bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
+                            {getCategoryName(post.mainCategory)}
+                          </Badge>
+                        )}
+                        {post.subCategories?.map(category => (
+                          <Badge key={category.id} className="bg-deep-teal/10 hover:bg-deep-teal/20 text-deep-teal border-none">
+                            {getCategoryName(category)}
+                          </Badge>
+                        ))}
+                      </div>
+                      <CardTitle className="font-serif">
+                        {translation.title}
+                      </CardTitle>
+                      <CardDescription>
+                        {startTime} {"- "}
+                        {post.readTime} min read
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="line-clamp-3">{previewText}</p>
+                    </CardContent>
+                    <CardFooter>
+                      <Button
+                        asChild
+                        variant="ghost"
+                        className="text-brick-red hover:text-brick-red/80 p-0 h-auto group"
                       >
-                        {t("home.blog.readMore")}{" "}
-                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
+                        <Link
+                          href={`/blog/${post.slug}`}
+                          className="flex items-center gap-1"
+                        >
+                          {t("home.blog.readMore")}{" "}
+                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <p>{t("home.blog.noPosts")}</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

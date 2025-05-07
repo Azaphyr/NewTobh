@@ -78,26 +78,25 @@ model Category {
   nameFr    String
   createdAt DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt DateTime   @updatedAt @db.Timestamptz(6)
-  blogPosts BlogPost[]
 }
 
 model BlogPost {
-  id           String                @id @default(cuid())
-  slug         String                @unique
-  imageUrl     String?
-  publishedAt  DateTime?             @db.Timestamptz(6)
-  isPublished  Boolean               @default(false)
-  readTime     Int?
-  categoryId   String?
-  category     Category?             @relation(fields: [categoryId], references: [id])
-  tags         String[]
-  authorId     String?
-  createdAt    DateTime              @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime              @updatedAt @db.Timestamptz(6)
-  isFeatured   Boolean               @default(false)
-  isArchived   Boolean               @default(false)
-  author       AdminUser?            @relation(fields: [authorId], references: [id])
-  translations BlogPostTranslation[]
+  id             String                @id @default(cuid())
+  slug           String                @unique
+  imageUrl       String?
+  publishedAt    DateTime?             @db.Timestamptz(6)
+  isPublished    Boolean               @default(false)
+  readTime       Int?
+  mainCategoryId String?               // Main category ID
+  subCategoryIds String[]              // Array of other category IDs
+  tags           String[]
+  authorId       String?
+  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime              @updatedAt @db.Timestamptz(6)
+  isFeatured     Boolean               @default(false)
+  isArchived     Boolean               @default(false)
+  author         AdminUser?            @relation(fields: [authorId], references: [id])
+  translations   BlogPostTranslation[]
 }
 
 model BlogPostTranslation {

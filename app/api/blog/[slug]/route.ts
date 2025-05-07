@@ -4,6 +4,13 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { getLocale } from "@/lib/i18n/locales"
 
+type Category = {
+  id: string
+  slug: string
+  nameEn: string
+  nameFr: string
+}
+
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   try {
     const { slug } = params
@@ -23,14 +30,6 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
               },
             }
           : false,
-        category: {
-          select: {
-            id: true,
-            slug: true,
-            nameEn: true,
-            nameFr: true
-          }
-        }
       },
     })
 
@@ -38,7 +37,39 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
       return NextResponse.json({ error: "Blog post not found" }, { status: 404 })
     }
 
-    return NextResponse.json(blogPost)
+    // Fetch main category if it exists
+    let mainCategory: Category | null = null
+    if (blogPost.mainCategoryId) {
+      mainCategory = await prisma.category.findUnique({
+        where: { id: blogPost.mainCategoryId },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true
+        }
+      })
+    }
+
+    // Fetch subcategories if they exist
+    let subCategories: Category[] = []
+    if (blogPost.subCategoryIds.length > 0) {
+      subCategories = await prisma.category.findMany({
+        where: { id: { in: blogPost.subCategoryIds } },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true
+        }
+      })
+    }
+
+    return NextResponse.json({
+      ...blogPost,
+      mainCategory,
+      subCategories
+    })
   } catch (error) {
     console.error("Error fetching blog post:", error)
     return NextResponse.json({ error: "Failed to fetch blog post" }, { status: 500 })
@@ -54,7 +85,15 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
 
     const { slug } = params
     const data = await request.json()
-    const { imageUrl, isPublished, publishedAt, readTime, category, translations } = data
+    const { 
+      imageUrl, 
+      isPublished, 
+      publishedAt, 
+      readTime, 
+      mainCategoryId,
+      subCategoryIds,
+      translations 
+    } = data
 
     // Check if blog post exists
     const existingPost = await prisma.blogPost.findUnique({
@@ -73,11 +112,12 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
         slug,
       },
       data: {
-        imageUrl, // Include imageUrl in the update
+        imageUrl,
         isPublished,
         publishedAt: publishedAt ? new Date(publishedAt) : null,
         readTime,
-        category,
+        mainCategoryId,
+        subCategoryIds,
       },
     })
 
@@ -105,7 +145,32 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
       })
     }
 
-    return NextResponse.json(updatedPost)
+    // Fetch updated categories
+    const mainCategory = mainCategoryId ? await prisma.category.findUnique({
+      where: { id: mainCategoryId },
+      select: {
+        id: true,
+        slug: true,
+        nameEn: true,
+        nameFr: true
+      }
+    }) : null
+
+    const subCategories = subCategoryIds?.length > 0 ? await prisma.category.findMany({
+      where: { id: { in: subCategoryIds } },
+      select: {
+        id: true,
+        slug: true,
+        nameEn: true,
+        nameFr: true
+      }
+    }) : []
+
+    return NextResponse.json({
+      ...updatedPost,
+      mainCategory,
+      subCategories
+    })
   } catch (error) {
     console.error("Error updating blog post:", error)
     return NextResponse.json({ error: "Failed to update blog post" }, { status: 500 })

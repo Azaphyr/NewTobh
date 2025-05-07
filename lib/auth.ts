@@ -13,7 +13,7 @@ interface ExtendedUser {
   name: string
 }
 
-interface ExtendedSession extends Session {
+export interface ExtendedSession extends Session {
   user: ExtendedUser
 }
 

@@ -58,19 +58,42 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
             name: true,
             email: true
           }
-        },
-        category: {
+        }
+      },
+    });
+
+    // Fetch categories for each blog post
+    const blogPostsWithCategories = await Promise.all(
+      blogPosts.map(async (post) => {
+        const mainCategory = post.mainCategoryId ? await prisma.category.findUnique({
+          where: { id: post.mainCategoryId },
           select: {
             id: true,
             slug: true,
             nameEn: true,
             nameFr: true
           }
-        }
-      },
-    });
+        }) : null;
 
-    res.status(200).json(blogPosts);
+        const subCategories = post.subCategoryIds.length > 0 ? await prisma.category.findMany({
+          where: { id: { in: post.subCategoryIds } },
+          select: {
+            id: true,
+            slug: true,
+            nameEn: true,
+            nameFr: true
+          }
+        }) : [];
+
+        return {
+          ...post,
+          mainCategory,
+          subCategories
+        };
+      })
+    );
+
+    res.status(200).json(blogPostsWithCategories);
   } catch (error) {
     console.error('Error fetching blog posts:', error);
     res.status(500).json({ error: 'Failed to fetch blog posts' });
@@ -93,7 +116,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const {
         slug,
         publishDate,
-        categoryId,
+        mainCategoryId,
+        subCategoryIds,
         tags,
         isPublished,
         isFeatured,
@@ -136,7 +160,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           imageUrl,
           publishedAt: getString(isPublished) === 'true' ? new Date(getString(publishDate)) : null,
           authorId: session.user.id,
-          categoryId: getString(categoryId),
+          mainCategoryId: getString(mainCategoryId) || null,
+          subCategoryIds: subCategoryIds ? JSON.parse(getString(subCategoryIds)) : [],
           tags: tags ? JSON.parse(getString(tags)) : [],
           isPublished: getString(isPublished) === 'true',
           isFeatured: getString(isFeatured) === 'true',
@@ -160,19 +185,36 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
               name: true,
               email: true
             }
-          },
-          category: {
-            select: {
-              id: true,
-              slug: true,
-              nameEn: true,
-              nameFr: true
-            }
           }
         },
       });
 
-      res.status(201).json(blogPost);
+      // Fetch categories for the created blog post
+      const mainCategory = blogPost.mainCategoryId ? await prisma.category.findUnique({
+        where: { id: blogPost.mainCategoryId },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true
+        }
+      }) : null;
+
+      const subCategories = blogPost.subCategoryIds.length > 0 ? await prisma.category.findMany({
+        where: { id: { in: blogPost.subCategoryIds } },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true
+        }
+      }) : [];
+
+      res.status(201).json({
+        ...blogPost,
+        mainCategory,
+        subCategories
+      });
     });
   } catch (error) {
     console.error('Error creating blog post:', error);

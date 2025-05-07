@@ -1,20 +1,24 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import type { Category } from "@/src/app/generated/prisma"
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return new NextResponse("Unauthorized", { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Ensure params is properly typed and awaited
+    const id = (await params).id
+
     const blogPost = await prisma.blogPost.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         translations: true,
         author: {
@@ -23,26 +27,54 @@ export async function GET(
             name: true,
             email: true
           }
-        },
-        category: {
-          select: {
-            id: true,
-            slug: true,
-            nameEn: true,
-            nameFr: true
-          }
         }
-      },
+      }
     })
 
     if (!blogPost) {
-      return new NextResponse("Blog post not found", { status: 404 })
+      return NextResponse.json({ error: "Blog post not found" }, { status: 404 })
     }
 
-    return NextResponse.json(blogPost)
+    // Fetch main category if it exists
+    let mainCategory: Category | null = null
+    if (blogPost.mainCategoryId) {
+      mainCategory = await prisma.category.findUnique({
+        where: { id: blogPost.mainCategoryId },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      })
+    }
+
+    // Fetch subcategories if they exist
+    let subCategories: Category[] = []
+    if (blogPost.subCategoryIds?.length > 0) {
+      subCategories = await prisma.category.findMany({
+        where: { id: { in: blogPost.subCategoryIds } },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      })
+    }
+
+    return NextResponse.json({
+      ...blogPost,
+      mainCategory,
+      subCategories
+    })
   } catch (error) {
     console.error("Error fetching blog post:", error)
-    return new NextResponse("Internal Server Error", { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch blog post" }, { status: 500 })
   }
 }
 
@@ -60,7 +92,8 @@ export async function PUT(
     const { 
       slug, 
       publishDate, 
-      categoryId,
+      mainCategoryId,
+      subCategoryIds,
       tags, 
       isPublished, 
       isFeatured, 
@@ -72,11 +105,13 @@ export async function PUT(
       return new NextResponse("Missing required fields", { status: 400 })
     }
 
+    const id = (await params).id
+
     // Check if slug is already in use by another post
     const existingPost = await prisma.blogPost.findFirst({
       where: {
         slug,
-        id: { not: params.id }
+        id: { not: id }
       }
     })
     
@@ -86,11 +121,12 @@ export async function PUT(
 
     // Update blog post and its translations
     const blogPost = await prisma.blogPost.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         slug,
         publishedAt: isPublished ? new Date(publishDate) : null,
-        categoryId,
+        mainCategoryId,
+        subCategoryIds: subCategoryIds || [],
         tags: tags || [],
         isPublished: isPublished || false,
         isFeatured: isFeatured || false,
@@ -115,19 +151,47 @@ export async function PUT(
             name: true,
             email: true
           }
-        },
-        category: {
-          select: {
-            id: true,
-            slug: true,
-            nameEn: true,
-            nameFr: true
-          }
         }
       },
     })
 
-    return NextResponse.json(blogPost)
+    // Fetch main category if it exists
+    let mainCategory: Category | null = null
+    if (blogPost.mainCategoryId) {
+      mainCategory = await prisma.category.findUnique({
+        where: { id: blogPost.mainCategoryId },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      })
+    }
+
+    // Fetch subcategories if they exist
+    let subCategories: Category[] = []
+    if (blogPost.subCategoryIds.length > 0) {
+      subCategories = await prisma.category.findMany({
+        where: { id: { in: blogPost.subCategoryIds } },
+        select: {
+          id: true,
+          slug: true,
+          nameEn: true,
+          nameFr: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      })
+    }
+
+    return NextResponse.json({
+      ...blogPost,
+      mainCategory,
+      subCategories
+    })
   } catch (error) {
     console.error("Error updating blog post:", error)
     return new NextResponse("Internal Server Error", { status: 500 })
