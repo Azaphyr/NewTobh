@@ -23,6 +23,14 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
               },
             }
           : false,
+        category: {
+          select: {
+            id: true,
+            slug: true,
+            nameEn: true,
+            nameFr: true
+          }
+        }
       },
     })
 

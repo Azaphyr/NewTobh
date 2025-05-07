@@ -19,6 +19,15 @@ interface BlogPostTranslation {
   content: string;
 }
 
+interface Category {
+  id: string;
+  slug: string;
+  nameEn: string;
+  nameFr: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface BlogPost {
   id: number;
   slug: string;
@@ -27,7 +36,8 @@ interface BlogPost {
   isPublished: boolean;
   isFeatured: boolean;
   readTime: number | null;
-  category: string;
+  categoryId?: string;
+  category?: Category;
   authorId: number | null;
   createdAt: string;
   updatedAt: string;
@@ -48,8 +58,29 @@ export default function BlogPage() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const POSTS_PER_PAGE = 6;
   
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/admin/categories');
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setIsCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     const fetchBlogPosts = async () => {
       setIsBlogLoading(true);
@@ -61,6 +92,14 @@ export default function BlogPage() {
         params.append("languageCode", locale);
         params.append("page", page.toString());
         params.append("limit", POSTS_PER_PAGE.toString());
+        
+        if (searchQuery) {
+          params.append("search", searchQuery);
+        }
+        
+        if (selectedCategory) {
+          params.append("categoryId", selectedCategory);
+        }
 
         const response = await fetch(`/api/blog?${params.toString()}`);
         const data: BlogResponse = await response.json();
@@ -98,7 +137,19 @@ export default function BlogPage() {
 
     fetchBlogPosts();
     fetchFeaturedPost();
-  }, [locale, page]);
+  }, [locale, page, searchQuery, selectedCategory]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(1);
+    setBlogPosts([]);
+  };
+
+  const handleCategorySelect = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+    setPage(1);
+    setBlogPosts([]);
+  };
   
   const loadMore = () => {
     setIsLoadingMore(true);
@@ -112,6 +163,10 @@ export default function BlogPage() {
     return plainText.length > maxLength
       ? plainText.substring(0, maxLength).trim() + "..."
       : plainText;
+  };
+
+  const getCategoryName = (category: Category) => {
+    return locale === 'fr' ? category.nameFr : category.nameEn;
   };
 
   return (
@@ -136,32 +191,43 @@ export default function BlogPage() {
       {/* Search and Categories */}
       <section className="py-8 border-b">
         <div className="container">
-          <div className="flex flex-col md:flex-row gap-4 justify-between">
+          <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 justify-between">
             <div className="relative w-full md:w-96">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input type="search" placeholder={t("blog.public.searchPlaceholder")} className="pl-10" />
+              <Input 
+                type="search" 
+                placeholder={t("blog.public.searchPlaceholder")} 
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
+              <Badge 
+                variant={selectedCategory === null ? "default" : "outline"}
+                className="hover:bg-purple-100 cursor-pointer"
+                onClick={() => handleCategorySelect(null)}
+              >
                 {t("blog.public.categories.all")}
               </Badge>
-              <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.public.categories.dungeonMastering")}
-              </Badge>
-              <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.public.categories.characterBuilding")}
-              </Badge>
-              <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.public.categories.miniaturePainting")}
-              </Badge>
-              <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.public.categories.storytelling")}
-              </Badge>
-              <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                {t("blog.public.categories.community")}
-              </Badge>
+              {isCategoriesLoading ? (
+                <Badge variant="outline" className="animate-pulse">
+                  {t("blog.public.categories.loading")}
+                </Badge>
+              ) : (
+                categories.map((category) => (
+                  <Badge 
+                    key={category.id}
+                    variant={selectedCategory === category.id ? "default" : "outline"}
+                    className="hover:bg-purple-100 cursor-pointer"
+                    onClick={() => handleCategorySelect(category.id)}
+                  >
+                    {getCategoryName(category)}
+                  </Badge>
+                ))
+              )}
             </div>
-          </div>
+          </form>
         </div>
       </section>
 
@@ -182,7 +248,7 @@ export default function BlogPage() {
               </div>
               <div className="lg:col-span-2 flex flex-col justify-center">
                 <Badge className="w-fit mb-2 bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
-                  {featuredPost.category}
+                  {featuredPost.category ? getCategoryName(featuredPost.category) : t("blog.public.categories.uncategorized")}
                 </Badge>
                 <h3 className="font-serif text-3xl font-bold mb-2">
                   {featuredPost.translations[0]?.title}
@@ -237,7 +303,7 @@ export default function BlogPage() {
                         </div>
                         <CardHeader>
                           <Badge className="w-fit mb-2 bg-brick-red/10 hover:bg-brick-red/20 text-brick-red border-none">
-                            {post.category}
+                            {post.category ? getCategoryName(post.category) : t("blog.public.categories.uncategorized")}
                           </Badge>
                           <CardTitle className="font-serif">
                             {translation.title}

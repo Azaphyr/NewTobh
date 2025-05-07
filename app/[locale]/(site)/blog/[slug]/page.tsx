@@ -17,6 +17,16 @@ import { useTranslation } from "@/lib/i18n/client";
 import { useEffect, useState } from "react";
 import { use } from "react";
 import '@/styles/editor.css';
+import { format } from "date-fns";
+
+interface Category {
+  id: string;
+  slug: string;
+  nameEn: string;
+  nameFr: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface BlogPostTranslation {
   id: number;
@@ -35,7 +45,8 @@ interface BlogPost {
   isPublished: boolean;
   isFeatured: boolean;
   readTime: number | null;
-  category: string;
+  categoryId?: string;
+  category?: Category;
   authorId: number | null;
   createdAt: string;
   updatedAt: string;
@@ -50,7 +61,26 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
   const { t, locale } = useTranslation();
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [isBlogLoading, setIsBlogLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const { slug } = use(params);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/admin/categories');
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setIsCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -61,7 +91,8 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
         const params = new URLSearchParams({
           locale,
           includeTranslations: "true",
-          languageCode: locale
+          languageCode: locale,
+          includeCategory: "true"
         });
 
         const response = await fetch(`/api/blog/${slug}?${params.toString()}`);
@@ -88,6 +119,10 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
     fetchBlogPosts();
   }, [locale, slug]);
 
+  const getCategoryName = (category: Category) => {
+    return locale === 'fr' ? category.nameFr : category.nameEn;
+  };
+
   return (
     <div className="flex flex-col">
       {isBlogLoading ? (
@@ -113,7 +148,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
             />
             <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
               <Badge className="mb-4 bg-brick-red/20 hover:bg-brick-red/30 text-white border-none">
-                {blogPosts[0].category}
+                {blogPosts[0].category ? getCategoryName(blogPosts[0].category) : t("blog.public.categories.uncategorized")}
               </Badge>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 max-w-4xl">
                 {blogPosts[0].translations[0].title}
@@ -121,7 +156,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
               <div className="flex items-center gap-3 text-sm">
                 <div className="flex items-center gap-1">
                   <CalendarDays className="h-4 w-4" />
-                  <span>{blogPosts[0].publishedAt}</span>
+                  <span>{blogPosts[0].publishedAt ? format(new Date(blogPosts[0].publishedAt), "MMMM d, yyyy") : ""}</span>
                 </div>
                 <span>•</span>
                 <div className="flex items-center gap-1">
@@ -227,21 +262,25 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                   <div>
                     <h3 className="font-serif text-xl font-bold mb-4">{t("blog.public.categoriesTitle")}</h3>
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.public.categories.dungeonMastering")}
-                      </Badge>
-                      <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.public.categories.characterBuilding")}
-                      </Badge>
-                      <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.public.categories.miniaturePainting")}
-                      </Badge>
-                      <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.public.categories.storytelling")}
-                      </Badge>
-                      <Badge variant="outline" className="hover:bg-purple-100 cursor-pointer">
-                        {t("blog.public.categories.community")}
-                      </Badge>
+                      {isCategoriesLoading ? (
+                        <Badge variant="outline" className="animate-pulse">
+                          {t("blog.public.categories.loading")}
+                        </Badge>
+                      ) : (
+                        categories.map((category) => (
+                          <Link 
+                            key={category.id}
+                            href={`/blog?category=${category.id}`}
+                          >
+                            <Badge 
+                              variant="outline" 
+                              className="hover:bg-purple-100 cursor-pointer"
+                            >
+                              {getCategoryName(category)}
+                            </Badge>
+                          </Link>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
