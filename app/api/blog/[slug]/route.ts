@@ -13,7 +13,8 @@ type Category = {
 
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   try {
-    const { slug } = params
+    const resolvedParams = await Promise.resolve(params)
+    const slug = resolvedParams.slug
     const searchParams = new URL(request.url).searchParams
     const includeTranslations = searchParams.get("includeTranslations") === "true"
     const languageCode = searchParams.get("languageCode") || "en"
