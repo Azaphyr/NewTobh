@@ -437,13 +437,24 @@
       "categoriesTitle": "Categories",
       "loadingMore": "Loading...",
       "loadMore": "Load More",
+      "noPosts": "No posts found",
       "categories": {
         "all": "All",
         "dungeonMastering": "Dungeon Mastering",
         "characterBuilding": "Character Building",
         "miniaturePainting": "Miniature Painting",
         "storytelling": "Storytelling",
-        "community": "Community"
+        "community": "Community",
+        "mainCategories": "Main Categories",
+        "selectMainCategory": "Select a main category",
+        "searchMainCategory": "Search main category...",
+        "showingAll": "Showing all categories",
+        "postsFound": "Posts found",
+        "noPostsFound": "No posts found",
+        "showing" : "Showing",
+        "subCategories": "Sub Categories",
+        "selectSubCategories": "Select sub categories",
+        "searchSubCategory": "Search sub category..."
       },
       "featureArticle": {
         "titleFeaturedArticle": "Featured Article",

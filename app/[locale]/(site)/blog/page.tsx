@@ -376,7 +376,7 @@ export default function BlogPage() {
             <div className="mt-4 text-sm text-muted-foreground">
               <p>
                 {selectedMainCategory 
-                  ? `${t("blog.public.categories.showing")} ${getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}`
+                  ? `${t("blog.public.categories.showing")}`+' '+`${getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}`
                   : t("blog.public.categories.showingAll")}
               </p>
               <p className="mt-1">

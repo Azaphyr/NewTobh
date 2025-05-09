@@ -396,13 +396,24 @@
       "categoriesTitle": "Catégories",
       "loadingMore": "Chargement...",
       "loadMore": "Charger Plus",
+      "noPosts": "Aucun article trouvé",
       "categories": {
         "all": "Tous",
         "dungeonMastering": "Maîtrise de Donjon",
         "characterBuilding": "Création de Personnage",
         "miniaturePainting": "Peinture de Miniatures",
         "storytelling": "Narration",
-        "community": "Communauté"
+        "community": "Communauté",
+        "mainCategories": "Catégories principales",
+        "selectMainCategory": "Sélectionner une catégorie principale",
+        "searchMainCategory": "Rechercher une catégorie principale...",
+        "showingAll": "Toutes les catégories",
+        "postsFound": "Articles trouvés",
+        "noPostsFound": "Aucun article trouvé",
+        "showing": "Afficher",
+        "subCategories": "Sous-catégories",
+        "selectSubCategories": "Sélectionner des sous-catégories",
+        "searchSubCategory": "Rechercher une sous-catégorie..."
       },
       "featureArticle": {
         "titleFeaturedArticle": "Article à la Une",
