@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     const languageCode = searchParams.get("languageCode") || "en"
     const limit = searchParams.get("limit") ? Number.parseInt(searchParams.get("limit") as string) : undefined
     const category = searchParams.get("category") || undefined
+    const subCategories = searchParams.getAll("subCategories")
     const search = searchParams.get("search") || undefined
 
     // Pagination parameters
@@ -37,6 +38,11 @@ export async function GET(request: NextRequest) {
     }
     if (category) {
       whereClause.mainCategoryId = category
+    }
+    if (subCategories.length > 0) {
+      whereClause.subCategoryIds = {
+        hasSome: subCategories
+      }
     }
     if (featured) {
       whereClause.isFeatured = true

@@ -76,13 +76,34 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/admin/categories');
-        if (!response.ok) throw new Error('Failed to fetch categories');
+        // Fetch all blog posts to get used categories
+        const params = new URLSearchParams();
+        params.append("locale", locale);
+        params.append("publishedOnly", "true");
+        params.append("includeTranslations", "true");
+        params.append("languageCode", locale);
+        params.append("pageSize", "100"); // Get a larger set to ensure we have all categories
+        
+        const response = await fetch(`/api/blog?${params.toString()}`);
+        if (!response.ok) throw new Error('Failed to fetch blog posts');
         const data = await response.json();
         
-        // Use all categories for both main and subcategories
-        setMainCategories(data);
-        setSubCategories(data);
+        // Extract unique categories from blog posts
+        const uniqueMainCategories = new Map<string, Category>();
+        const uniqueSubCategories = new Map<string, Category>();
+        
+        data.posts.forEach((post: BlogPost) => {
+          if (post.mainCategory) {
+            uniqueMainCategories.set(post.mainCategory.id, post.mainCategory);
+          }
+          post.subCategories?.forEach(category => {
+            uniqueSubCategories.set(category.id, category);
+          });
+        });
+        
+        // Convert Maps to arrays
+        setMainCategories(Array.from(uniqueMainCategories.values()));
+        setSubCategories(Array.from(uniqueSubCategories.values()));
       } catch (error) {
         console.error('Error fetching categories:', error);
       } finally {
@@ -91,7 +112,7 @@ export default function BlogPage() {
     };
 
     fetchCategories();
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -109,13 +130,19 @@ export default function BlogPage() {
           params.append("search", searchQuery);
         }
         
-        if (selectedMainCategory) {
+        // Only add category parameter if a specific category is selected
+        if (selectedMainCategory && selectedMainCategory !== "all") {
           params.append("category", selectedMainCategory);
         }
-        
+
+        // Add subcategory parameters
         if (selectedSubCategories.length > 0) {
-          selectedSubCategories.forEach(subCatId => params.append("subCategory", subCatId));
+          selectedSubCategories.forEach(subCatId => {
+            params.append("subCategories", subCatId);
+          });
         }
+
+        console.log('Fetching with params:', params.toString()); // Debug log
 
         const response = await fetch(`/api/blog?${params.toString()}`);
         const data = await response.json();
@@ -184,13 +211,19 @@ export default function BlogPage() {
     setSelectedSubCategories([]); // Reset subcategories when main category changes
     setPage(1);
     setBlogPosts([]);
+    setMainCategoryPopoverOpen(false);
   };
 
-  const handleSubCategorySelect = (categoryId: string | null) => {
-    if (!categoryId) return;
-    setSelectedSubCategories(prev => prev.includes(categoryId) ? prev : [...prev, categoryId]);
-    setPage(1);
-    setBlogPosts([]);
+  const handleSubCategorySelect = (categoryId: string) => {
+    setSelectedSubCategories(prev => {
+      const newSelection = prev.includes(categoryId)
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId];
+      setPage(1);
+      setBlogPosts([]);
+      setSubCategoryPopoverOpen(false);
+      return newSelection;
+    });
   };
 
   const handleRemoveSubCategory = (categoryId: string) => {
@@ -215,6 +248,14 @@ export default function BlogPage() {
 
   const getCategoryName = (category: Category) => {
     return locale === 'fr' ? category.nameFr : category.nameEn;
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedMainCategory(null);
+    setSelectedSubCategories([]);
+    setPage(1);
+    setBlogPosts([]);
   };
 
   return (
@@ -284,13 +325,7 @@ export default function BlogPage() {
                           <CommandItem
                             key="all"
                             value={t("blog.public.categories.all")}
-                            onSelect={() => {
-                              setSelectedMainCategory(null);
-                              setSelectedSubCategories([]);
-                              setMainCategoryPopoverOpen(false);
-                              setPage(1);
-                              setBlogPosts([]);
-                            }}
+                            onSelect={() => handleMainCategorySelect(null)}
                             className="h-12 text-base cursor-pointer hover:bg-brick-red/5 hover:text-black data-[selected=true]:bg-brick-red/10 data-[selected=true]:text-black"
                           >
                             {t("blog.public.categories.all")}
@@ -299,13 +334,7 @@ export default function BlogPage() {
                             <CommandItem
                               key={category.id}
                               value={getCategoryName(category)}
-                              onSelect={() => {
-                                setSelectedMainCategory(category.id);
-                                setSelectedSubCategories([]);
-                                setMainCategoryPopoverOpen(false);
-                                setPage(1);
-                                setBlogPosts([]);
-                              }}
+                              onSelect={() => handleMainCategorySelect(category.id)}
                               className="h-12 text-base cursor-pointer hover:bg-brick-red/5 hover:text-black data-[selected=true]:bg-brick-red/10 data-[selected=true]:text-black"
                             >
                               {getCategoryName(category)}
@@ -341,17 +370,15 @@ export default function BlogPage() {
                         </CommandEmpty>
                         <CommandGroup className="max-h-[300px] overflow-y-auto">
                           {subCategories
-                            .filter(subCat => subCat.id !== selectedMainCategory && !selectedSubCategories.includes(subCat.id))
+                            .filter(subCat => {
+                              if (!selectedMainCategory) return true;
+                              return subCat.id !== selectedMainCategory;
+                            })
                             .map(category => (
                               <CommandItem
                                 key={category.id}
                                 value={getCategoryName(category)}
-                                onSelect={() => {
-                                  setSelectedSubCategories(prev => prev.includes(category.id) ? prev : [...prev, category.id]);
-                                  setSubCategoryPopoverOpen(false);
-                                  setPage(1);
-                                  setBlogPosts([]);
-                                }}
+                                onSelect={() => handleSubCategorySelect(category.id)}
                                 className="h-12 text-base cursor-pointer hover:bg-deep-teal/5 hover:text-black data-[selected=true]:bg-deep-teal/10 data-[selected=true]:text-black"
                               >
                                 {getCategoryName(category)}
@@ -367,13 +394,7 @@ export default function BlogPage() {
                 {(searchQuery || selectedMainCategory || selectedSubCategories.length > 0) && (
                   <Button
                     variant="ghost"
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSelectedMainCategory(null);
-                      setSelectedSubCategories([]);
-                      setPage(1);
-                      setBlogPosts([]);
-                    }}
+                    onClick={handleClearFilters}
                     className="h-12 text-base text-muted-foreground hover:text-brick-red hover:bg-brick-red/5"
                   >
                     <svg
