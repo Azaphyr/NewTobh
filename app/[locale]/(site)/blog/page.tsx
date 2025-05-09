@@ -1,16 +1,33 @@
 "use client";
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Search, Calendar, ArrowRight, ChevronsUpDown } from "lucide-react"
-import { useTranslation } from "@/lib/i18n/client"
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Search, Calendar, ArrowRight, ChevronsUpDown } from "lucide-react";
+import { useTranslation } from "@/lib/i18n/client";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
 
 interface BlogPostTranslation {
   id: number;
@@ -63,8 +80,12 @@ export default function BlogPage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMainCategory, setSelectedMainCategory] = useState<string | null>(null);
-  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
+  const [selectedMainCategory, setSelectedMainCategory] = useState<
+    string | null
+  >(null);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(
+    []
+  );
   const [mainCategories, setMainCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
@@ -72,7 +93,7 @@ export default function BlogPage() {
   const [subCategoryPopoverOpen, setSubCategoryPopoverOpen] = useState(false);
   const [mainCategoryPopoverOpen, setMainCategoryPopoverOpen] = useState(false);
   const POSTS_PER_PAGE = 6;
-  
+
   useEffect(() => {
     const fetchCategories = async () => {
       setIsCategoriesLoading(true);
@@ -84,29 +105,29 @@ export default function BlogPage() {
         params.append("includeTranslations", "true");
         params.append("languageCode", locale);
         params.append("pageSize", "100"); // Get a larger set to ensure we have all categories
-        
+
         const response = await fetch(`/api/blog?${params.toString()}`);
-        if (!response.ok) throw new Error('Failed to fetch blog posts');
+        if (!response.ok) throw new Error("Failed to fetch blog posts");
         const data = await response.json();
-        
+
         // Extract unique categories from blog posts
         const uniqueMainCategories = new Map<string, Category>();
         const uniqueSubCategories = new Map<string, Category>();
-        
+
         data.posts.forEach((post: BlogPost) => {
           if (post.mainCategory) {
             uniqueMainCategories.set(post.mainCategory.id, post.mainCategory);
           }
-          post.subCategories?.forEach(category => {
+          post.subCategories?.forEach((category) => {
             uniqueSubCategories.set(category.id, category);
           });
         });
-        
+
         // Convert Maps to arrays
         setMainCategories(Array.from(uniqueMainCategories.values()));
         setSubCategories(Array.from(uniqueSubCategories.values()));
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       } finally {
         setIsCategoriesLoading(false);
       }
@@ -126,11 +147,11 @@ export default function BlogPage() {
         params.append("languageCode", locale);
         params.append("page", page.toString());
         params.append("pageSize", POSTS_PER_PAGE.toString());
-        
+
         if (searchQuery) {
           params.append("search", searchQuery);
         }
-        
+
         // Only add category parameter if a specific category is selected
         if (selectedMainCategory && selectedMainCategory !== "all") {
           params.append("category", selectedMainCategory);
@@ -138,29 +159,29 @@ export default function BlogPage() {
 
         // Add subcategory parameters
         if (selectedSubCategories.length > 0) {
-          selectedSubCategories.forEach(subCatId => {
+          selectedSubCategories.forEach((subCatId) => {
             params.append("subCategories", subCatId);
           });
         }
 
-        console.log('Fetching with params:', params.toString()); // Debug log
+        console.log("Fetching with params:", params.toString()); // Debug log
 
         const response = await fetch(`/api/blog?${params.toString()}`);
         const data = await response.json();
-        
+
         if (!response.ok) {
-          console.error('Failed to fetch blog posts:', data);
+          console.error("Failed to fetch blog posts:", data);
           setBlogPosts([]);
           setHasMore(false);
           return;
         }
-        
+
         if (page === 1) {
           setBlogPosts(data.posts || []);
         } else {
-          setBlogPosts(prev => [...prev, ...(data.posts || [])]);
+          setBlogPosts((prev) => [...prev, ...(data.posts || [])]);
         }
-        
+
         setHasMore(data.totalPages > page);
       } catch (error) {
         console.error("Error fetching blog posts:", error);
@@ -180,17 +201,19 @@ export default function BlogPage() {
         params.append("includeTranslations", "true");
         params.append("languageCode", locale);
         params.append("limit", "1");
-        
+
         const response = await fetch(`/api/blog?${params.toString()}`);
         const data = await response.json();
-        
+
         if (!response.ok) {
-          console.error('Failed to fetch featured post:', data);
+          console.error("Failed to fetch featured post:", data);
           setFeaturedPost(null);
           return;
         }
-        
-        setFeaturedPost(data.posts && data.posts.length > 0 ? data.posts[0] : null);
+
+        setFeaturedPost(
+          data.posts && data.posts.length > 0 ? data.posts[0] : null
+        );
       } catch (error) {
         console.error("Error fetching featured post:", error);
         setFeaturedPost(null);
@@ -216,9 +239,9 @@ export default function BlogPage() {
   };
 
   const handleSubCategorySelect = (categoryId: string) => {
-    setSelectedSubCategories(prev => {
+    setSelectedSubCategories((prev) => {
       const newSelection = prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
+        ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId];
       setPage(1);
       setBlogPosts([]);
@@ -228,19 +251,19 @@ export default function BlogPage() {
   };
 
   const handleRemoveSubCategory = (categoryId: string) => {
-    setSelectedSubCategories(prev => prev.filter(id => id !== categoryId));
+    setSelectedSubCategories((prev) => prev.filter((id) => id !== categoryId));
     setPage(1);
     setBlogPosts([]);
   };
-  
+
   const loadMore = () => {
     setIsLoadingMore(true);
-    setPage(prev => prev + 1);
+    setPage((prev) => prev + 1);
   };
 
   const stripHtmlAndTruncate = (html: string, maxLength: number) => {
     // Remove HTML tags
-    const plainText: string = html.replace(/<[^>]+>/g, '');
+    const plainText: string = html.replace(/<[^>]+>/g, "");
     // Trim and add ellipsis if needed
     return plainText.length > maxLength
       ? plainText.substring(0, maxLength).trim() + "..."
@@ -248,7 +271,7 @@ export default function BlogPage() {
   };
 
   const getCategoryName = (category: Category) => {
-    return locale === 'fr' ? category.nameFr : category.nameEn;
+    return locale === "fr" ? category.nameFr : category.nameEn;
   };
 
   const handleClearFilters = () => {
@@ -266,7 +289,7 @@ export default function BlogPage() {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
           <Image
-            src="/mascotBlog.png?height=400&width=1600"
+            src="/blogMascot2.png?height=400&width=1600"
             alt="D&D storytelling"
             fill
             className="object-cover"
@@ -299,9 +322,9 @@ export default function BlogPage() {
                 {/* Search Input */}
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input 
-                    type="search" 
-                    placeholder={t("blog.public.searchPlaceholder")} 
+                  <Input
+                    type="search"
+                    placeholder={t("blog.public.searchPlaceholder")}
                     className="pl-12 h-12 text-base rounded-lg border-2 focus:border-brick-red focus:ring-2 focus:ring-brick-red/20 transition-all"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -310,23 +333,40 @@ export default function BlogPage() {
 
                 {/* Main Category Dropdown */}
                 <div className="w-full md:w-72">
-                  <Popover open={mainCategoryPopoverOpen} onOpenChange={setMainCategoryPopoverOpen}>
+                  <Popover
+                    open={mainCategoryPopoverOpen}
+                    onOpenChange={setMainCategoryPopoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         role="combobox"
-                        className="w-full justify-between h-12 text-base border-2 hover:border-brick-red hover:bg-brick-red/5 transition-all"
+                        className="w-full justify-between h-12 text-base border-2 hover:border-brick-red hover:bg-brick-red/5 hover:text-black transition-all"
                       >
                         {selectedMainCategory
-                          ? getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })
+                          ? getCategoryName(
+                              mainCategories.find(
+                                (cat) => cat.id === selectedMainCategory
+                              ) || {
+                                id: "",
+                                slug: "",
+                                nameEn: "",
+                                nameFr: "",
+                                createdAt: "",
+                                updatedAt: "",
+                              }
+                            )
                           : t("blog.public.categories.selectMainCategory")}
                         <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0 shadow-lg border-2 border-brick-red/20">
                       <Command>
-                        <CommandInput 
-                          placeholder={t("blog.public.categories.searchMainCategory") || "Search..."} 
+                        <CommandInput
+                          placeholder={
+                            t("blog.public.categories.searchMainCategory") ||
+                            "Search..."
+                          }
                           className="h-12 text-base"
                         />
                         <CommandEmpty className="py-4 text-center text-muted-foreground">
@@ -341,11 +381,13 @@ export default function BlogPage() {
                           >
                             {t("blog.public.categories.all")}
                           </CommandItem>
-                          {mainCategories.map(category => (
+                          {mainCategories.map((category) => (
                             <CommandItem
                               key={category.id}
                               value={getCategoryName(category)}
-                              onSelect={() => handleMainCategorySelect(category.id)}
+                              onSelect={() =>
+                                handleMainCategorySelect(category.id)
+                              }
                               className="h-12 text-base cursor-pointer hover:bg-brick-red/5 hover:text-black data-[selected=true]:bg-brick-red/10 data-[selected=true]:text-black"
                             >
                               {getCategoryName(category)}
@@ -359,12 +401,15 @@ export default function BlogPage() {
 
                 {/* Subcategories Dropdown */}
                 <div className="w-full md:w-72">
-                  <Popover open={subCategoryPopoverOpen} onOpenChange={setSubCategoryPopoverOpen}>
+                  <Popover
+                    open={subCategoryPopoverOpen}
+                    onOpenChange={setSubCategoryPopoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         role="combobox"
-                        className="w-full justify-between h-12 text-base border-2 hover:border-deep-teal hover:bg-deep-teal/5 transition-all"
+                        className="w-full justify-between h-12 text-base border-2 hover:border-deep-teal hover:bg-deep-teal/5 hover:text-black transition-all"
                       >
                         {t("blog.public.categories.selectSubCategories")}
                         <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
@@ -372,8 +417,11 @@ export default function BlogPage() {
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0 shadow-lg border-2 border-deep-teal/20">
                       <Command>
-                        <CommandInput 
-                          placeholder={t("blog.public.categories.searchSubCategory") || "Search..."} 
+                        <CommandInput
+                          placeholder={
+                            t("blog.public.categories.searchSubCategory") ||
+                            "Search..."
+                          }
                           className="h-12 text-base"
                         />
                         <CommandEmpty className="py-4 text-center text-muted-foreground">
@@ -381,15 +429,17 @@ export default function BlogPage() {
                         </CommandEmpty>
                         <CommandGroup className="max-h-[300px] overflow-y-auto">
                           {subCategories
-                            .filter(subCat => {
+                            .filter((subCat) => {
                               if (!selectedMainCategory) return true;
                               return subCat.id !== selectedMainCategory;
                             })
-                            .map(category => (
+                            .map((category) => (
                               <CommandItem
                                 key={category.id}
                                 value={getCategoryName(category)}
-                                onSelect={() => handleSubCategorySelect(category.id)}
+                                onSelect={() =>
+                                  handleSubCategorySelect(category.id)
+                                }
                                 className="h-12 text-base cursor-pointer hover:bg-deep-teal/5 hover:text-black data-[selected=true]:bg-deep-teal/10 data-[selected=true]:text-black"
                               >
                                 {getCategoryName(category)}
@@ -402,7 +452,9 @@ export default function BlogPage() {
                 </div>
 
                 {/* Clear Filters Button */}
-                {(searchQuery || selectedMainCategory || selectedSubCategories.length > 0) && (
+                {(searchQuery ||
+                  selectedMainCategory ||
+                  selectedSubCategories.length > 0) && (
                   <Button
                     variant="ghost"
                     onClick={handleClearFilters}
@@ -430,7 +482,9 @@ export default function BlogPage() {
               </div>
 
               {/* Active Filters Display */}
-              {(searchQuery || selectedMainCategory || selectedSubCategories.length > 0) && (
+              {(searchQuery ||
+                selectedMainCategory ||
+                selectedSubCategories.length > 0) && (
                 <div className="flex flex-wrap gap-2 items-center">
                   {searchQuery && (
                     <div className="flex items-center gap-1.5 bg-stone-100 text-stone-700 px-3 py-1.5 rounded-full text-sm font-medium hover:bg-stone-200 transition-colors">
@@ -445,10 +499,24 @@ export default function BlogPage() {
                       </button>
                     </div>
                   )}
-                  
+
                   {selectedMainCategory && (
                     <div className="flex items-center gap-1.5 bg-brick-red/10 text-brick-red px-3 py-1.5 rounded-full text-sm font-medium hover:bg-brick-red/20 transition-colors">
-                      <span>Main: {getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}</span>
+                      <span>
+                        Main:{" "}
+                        {getCategoryName(
+                          mainCategories.find(
+                            (cat) => cat.id === selectedMainCategory
+                          ) || {
+                            id: "",
+                            slug: "",
+                            nameEn: "",
+                            nameFr: "",
+                            createdAt: "",
+                            updatedAt: "",
+                          }
+                        )}
+                      </span>
                       <button
                         type="button"
                         onClick={() => {
@@ -465,11 +533,11 @@ export default function BlogPage() {
                     </div>
                   )}
 
-                  {selectedSubCategories.map(id => {
-                    const category = subCategories.find(c => c.id === id);
+                  {selectedSubCategories.map((id) => {
+                    const category = subCategories.find((c) => c.id === id);
                     return category ? (
-                      <div 
-                        key={id} 
+                      <div
+                        key={id}
                         className="flex items-center gap-1.5 bg-deep-teal/10 text-deep-teal px-3 py-1.5 rounded-full text-sm font-medium hover:bg-deep-teal/20 transition-colors"
                       >
                         <span>Sub: {getCategoryName(category)}</span>
@@ -490,8 +558,10 @@ export default function BlogPage() {
               {/* Category Stats */}
               <div className="text-sm text-muted-foreground">
                 <p className="font-medium">
-                  {selectedMainCategory 
-                    ? `${t("blog.public.categories.showing")}`+' '+`${getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}`
+                  {selectedMainCategory
+                    ? `${t("blog.public.categories.showing")}` +
+                      " " +
+                      `${getCategoryName(mainCategories.find((cat) => cat.id === selectedMainCategory) || { id: "", slug: "", nameEn: "", nameFr: "", createdAt: "", updatedAt: "" })}`
                     : t("blog.public.categories.showingAll")}
                 </p>
                 <p className="mt-1">
@@ -507,12 +577,19 @@ export default function BlogPage() {
       {featuredPost && (
         <section className="py-12">
           <div className="container">
-            <h2 className="font-serif text-2xl font-bold mb-6">{t("blog.public.featureArticle.titleFeaturedArticle")}</h2>
+            <h2 className="font-serif text-2xl font-bold mb-6">
+              {t("blog.public.featureArticle.titleFeaturedArticle")}
+            </h2>
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
               <div className="lg:col-span-3">
                 <Image
-                  src={featuredPost.imageUrl || "/placeholder.svg?height=400&width=800"}
-                  alt={featuredPost.translations[0]?.title || "Featured Article"}
+                  src={
+                    featuredPost.imageUrl ||
+                    "/placeholder.svg?height=400&width=800"
+                  }
+                  alt={
+                    featuredPost.translations[0]?.title || "Featured Article"
+                  }
                   width={800}
                   height={400}
                   className="w-full aspect-[16/9] object-cover rounded-lg"
@@ -525,8 +602,11 @@ export default function BlogPage() {
                       {getCategoryName(featuredPost.mainCategory)}
                     </Badge>
                   )}
-                  {featuredPost.subCategories?.map(category => (
-                    <Badge key={category.id} className="bg-deep-teal/10 hover:bg-deep-teal/20 text-deep-teal border-none">
+                  {featuredPost.subCategories?.map((category) => (
+                    <Badge
+                      key={category.id}
+                      className="bg-deep-teal/10 hover:bg-deep-teal/20 text-deep-teal border-none"
+                    >
                       {getCategoryName(category)}
                     </Badge>
                   ))}
@@ -536,15 +616,27 @@ export default function BlogPage() {
                 </h3>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                   <Calendar className="h-4 w-4" />
-                  <span>{featuredPost.publishedAt ? format(new Date(featuredPost.publishedAt), "MMMM d, yyyy") : ""}</span>
+                  <span>
+                    {featuredPost.publishedAt
+                      ? format(
+                          new Date(featuredPost.publishedAt),
+                          "MMMM d, yyyy"
+                        )
+                      : ""}
+                  </span>
                   <span>•</span>
                   <span>{featuredPost.readTime} min read</span>
                 </div>
                 <p className="text-muted-foreground mb-6">
                   {featuredPost.translations[0]?.description}
                 </p>
-                <Button asChild className="w-fit bg-brick-red hover:bg-brick-red/90">
-                  <Link href={`/blog/${featuredPost.slug}`}>{t("blog.public.featureArticle.buttonFeaturedArticle")}</Link>
+                <Button
+                  asChild
+                  className="w-fit bg-brick-red hover:bg-brick-red/90"
+                >
+                  <Link href={`/blog/${featuredPost.slug}`}>
+                    {t("blog.public.featureArticle.buttonFeaturedArticle")}
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -555,7 +647,9 @@ export default function BlogPage() {
       {/* Latest Articles */}
       <section className="py-12 bg-stone-100">
         <div className="container">
-          <h2 className="font-serif text-2xl font-bold mb-6">{t("blog.public.titleLatestArticles")}</h2>
+          <h2 className="font-serif text-2xl font-bold mb-6">
+            {t("blog.public.titleLatestArticles")}
+          </h2>
 
           {isBlogLoading && page === 1 ? (
             <div className="text-center py-8">
@@ -567,10 +661,16 @@ export default function BlogPage() {
                 {blogPosts.map((post) => {
                   const translation = post.translations[0] || {};
                   const startTime = format(new Date(post.createdAt), "h:mm a");
-                  const previewText = stripHtmlAndTruncate(translation.content, 100);
+                  const previewText = stripHtmlAndTruncate(
+                    translation.content,
+                    100
+                  );
 
                   return (
-                    <Card key={post.id} className="hover:shadow-md transition-all group">
+                    <Card
+                      key={post.id}
+                      className="hover:shadow-md transition-all group"
+                    >
                       <div className="overflow-hidden rounded-t-lg">
                         <Image
                           src={post.imageUrl || "/placeholder.svg"}
@@ -587,8 +687,11 @@ export default function BlogPage() {
                               {getCategoryName(post.mainCategory)}
                             </Badge>
                           )}
-                          {post.subCategories?.map(category => (
-                            <Badge key={category.id} className="bg-deep-teal/10 hover:bg-deep-teal/20 text-deep-teal border-none">
+                          {post.subCategories?.map((category) => (
+                            <Badge
+                              key={category.id}
+                              className="bg-deep-teal/10 hover:bg-deep-teal/20 text-deep-teal border-none"
+                            >
                               {getCategoryName(category)}
                             </Badge>
                           ))}
@@ -631,7 +734,9 @@ export default function BlogPage() {
                     disabled={isLoadingMore}
                     className="bg-brick-red hover:bg-brick-red/90"
                   >
-                    {isLoadingMore ? t("blog.public.loadingMore") : t("blog.public.loadMore")}
+                    {isLoadingMore
+                      ? t("blog.public.loadingMore")
+                      : t("blog.public.loadMore")}
                   </Button>
                 </div>
               )}
@@ -643,6 +748,72 @@ export default function BlogPage() {
           )}
         </div>
       </section>
+
+      <section className="py-16 bg-dark-mahogany text-white">
+        <div className="container text-center">
+          <h2 className="font-serif text-3xl font-bold mb-4">
+            {t("events.newsletterTitle")}
+          </h2>
+          <p className="max-w-2xl mx-auto mb-8">
+            {t("events.newsletterDescription")}
+          </p>
+          <div className="max-w-md mx-auto">
+            <form className="flex gap-2">
+              <input
+                type="email"
+                placeholder={t("events.emailPlaceholder")}
+                className="flex-1 px-4 py-2 rounded-md text-black"
+                aria-label="Email address"
+              />
+              <Button
+                type="submit"
+                className="bg-golden-amber hover:bg-golden-amber/90 text-white"
+              >
+                {t("events.buttonNewsletter")}
+              </Button>
+            </form>
+            <p className="text-xs mt-2 text-stone-300">
+              {t("events.privacyPolicy")}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contribute */}
+      <section className="py-16">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="font-serif text-3xl font-bold mb-6">
+                Share Your Knowledge
+              </h2>
+              <p className="mb-4">
+                Are you passionate about tabletop RPGs, miniature painting, or
+                storytelling? We welcome guest contributors to our blog!
+              </p>
+              <p className="mb-6">
+                Whether you're a seasoned Game Master with tips to share, an
+                artist with painting tutorials, or a storyteller with insights
+                on character development, we'd love to feature your expertise.
+              </p>
+              <Button asChild className="bg-brick-red hover:bg-brick-red/90">
+                <Link href="/contact?subject=Blog%20Contribution">
+                  Submit an Article Idea
+                </Link>
+              </Button>
+            </div>
+            <div>
+              <Image
+                src="/placeholder.svg?height=400&width=600"
+                alt="Person writing"
+                width={600}
+                height={400}
+                className="w-full rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  )
-} 
+  );
+}
