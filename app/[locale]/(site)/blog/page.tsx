@@ -262,19 +262,29 @@ export default function BlogPage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-dark-mahogany/90 to-brick-red/70 z-10" />
-        <Image
-          src="/placeholder.svg?height=400&width=1600"
-          alt="D&D storytelling"
-          width={1600}
-          height={400}
-          className="w-full h-[300px] md:h-[400px] object-cover"
-          priority
-        />
-        <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("blog.public.title")}</h1>
-          <p className="text-lg md:text-xl max-w-2xl">{t("blog.public.description")}</p>
+      <section className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0">
+          <Image
+            src="/mascotBlog.png?height=400&width=1600"
+            alt="D&D storytelling"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+        </div>
+
+        {/* Content with Glassmorphism */}
+        <div className="container relative z-20">
+          <div className="backdrop-blur-md bg-white/10 rounded-2xl p-8 md:p-12 max-w-4xl mx-auto border border-white/20 shadow-2xl">
+            <h1 className="font-serif text-4xl md:text-5xl font-bold mb-6 text-white text-center">
+              {t("blog.public.title")}
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 text-center max-w-2xl mx-auto">
+              {t("blog.public.description")}
+            </p>
+          </div>
         </div>
       </section>
 

@@ -178,29 +178,52 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
       ) : (
         <>
           {/* Hero Section */}
-          <section className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-dark-mahogany/90 to-brick-red/70 z-10" />
-            <Image
-              src={blogPosts[0].imageUrl || "/placeholder.svg"}
-              alt={blogPosts[0].translations[0].title}
-              width={1000}
-              height={500}
-              className="w-full h-[300px] md:h-[400px] object-cover"
-              priority
-            />
-            <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 max-w-4xl">
-                {blogPosts[0].translations[0].title}
-              </h1>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="flex items-center gap-1">
-                  <CalendarDays className="h-4 w-4" />
-                  <span>{blogPosts[0].publishedAt ? format(new Date(blogPosts[0].publishedAt), "MMMM d, yyyy") : ""}</span>
+          <section className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center">
+            {/* Background Image with Overlay */}
+            <div className="absolute inset-0">
+              <Image
+                src={blogPosts[0].imageUrl || "/placeholder.svg"}
+                alt={blogPosts[0].translations[0].title}
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+            </div>
+
+            {/* Content with Glassmorphism */}
+            <div className="container relative z-20">
+              <div className="backdrop-blur-md bg-white/10 rounded-2xl p-8 md:p-12 max-w-4xl mx-auto border border-white/20 shadow-2xl">
+                {/* Categories */}
+                <div className="flex flex-wrap gap-2 justify-center mb-6">
+                  {blogPosts[0].mainCategory && (
+                    <Badge className="bg-brick-red/20 hover:bg-brick-red/30 text-white border-none backdrop-blur-sm">
+                      {getCategoryName(blogPosts[0].mainCategory)}
+                    </Badge>
+                  )}
+                  {blogPosts[0].subCategories?.map(category => (
+                    <Badge key={category.id} className="bg-deep-teal/20 hover:bg-deep-teal/30 text-white border-none backdrop-blur-sm">
+                      {getCategoryName(category)}
+                    </Badge>
+                  ))}
                 </div>
-                <span>•</span>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  <span>{blogPosts[0].readTime} min read</span>
+
+                {/* Title */}
+                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white text-center">
+                  {blogPosts[0].translations[0].title}
+                </h1>
+
+                {/* Meta Information */}
+                <div className="flex items-center justify-center gap-4 text-white/90">
+                  <div className="flex items-center gap-2">
+                    <CalendarDays className="h-5 w-5" />
+                    <span>{blogPosts[0].publishedAt ? format(new Date(blogPosts[0].publishedAt), "MMMM d, yyyy") : ""}</span>
+                  </div>
+                  <span>•</span>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    <span>{blogPosts[0].readTime} min read</span>
+                  </div>
                 </div>
               </div>
             </div>
