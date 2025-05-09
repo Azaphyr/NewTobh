@@ -75,6 +75,7 @@ export default function BlogPage() {
   
   useEffect(() => {
     const fetchCategories = async () => {
+      setIsCategoriesLoading(true);
       try {
         // Fetch all blog posts to get used categories
         const params = new URLSearchParams();

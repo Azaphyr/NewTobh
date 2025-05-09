@@ -66,6 +66,8 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
   const [categories, setCategories] = useState<Category[]>([]);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const { slug } = use(params);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [isRelatedLoading, setIsRelatedLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -126,6 +128,39 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
     fetchBlogPosts();
   }, [locale, slug]);
 
+  useEffect(() => {
+    const fetchRelatedPosts = async () => {
+      if (!blogPosts[0]?.mainCategoryId || !locale) return;
+      
+      setIsRelatedLoading(true);
+      try {
+        const params = new URLSearchParams({
+          locale,
+          publishedOnly: "true",
+          includeTranslations: "true",
+          languageCode: locale,
+          category: blogPosts[0].mainCategoryId,
+          limit: "3"
+        });
+
+        const response = await fetch(`/api/blog?${params.toString()}`);
+        if (!response.ok) throw new Error('Failed to fetch related posts');
+        const data = await response.json();
+        
+        // Filter out the current post from related posts
+        const filteredPosts = data.posts.filter((post: BlogPost) => post.id !== blogPosts[0].id);
+        setRelatedPosts(filteredPosts);
+      } catch (error) {
+        console.error("Error fetching related posts:", error);
+        setRelatedPosts([]);
+      } finally {
+        setIsRelatedLoading(false);
+      }
+    };
+
+    fetchRelatedPosts();
+  }, [blogPosts, locale]);
+
   const getCategoryName = (category: Category) => {
     return locale === 'fr' ? category.nameFr : category.nameEn;
   };
@@ -154,18 +189,6 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
               priority
             />
             <div className="container relative z-20 flex flex-col items-center justify-center h-[300px] md:h-[400px] text-center text-white">
-              <div className="flex flex-wrap gap-2 justify-center mb-4">
-                {blogPosts[0].mainCategory && (
-                  <Badge className="bg-brick-red/20 hover:bg-brick-red/30 text-white border-none">
-                    {getCategoryName(blogPosts[0].mainCategory)}
-                  </Badge>
-                )}
-                {blogPosts[0].subCategories?.map(category => (
-                  <Badge key={category.id} className="bg-deep-teal/20 hover:bg-deep-teal/30 text-white border-none">
-                    {getCategoryName(category)}
-                  </Badge>
-                ))}
-              </div>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 max-w-4xl">
                 {blogPosts[0].translations[0].title}
               </h1>
@@ -230,7 +253,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                   </div>
 
                   {/* Engagement */}
-                  <div className="flex items-center gap-4 mt-8 pt-8 border-t">
+                  {/* <div className="flex items-center gap-4 mt-8 pt-8 border-t">
                     <Button variant="ghost" size="sm" className="flex items-center gap-1">
                       <ThumbsUp className="h-4 w-4" />
                       {t("blog.public.like")}
@@ -243,7 +266,7 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                       <Bookmark className="h-4 w-4" />
                       {t("blog.public.bookmark")}
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Sidebar */}
@@ -252,25 +275,45 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                   <div>
                     <h3 className="font-serif text-xl font-bold mb-4">{t("blog.public.relatedPosts")}</h3>
                     <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="flex gap-4">
-                          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                            <Image
-                              src="/placeholder.svg?height=80&width=80"
-                              alt="Related post"
-                              width={80}
-                              height={80}
-                              className="object-cover"
-                            />
-                          </div>
-                          <div>
-                            <h4 className="font-medium line-clamp-2">
-                              Related Post Title {i}
-                            </h4>
-                            <p className="text-sm text-muted-foreground">2 days ago</p>
-                          </div>
+                      {isRelatedLoading ? (
+                        <div className="space-y-4">
+                          {[1, 2, 3].map((i) => (
+                            <div key={i} className="flex gap-4 animate-pulse">
+                              <div className="w-20 h-20 rounded-lg bg-stone-200" />
+                              <div className="flex-1 space-y-2">
+                                <div className="h-4 bg-stone-200 rounded w-3/4" />
+                                <div className="h-3 bg-stone-200 rounded w-1/2" />
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      ) : relatedPosts.length > 0 ? (
+                        relatedPosts.map((post) => (
+                          <div key={post.id} className="flex gap-4">
+                            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                              <Image
+                                src={post.imageUrl || "/placeholder.svg?height=80&width=80"}
+                                alt={post.translations[0]?.title || "Related post"}
+                                width={80}
+                                height={80}
+                                className="object-cover"
+                              />
+                            </div>
+                            <div>
+                              <Link href={`/blog/${post.slug}`}>
+                                <h4 className="font-medium line-clamp-2 hover:text-brick-red transition-colors">
+                                  {post.translations[0]?.title}
+                                </h4>
+                              </Link>
+                              <p className="text-sm text-muted-foreground">
+                                {post.publishedAt ? format(new Date(post.publishedAt), "MMM d, yyyy") : ""}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-muted-foreground">{t("blog.public.noRelatedPosts")}</p>
+                      )}
                     </div>
                   </div>
 
@@ -278,32 +321,31 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                   <div>
                     <h3 className="font-serif text-xl font-bold mb-4">{t("blog.public.categoriesTitle")}</h3>
                     <div className="space-y-4">
-                      {/* Main Categories */}
+                      {/* Main Category */}
                       <div>
                         <h4 className="text-sm font-medium text-muted-foreground mb-2">
-                          {t("blog.public.categories.mainCategories")}
+                          {t("blog.public.categories.mainCategory")}
                         </h4>
                         <div className="flex flex-wrap gap-2">
-                          {isCategoriesLoading ? (
+                          {isBlogLoading ? (
                             <Badge variant="outline" className="animate-pulse">
                               {t("blog.public.categories.loading")}
                             </Badge>
+                          ) : blogPosts[0]?.mainCategory ? (
+                            <Link 
+                              href={`/blog?mainCategory=${blogPosts[0].mainCategory.id}`}
+                            >
+                              <Badge 
+                                variant="outline" 
+                                className="hover:bg-brick-red/10 hover:text-brick-red cursor-pointer"
+                              >
+                                {getCategoryName(blogPosts[0].mainCategory)}
+                              </Badge>
+                            </Link>
                           ) : (
-                            categories
-                              .filter(cat => !cat.slug.includes('/'))
-                              .map((category) => (
-                                <Link 
-                                  key={category.id}
-                                  href={`/blog?mainCategory=${category.id}`}
-                                >
-                                  <Badge 
-                                    variant="outline" 
-                                    className="hover:bg-brick-red/10 hover:text-brick-red cursor-pointer"
-                                  >
-                                    {getCategoryName(category)}
-                                  </Badge>
-                                </Link>
-                              ))
+                            <Badge variant="outline" className="text-muted-foreground">
+                              {t("blog.public.categories.noCategory")}
+                            </Badge>
                           )}
                         </div>
                       </div>
@@ -314,26 +356,28 @@ export default function BlogPostPage({ params }: { params: Promise<PageParams> }
                           {t("blog.public.categories.subCategories")}
                         </h4>
                         <div className="flex flex-wrap gap-2">
-                          {isCategoriesLoading ? (
+                          {isBlogLoading ? (
                             <Badge variant="outline" className="animate-pulse">
                               {t("blog.public.categories.loading")}
                             </Badge>
-                          ) : (
-                            categories
-                              .filter(cat => cat.slug.includes('/'))
-                              .map((category) => (
-                                <Link 
-                                  key={category.id}
-                                  href={`/blog?subCategory=${category.id}`}
+                          ) : blogPosts[0]?.subCategories && blogPosts[0].subCategories.length > 0 ? (
+                            blogPosts[0].subCategories.map((category) => (
+                              <Link 
+                                key={category.id}
+                                href={`/blog?subCategory=${category.id}`}
+                              >
+                                <Badge 
+                                  variant="outline" 
+                                  className="hover:bg-deep-teal/10 hover:text-deep-teal cursor-pointer"
                                 >
-                                  <Badge 
-                                    variant="outline" 
-                                    className="hover:bg-deep-teal/10 hover:text-deep-teal cursor-pointer"
-                                  >
-                                    {getCategoryName(category)}
-                                  </Badge>
-                                </Link>
-                              ))
+                                  {getCategoryName(category)}
+                                </Badge>
+                              </Link>
+                            ))
+                          ) : (
+                            <Badge variant="outline" className="text-muted-foreground">
+                              {t("blog.public.categories.noSubCategories")}
+                            </Badge>
                           )}
                         </div>
                       </div>

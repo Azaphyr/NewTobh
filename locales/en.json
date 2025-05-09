@@ -439,6 +439,7 @@
       "loadMore": "Load More",
       "noPosts": "No posts found",
       "clearFilters": "Clear Filters",
+      "noRelatedPosts" : "No related posts found",
       "categories": {
         "all": "All",
         "dungeonMastering": "Dungeon Mastering",
@@ -455,7 +456,10 @@
         "showing" : "Showing",
         "subCategories": "Sub Categories",
         "selectSubCategories": "Select sub categories",
-        "searchSubCategory": "Search sub category..."
+        "searchSubCategory": "Search sub category...",
+        "mainCategory": "Main Category",
+        "subCategory": "Sub Category",
+        "noSubCategories": "No sub categories found"
       },
       "featureArticle": {
         "titleFeaturedArticle": "Featured Article",

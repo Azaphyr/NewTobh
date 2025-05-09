@@ -398,6 +398,7 @@
       "loadMore": "Charger Plus",
       "noPosts": "Aucun article trouvé",
       "clearFilters": "Effacer les filtres",
+      "noRelatedPosts": "Aucun article lié trouvé",
       "categories": {
         "all": "Tous",
         "dungeonMastering": "Maîtrise de Donjon",
@@ -414,7 +415,10 @@
         "showing": "Afficher",
         "subCategories": "Sous-catégories",
         "selectSubCategories": "Sélectionner des sous-catégories",
-        "searchSubCategory": "Rechercher une sous-catégorie..."
+        "searchSubCategory": "Rechercher une sous-catégorie...",
+        "mainCategory": "Catégorie principale",
+        "subCategory": "Sous-catégorie",
+        "noSubCategories": "Aucune sous-catégorie trouvée"
       },
       "featureArticle": {
         "titleFeaturedArticle": "Article à la Une",
