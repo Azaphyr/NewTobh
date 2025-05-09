@@ -240,94 +240,106 @@ export default function BlogPage() {
       <section className="py-8 border-b">
         <div className="container">
           <form onSubmit={handleSearch} className="flex flex-col gap-4">
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                type="search" 
-                placeholder={t("blog.public.searchPlaceholder")} 
-                className="pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            
-            {/* Main & Sub Categories Popover Filters Side by Side */}
-            <div className="flex flex-col md:flex-row gap-4 items-start w-full">
-              {/* Main Categories Popover Dropdown */}
-              <div className="w-full md:w-1/2">
-                <h3 className="text-sm font-medium text-muted-foreground">{t("blog.public.categories.mainCategories")}</h3>
-                <Popover open={mainCategoryPopoverOpen} onOpenChange={setMainCategoryPopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="w-full justify-between"
-                    >
-                      {selectedMainCategory
-                        ? getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })
-                        : t("blog.public.categories.selectMainCategory")}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
-                    <Command>
-                      <CommandInput placeholder={t("blog.public.categories.searchMainCategory") || "Search..."} />
-                      <CommandEmpty>{t("blog.public.categories.noCategoryFound")}</CommandEmpty>
-                      <CommandGroup>
-                        <CommandItem
-                          key="all"
-                          value={t("blog.public.categories.all")}
-                          onSelect={() => {
-                            setSelectedMainCategory(null);
-                            setSelectedSubCategories([]);
-                            setMainCategoryPopoverOpen(false);
-                            setPage(1);
-                            setBlogPosts([]);
-                          }}
-                        >
-                          {t("blog.public.categories.all")}
-                        </CommandItem>
-                        {mainCategories.map(category => (
+            {/* Unified Filter Bar */}
+            <div className="flex flex-col gap-4 w-full">
+              {/* Search and Main Filters Row */}
+              <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input 
+                    type="search" 
+                    placeholder={t("blog.public.searchPlaceholder")} 
+                    className="pl-12 h-12 text-base rounded-lg border-2 focus:border-brick-red focus:ring-2 focus:ring-brick-red/20 transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                {/* Main Category Dropdown */}
+                <div className="w-full md:w-72">
+                  <Popover open={mainCategoryPopoverOpen} onOpenChange={setMainCategoryPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className="w-full justify-between h-12 text-base border-2 hover:border-brick-red hover:bg-brick-red/5 transition-all"
+                      >
+                        {selectedMainCategory
+                          ? getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })
+                          : t("blog.public.categories.selectMainCategory")}
+                        <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0 shadow-lg border-2 border-brick-red/20">
+                      <Command>
+                        <CommandInput 
+                          placeholder={t("blog.public.categories.searchMainCategory") || "Search..."} 
+                          className="h-12 text-base"
+                        />
+                        <CommandEmpty className="py-4 text-center text-muted-foreground">
+                          {t("blog.public.categories.noCategoryFound")}
+                        </CommandEmpty>
+                        <CommandGroup className="max-h-[300px] overflow-y-auto">
                           <CommandItem
-                            key={category.id}
-                            value={getCategoryName(category)}
+                            key="all"
+                            value={t("blog.public.categories.all")}
                             onSelect={() => {
-                              setSelectedMainCategory(category.id);
+                              setSelectedMainCategory(null);
                               setSelectedSubCategories([]);
                               setMainCategoryPopoverOpen(false);
                               setPage(1);
                               setBlogPosts([]);
                             }}
+                            className="h-12 text-base cursor-pointer hover:bg-brick-red/5 hover:text-black data-[selected=true]:bg-brick-red/10 data-[selected=true]:text-black"
                           >
-                            {getCategoryName(category)}
+                            {t("blog.public.categories.all")}
                           </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </div>
+                          {mainCategories.map(category => (
+                            <CommandItem
+                              key={category.id}
+                              value={getCategoryName(category)}
+                              onSelect={() => {
+                                setSelectedMainCategory(category.id);
+                                setSelectedSubCategories([]);
+                                setMainCategoryPopoverOpen(false);
+                                setPage(1);
+                                setBlogPosts([]);
+                              }}
+                              className="h-12 text-base cursor-pointer hover:bg-brick-red/5 hover:text-black data-[selected=true]:bg-brick-red/10 data-[selected=true]:text-black"
+                            >
+                              {getCategoryName(category)}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
 
-              {/* Sub Categories Popover Dropdown */}
-              {selectedMainCategory && (
-                <div className="w-full md:w-1/2">
-                  <h3 className="text-sm font-medium text-muted-foreground">{t("blog.public.categories.subCategories")}</h3>
+                {/* Subcategories Dropdown */}
+                <div className="w-full md:w-72">
                   <Popover open={subCategoryPopoverOpen} onOpenChange={setSubCategoryPopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         role="combobox"
-                        className="w-full justify-between"
+                        className="w-full justify-between h-12 text-base border-2 hover:border-deep-teal hover:bg-deep-teal/5 transition-all"
                       >
                         {t("blog.public.categories.selectSubCategories")}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
+                    <PopoverContent className="w-full p-0 shadow-lg border-2 border-deep-teal/20">
                       <Command>
-                        <CommandInput placeholder={t("blog.public.categories.searchSubCategory") || "Search..."} />
-                        <CommandEmpty>{t("blog.public.categories.noCategoryFound")}</CommandEmpty>
-                        <CommandGroup>
+                        <CommandInput 
+                          placeholder={t("blog.public.categories.searchSubCategory") || "Search..."} 
+                          className="h-12 text-base"
+                        />
+                        <CommandEmpty className="py-4 text-center text-muted-foreground">
+                          {t("blog.public.categories.noCategoryFound")}
+                        </CommandEmpty>
+                        <CommandGroup className="max-h-[300px] overflow-y-auto">
                           {subCategories
                             .filter(subCat => subCat.id !== selectedMainCategory && !selectedSubCategories.includes(subCat.id))
                             .map(category => (
@@ -340,6 +352,7 @@ export default function BlogPage() {
                                   setPage(1);
                                   setBlogPosts([]);
                                 }}
+                                className="h-12 text-base cursor-pointer hover:bg-deep-teal/5 hover:text-black data-[selected=true]:bg-deep-teal/10 data-[selected=true]:text-black"
                               >
                                 {getCategoryName(category)}
                               </CommandItem>
@@ -348,40 +361,111 @@ export default function BlogPage() {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  {/* Show selected subcategories as badges */}
-                  {selectedSubCategories.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {selectedSubCategories.map(id => {
-                        const category = subCategories.find(c => c.id === id);
-                        return category ? (
-                          <div key={id} className="flex items-center gap-1 bg-deep-teal/10 text-deep-teal px-2 py-1 rounded">
-                            <span>{getCategoryName(category)}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveSubCategory(id)}
-                              className="hover:text-brick-red"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ) : null;
-                      })}
+                </div>
+
+                {/* Clear Filters Button */}
+                {(searchQuery || selectedMainCategory || selectedSubCategories.length > 0) && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedMainCategory(null);
+                      setSelectedSubCategories([]);
+                      setPage(1);
+                      setBlogPosts([]);
+                    }}
+                    className="h-12 text-base text-muted-foreground hover:text-brick-red hover:bg-brick-red/5"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-2"
+                    >
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    </svg>
+                    {t("blog.public.clearFilters")}
+                  </Button>
+                )}
+              </div>
+
+              {/* Active Filters Display */}
+              {(searchQuery || selectedMainCategory || selectedSubCategories.length > 0) && (
+                <div className="flex flex-wrap gap-2 items-center">
+                  {searchQuery && (
+                    <div className="flex items-center gap-1.5 bg-stone-100 text-stone-700 px-3 py-1.5 rounded-full text-sm font-medium hover:bg-stone-200 transition-colors">
+                      <span>Search: "{searchQuery}"</span>
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery("")}
+                        className="hover:text-brick-red transition-colors"
+                        aria-label="Remove search"
+                      >
+                        ×
+                      </button>
                     </div>
                   )}
+                  
+                  {selectedMainCategory && (
+                    <div className="flex items-center gap-1.5 bg-brick-red/10 text-brick-red px-3 py-1.5 rounded-full text-sm font-medium hover:bg-brick-red/20 transition-colors">
+                      <span>Main: {getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedMainCategory(null);
+                          setSelectedSubCategories([]);
+                          setPage(1);
+                          setBlogPosts([]);
+                        }}
+                        className="hover:text-brick-red/80 transition-colors"
+                        aria-label="Remove main category"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+
+                  {selectedSubCategories.map(id => {
+                    const category = subCategories.find(c => c.id === id);
+                    return category ? (
+                      <div 
+                        key={id} 
+                        className="flex items-center gap-1.5 bg-deep-teal/10 text-deep-teal px-3 py-1.5 rounded-full text-sm font-medium hover:bg-deep-teal/20 transition-colors"
+                      >
+                        <span>Sub: {getCategoryName(category)}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSubCategory(id)}
+                          className="hover:text-brick-red transition-colors"
+                          aria-label="Remove subcategory"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : null;
+                  })}
                 </div>
               )}
-            </div>
 
-            {/* Category Stats */}
-            <div className="mt-4 text-sm text-muted-foreground">
-              <p>
-                {selectedMainCategory 
-                  ? `${t("blog.public.categories.showing")}`+' '+`${getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}`
-                  : t("blog.public.categories.showingAll")}
-              </p>
-              <p className="mt-1">
-                {blogPosts.length} {t("blog.public.categories.postsFound")}
-              </p>
+              {/* Category Stats */}
+              <div className="text-sm text-muted-foreground">
+                <p className="font-medium">
+                  {selectedMainCategory 
+                    ? `${t("blog.public.categories.showing")}`+' '+`${getCategoryName(mainCategories.find(cat => cat.id === selectedMainCategory) || { id: '', slug: '', nameEn: '', nameFr: '', createdAt: '', updatedAt: '' })}`
+                    : t("blog.public.categories.showingAll")}
+                </p>
+                <p className="mt-1">
+                  {blogPosts.length} {t("blog.public.categories.postsFound")}
+                </p>
+              </div>
             </div>
           </form>
         </div>
