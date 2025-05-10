@@ -27,7 +27,11 @@ interface EventTranslation {
   languageCode: string
   title: string
   description: string
-  shortDescription: string
+  longDescription?: string
+  requirements?: string
+  additionalInfo?: string
+  instructorName?: string
+  instructorBio?: string
 }
 
 interface Event {
@@ -44,7 +48,18 @@ interface Event {
   priceMembers?: number
   pricePremium?: number
   eventType: string
+  gameType?: string
+  language?: "en" | "fr"
   isArchived: boolean
+  createdAt: string
+  updatedAt: string
+  createdById?: string
+  modifiedBy?: string
+  createdBy?: {
+    id: string
+    name: string
+    email: string
+  }
   translations: EventTranslation[]
 }
 
@@ -59,26 +74,69 @@ export default function AdminEventsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("active")
   const [refreshFlag, setRefreshFlag] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const fetchEvents = async (showArchived: boolean) => {
+  const fetchEvents = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch(`/api/admin/events?showArchived=${showArchived}`)
+      const params = new URLSearchParams({
+        includeTranslations: 'true',
+        languageCode: locale,
+        showArchived: activeTab === "archived" ? 'true' : 'false',
+        ...(searchQuery && { search: searchQuery }),
+      })
+
+      const url = `/api/admin/events?${params}`
+      console.log('Fetching events from:', url)
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        credentials: 'include', // Include cookies for authentication
+      })
+
+      console.log('Response status:', response.status)
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+
       if (!response.ok) {
-        throw new Error("Failed to fetch events")
+        let errorData
+        try {
+          errorData = await response.json()
+        } catch (e) {
+          errorData = await response.text()
+        }
+        console.error('API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorData,
+          url: response.url,
+        })
+        throw new Error(`Failed to fetch events: ${response.status} ${response.statusText}`)
       }
+
       const data = await response.json()
+      console.log('API Response:', data)
+      
+      if (!data.events) {
+        console.error('Invalid API response format:', data)
+        throw new Error('Invalid API response format')
+      }
+
       setEvents(data.events)
     } catch (error) {
-      console.error("Error fetching events:", error)
+      console.error('Error fetching events:', error)
       toast.error(t("admin.events.errorFetching"))
+      setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchEvents(activeTab === "archived")
+    fetchEvents()
   }, [activeTab, refreshFlag])
 
   const formatDate = (date: string) => {
@@ -141,7 +199,7 @@ export default function AdminEventsPage() {
   }
 
   const handleSave = () => {
-    fetchEvents(activeTab === "archived")
+    fetchEvents()
   }
 
   const handleDelete = async (event: Event) => {
@@ -180,15 +238,33 @@ export default function AdminEventsPage() {
       const response = await fetch(`/api/admin/events/${event.id}`, {
         method: "DELETE",
       })
+
       if (!response.ok) {
         throw new Error("Failed to delete event")
       }
+
       toast.success(t("admin.events.successDelete"))
       setRefreshFlag(flag => !flag)
     } catch (error) {
       console.error("Error deleting event:", error)
       toast.error(t("admin.events.errorDelete"))
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p>{t("admin.events.loading")}</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p className="text-red-500">{error}</p>
+      </div>
+    )
   }
 
   return (
@@ -228,13 +304,7 @@ export default function AdminEventsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      {t("admin.events.loading")}
-                    </TableCell>
-                  </TableRow>
-                ) : filteredEvents.length === 0 ? (
+                {filteredEvents.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center">
                       {t("admin.events.noEvents")}
@@ -322,13 +392,7 @@ export default function AdminEventsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      {t("admin.events.loading")}
-                    </TableCell>
-                  </TableRow>
-                ) : filteredEvents.length === 0 ? (
+                {filteredEvents.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center">
                       {t("admin.events.noEvents")}

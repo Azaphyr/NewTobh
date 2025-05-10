@@ -14,22 +14,85 @@ export const config = {
   },
 };
 
-// GET: List all events (with optional showArchived param)
+// GET: List all events
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const showArchived = req.query.showArchived === 'true';
+    console.log('GET /api/admin/events - Request headers:', req.headers)
+    console.log('GET /api/admin/events - Query params:', req.query)
+
+    const session = await getServerSession(req, res, authOptions);
+    console.log('Session:', session ? 'Authenticated' : 'Not authenticated')
+
+    if (!session) {
+      console.log('Unauthorized access attempt')
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const searchParams = new URL(req.url!, `http://${req.headers.host}`).searchParams;
+    const includeTranslations = searchParams.get('includeTranslations') === 'true';
+    const languageCode = searchParams.get('languageCode') || 'en';
+    const search = searchParams.get('search') || undefined;
+    const showArchived = searchParams.get('showArchived') === 'true';
+
+    console.log('Search params:', {
+      includeTranslations,
+      languageCode,
+      search,
+      showArchived
+    })
+
+    let whereClause: any = {
+      isArchived: showArchived,
+    };
+
+    if (search) {
+      whereClause.translations = {
+        some: {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } },
+            { longDescription: { contains: search, mode: 'insensitive' } },
+            { requirements: { contains: search, mode: 'insensitive' } },
+            { additionalInfo: { contains: search, mode: 'insensitive' } },
+            { instructorName: { contains: search, mode: 'insensitive' } },
+          ],
+        },
+      };
+    }
+
+    console.log('Prisma where clause:', whereClause)
+
     const events = await prisma.event.findMany({
-      where: showArchived ? { isArchived: true } : { isArchived: false },
-      include: { translations: true },
-      orderBy: { eventDate: 'asc' },
+      where: whereClause,
+      orderBy: {
+        eventDate: 'desc',
+      },
+      include: {
+        translations: includeTranslations ? {
+          where: languageCode ? { languageCode } : undefined,
+        } : false,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
+
+    console.log(`Found ${events.length} events`)
     res.status(200).json({ events });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch events' });
+    console.error('Error in handleGet:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch events',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 }
 
-// POST: Create a new event with image upload and deduplication
+// POST: Create a new event with image upload
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   try {
     const session = await getServerSession(req, res, authOptions);
@@ -51,18 +114,18 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         capacity,
         price,
         priceMembers,
+        pricePremium,
         eventType,
-        translations,
-        language,
-        modifiedBy,
         gameType,
+        language,
+        translations,
       } = fields;
 
       // Handle possible array values from formidable
       const getString = (val: any) => Array.isArray(val) ? val[0] : val;
       const getNumber = (val: any) => Number(getString(val));
 
-      if (!slug || !eventDate || !eventType || !translations || !files.image) {
+      if (!slug || !translations) {
         return res.status(400).json({ error: 'Missing required fields' });
       }
 
@@ -72,18 +135,23 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Slug is already in use' });
       }
 
-      // Deduplication: Check if image already exists in Cloudinary
-      const imageFile = Array.isArray(files.image) ? files.image[0] : files.image as File;
-      const filename = imageFile.originalFilename || getString(slug);
-      const imagesInFolder = await listImagesInFolder('Events');
-      const existingImage = imagesInFolder.find((img: any) => img.public_id === `Events/${filename.replace(/\.[^/.]+$/, "")}`);
+      // Handle image upload if present
       let imageUrl;
-      if (existingImage) {
-        imageUrl = existingImage.secure_url;
-      } else {
-        const fileBuffer = await fs.promises.readFile(imageFile.filepath);
-        const uploadResult = await uploadImageToFolder(fileBuffer, filename, 'Events') as UploadApiResponse;
-        imageUrl = uploadResult.secure_url;
+      if (files.image) {
+        const imageFile = Array.isArray(files.image) ? files.image[0] : files.image as File;
+        const filename = imageFile.originalFilename || getString(slug);
+        
+        // Check for existing image
+        const imagesInFolder = await listImagesInFolder('Events');
+        const existingImage = imagesInFolder.find((img: any) => img.public_id === `Events/${filename.replace(/\.[^/.]+$/, '')}`);
+        
+        if (existingImage) {
+          imageUrl = existingImage.secure_url;
+        } else {
+          const fileBuffer = await fs.promises.readFile(imageFile.filepath);
+          const uploadResult = await uploadImageToFolder(fileBuffer, filename, 'Events') as UploadApiResponse;
+          imageUrl = uploadResult.secure_url;
+        }
       }
 
       // Create event with translations
@@ -92,18 +160,19 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           slug: getString(slug),
           imageUrl,
           eventDate: new Date(getString(eventDate)),
-          eventEndDate: eventEndDate ? new Date(getString(eventEndDate)) : undefined,
-          location: location ? getString(location) : undefined,
-          address: address ? getString(address) : undefined,
-          capacity: capacity ? getNumber(capacity) : undefined,
-          spotsLeft: capacity ? getNumber(capacity) : undefined,
-          price: price ? getNumber(price) : undefined,
-          priceMembers: priceMembers ? getNumber(priceMembers) : undefined,
+          eventEndDate: getString(eventEndDate) ? new Date(getString(eventEndDate)) : null,
+          location: getString(location),
+          address: getString(address),
+          capacity: getNumber(capacity),
+          spotsLeft: getNumber(capacity), // Initialize spotsLeft equal to capacity
+          price: getNumber(price),
+          priceMembers: getNumber(priceMembers),
+          pricePremium: getNumber(pricePremium),
           eventType: getString(eventType),
+          gameType: getString(gameType),
+          language: getString(language),
           createdById: session.user.id,
-          language: language ? getString(language) : undefined,
-          modifiedBy: modifiedBy ? getString(modifiedBy) : undefined,
-          gameType: gameType ? getString(gameType) : undefined,
+          modifiedBy: session.user.id,
           translations: {
             create: JSON.parse(getString(translations)).map((t: any) => ({
               languageCode: t.languageCode,
@@ -117,12 +186,22 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             })),
           },
         },
-        include: { translations: true },
+        include: {
+          translations: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
       });
 
       res.status(201).json(event);
     });
   } catch (error) {
+    console.error('Error creating event:', error);
     res.status(500).json({ error: 'Failed to create event' });
   }
 }
