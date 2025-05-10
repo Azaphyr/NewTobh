@@ -27,10 +27,16 @@ export async function GET(request: NextRequest) {
     const page = Number.parseInt(searchParams.get("page") || "1")
     const skip = (page - 1) * limit
 
+    // Handle isArchived param
+    const isArchivedParam = searchParams.get("isArchived")
+    let isArchived: boolean | undefined = undefined
+    if (isArchivedParam === "true") isArchived = true
+    if (isArchivedParam === "false") isArchived = false
+
     const where = {
       ...(type ? { eventType: type } : {}),
       ...(past ? { eventDate: { lt: new Date() } } : { eventDate: { gte: new Date() } }),
-      isArchived: false,
+      ...(typeof isArchived === "boolean" ? { isArchived } : {}),
     }
 
     const events = await prisma.event.findMany({

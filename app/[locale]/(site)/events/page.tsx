@@ -55,7 +55,12 @@ export default function EventsPage() {
         params.append("locale", locale);
         if (eventType) params.append("type", eventType);
         params.append("past", showPast.toString());
-  
+        if (activeTab === "archived") {
+          params.append("isArchived", "true");
+        } else {
+          params.append("isArchived", "false");
+        }
+
         const response = await fetch(`/api/events?${params.toString()}`);
         const data = await response.json();
         setEvents(data.events);
@@ -67,7 +72,7 @@ export default function EventsPage() {
     };
   
     fetchEvents();
-  }, [eventType, showPast, locale]);
+  }, [eventType, showPast, locale, activeTab]);
   
   return (
     <div className="flex flex-col">
@@ -107,10 +112,10 @@ export default function EventsPage() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="actual">
-              <EventsList events={events.filter(e => !e.isArchived)} />
+              <EventsList events={events} />
             </TabsContent>
             <TabsContent value="archived">
-              <EventsList events={events.filter(e => e.isArchived)} />
+              <EventsList events={events} />
             </TabsContent>
           </Tabs>
         </div>
